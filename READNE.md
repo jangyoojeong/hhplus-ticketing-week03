@@ -1,4 +1,4 @@
-Milestone(https://github.com/users/jangyoojeong/projects/1)
+[Milestone](https://github.com/users/jangyoojeong/projects/1)
 
 ### 1. 유저 대기열 토큰 발급 API 
 
