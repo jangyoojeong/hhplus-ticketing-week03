@@ -1,5 +1,3 @@
-[Milestone](https://github.com/users/jangyoojeong/projects/6)
-
 ### 1. 유저 대기열 토큰 발급 API 
 
 ```mermaid
