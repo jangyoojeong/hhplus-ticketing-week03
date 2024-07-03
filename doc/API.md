@@ -6,16 +6,15 @@
 :pushpin: Endpoint
   - URL : `/queues/token`
   - Method : POST
-  - Description : 콘서트 대기열에 입장할 때 사용하는 토큰을 발급합니다.
+  - Description : 콘서트 대기열에 입장할 때 사용하는 토큰을 발급합니다. 사용자는 이 토큰을 통해 대기열에 대한 인증을 받을 수 있습니다.
+                  (유저의 UUID 와 해당 유저의 대기열을 관리할 수 있는 정보 ( 대기 순서 or 잔여 시간 등 ) 를 포함합니다)
 
 :pushpin: Request
   - Parameters
     - `uuid` (String, 필수) : 대기열에 참여할 유저의 고유 UUID
-    - `concertId` (Long, 필수) : 대기열에 참여할 콘서트의 고유 ID
 ```json
 {
-  "uuid": "xxx",
-  "concertId": 1,
+  "uuid": "123e4567-e89b-12d3-a456-426614174000",
 }
 ```
 :pushpin: Response
@@ -25,9 +24,8 @@
     - Body
 ```json
 {
-  "userId": "user123",
-  "concertId": 456,
-  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyMTIzIiwibmFtZSI6IlVzZXIgU3ViamVjdCIsImlhdCI6MTUxNjIzOTAyMn0.-nA6Ewfh8T31DhR10oM2V8h5Tr6VykJwLH1GzzpIyHk"
+  "uuid": "123e4567-e89b-12d3-a456-426614174000",
+  "tokenValue": "123e4567-e89b-12d3-a456-426614174000-5-300"
 }
 ```
 :pushpin: Error
@@ -38,7 +36,7 @@
 ```json
 {
   "error": "Not Found",
-  "message": "User or concert not found."
+  "message": "유저 UUID에 해당하는 정보를 찾을 수 없습니다."
 }
 ```
 
@@ -49,7 +47,7 @@
 ```json
 {
   "error": "Internal Server Error",
-  "message": "An unexpected error occurred. Please try again later."
+  "message": "예상치 못한 오류가 발생했습니다. 잠시 후 다시 시도해 주세요."
 }
 ```
 
@@ -93,7 +91,7 @@
 ```json
 {
   "error": "Unauthorized",
-  "message": "Invalid or missing token."
+  "message": "유효하지 않은 인증 토큰입니다."
 }
 ```
   
@@ -104,7 +102,7 @@
 ```json
 {
   "error": "Not Found",
-  "message": "User or concert not found."
+  "message": "유저 또는 콘서트 정보를 찾을 수 없습니다."
 }
 ```
 
@@ -115,7 +113,7 @@
 ```json
 {
   "error": "Internal Server Error",
-  "message": "An unexpected error occurred. Please try again later."
+  "message": "예상치 못한 오류가 발생했습니다. 잠시 후 다시 시도해 주세요."
 }
 ```
 
