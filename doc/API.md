@@ -268,7 +268,9 @@
   - Description : 이 API는 인증된 사용자만 접근할 수 있습니다. 요청 헤더에 Bearer 토큰을 포함해야 합니다.
 
 :four: 잔액 충전 / 조회 API
+
 4-1: 잔액 충전 API
+
 :pushpin: Endpoint
   - URL : `/payments/deposit`
   - Method : POST
