@@ -2,7 +2,7 @@
 항해 플러스 백앤드5기 3주차
 
 
-## [Chapter 2] 서버구축 (콘서트 예약 서비스)
+## [Chapter 2] 서버구축 [ 콘서트 예약 서비스 ]
 
 ### :link: DOC 
 - [Milestone](https://github.com/users/jangyoojeong/projects/6)
@@ -13,6 +13,7 @@
 
 - [ERD](https://github.com/jangyoojeong/hhplus-ticketing-week03/blob/master/doc/ERD.md)
 
+---
 
 ### :black_nib: 과제
 [ Description ]
@@ -65,6 +66,7 @@
 * 유저간 대기열을 요청 순서대로 정확하게 제공할 방법을 고민해 봅니다.
 * 동시에 여러 사용자가 예약 요청을 했을 때, 좌석이 중복으로 배정 가능하지 않도록 합니다.
 
+---
 
 ### :black_nib: 과제 평가 기준
 
