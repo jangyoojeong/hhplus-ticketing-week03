@@ -12,7 +12,12 @@
   - Parameters
     - `uuid` (String, 필수) : 대기열에 참여할 유저의 고유 UUID
     - `concertId` (Long, 필수) : 대기열에 참여할 콘서트의 고유 ID
-
+```json
+{
+  "uuid": "xxx",
+  "concertId": 1,
+}
+```
 :pushpin: Response
   - 200 OK
     - Description : 토큰이 성공적으로 발급되었습니다.
@@ -25,7 +30,7 @@
   "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyMTIzIiwibmFtZSI6IlVzZXIgU3ViamVjdCIsImlhdCI6MTUxNjIzOTAyMn0.-nA6Ewfh8T31DhR10oM2V8h5Tr6VykJwLH1GzzpIyHk"
 }
 ```
-:pushpin : Error
+:pushpin: Error
   - 404 Not Found
     - Description : 요청한 UUID나 콘서트 ID에 해당하는 정보가 존재하지 않습니다.
     - Content-Type : `application/json`
