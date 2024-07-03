@@ -4,7 +4,7 @@
 
 ## [Chapter 2] 서버구축 (콘서트 예약 서비스)
 
-### DOC :link:
+### :link: DOC 
 - [Milestone](https://github.com/users/jangyoojeong/projects/6)
 
 - [시퀀스 다이어그램](https://github.com/jangyoojeong/hhplus-ticketing-week03/blob/master/doc/SEQUENCS.md)
@@ -14,7 +14,7 @@
 - [ERD](https://github.com/jangyoojeong/hhplus-ticketing-week03/blob/master/doc/ERD.md)
 
 
-### 과제
+### :black_nib: 과제
 [ Description ]
 * `콘서트 예약 서비스`를 구현해 봅니다.
 * 대기열 시스템을 구축하고, 예약 서비스는 작업가능한 유저만 수행할 수 있도록 해야합니다.
@@ -66,7 +66,7 @@
 * 동시에 여러 사용자가 예약 요청을 했을 때, 좌석이 중복으로 배정 가능하지 않도록 합니다.
 
 
-### 과제 평가 기준
+### :black_nib: 과제 평가 기준
 
 [ Step 5 ]
 * Milestone 계획을 세웠는지
