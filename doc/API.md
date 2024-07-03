@@ -1,7 +1,7 @@
 # API 명세
 
 
-:one: 유저 대기열 토큰 발급 API
+:one: ### 유저 대기열 토큰 발급 API
 
 :pushpin: Endpoint
   - URL : `/queues/token`
