@@ -7,7 +7,10 @@
 ---
 
 
-:two:
+:two: 예약 가능 날짜 / 좌석 API
+
+:two:-:one: 예약 가능 날짜 조회 API
+
 - Endpoint
   - URL : `/concerts/{concertId}/dates-for-reservation`
   - Method : GET
@@ -23,12 +26,50 @@
 ```json
     {
         "consertId": 1,
-        ""
-}
+        "availableDates":
+                             [
+                            
+                             ]
+    }
+```
+- Error
+  - 401 Unauthorized
+    - Description: 유효하지 않은 인증 토큰.
+    - Content-Type: `application/json`
+    - Body
+```json
+    {
+        "error": "Unauthorized",
+        "message": "Invalid or missing token."
+    } 
+```
+    
+
+  - 404 Not Found
+    - Description: 요청한 concertId에 해당하는 콘서트가 존재하지 않음.
+    - Content-Type: `application/json`
+    - Body
+```json
+    {
+        "error": "Not Found",
+        "message": "Concert with ID 1 not found."
+    } 
 ```
 
-- Error
+  - 500 Internal Server Error	
+    - Description: 서버 내부 오류 발생.
+    - Content-Type: `application/json`
+    - Body
+```json
+    {
+        "error": "Internal Server Error",
+        "message": "An unexpected error occurred. Please try again later."
+    } 
+```
+
 - Authorization
+  - Type: Bearer Token
+  - Description: 이 API는 인증된 사용자만 접근할 수 있습니다. 요청 헤더에 Bearer 토큰을 포함해야 합니다.
 :three:
 
 :four:
