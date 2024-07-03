@@ -9,7 +9,7 @@
   - Description : 콘서트 대기열에 입장할 때 사용하는 토큰을 발급합니다. 사용자는 이 토큰을 통해 대기열에 대한 인증을 받을 수 있습니다.
 
 :pushpin: Request
-  - Parameters
+  - Body
     - `uuid` (String, 필수) : 대기열에 참여할 유저의 고유 UUID
 ```json
 {
@@ -202,7 +202,7 @@
 :pushpin: Request
   - Headers
     - `Authorization` -> Bearer {token} (필수) : 인증을 위한 토큰
-  - Parameters
+  - Body
     - `uuid` (String, 필수) : 예약을 요청하는 사용자의 고유 UUID
     - `concertOptionId` (Long, 필수) : 예약하려는 콘서트옵션의 고유 ID
     - `seatNumber` (String, 필수) : 예약할 좌석의 번호
@@ -272,16 +272,16 @@
 4-1. 잔액 충전 API
 
 :pushpin: Endpoint
-  - URL : `/payments/deposit`
+  - URL : `/users/deposit`
   - Method : POST
-  - Description : 특정 사용자의 계정에 잔액을 충전합니다.
+  - Description : 사용자의 잔액을 충전합니다.
 
 :pushpin: Request
   - Headers
     - `Authorization` -> Bearer {token} (필수) : 인증을 위한 토큰
-  - Parameters
-    - `uuid` (String, 필수) : 잔액을 충전할 사용자의 고유 UUID
-    - `amount` (Int, 필수) : 충전할 금액 (원 단위)
+  - Body
+    - `uuid` (string, 필수) : 잔액을 충전할 사용자의 고유 UUID
+    - `amount` (int, 필수) : 충전할 금액 (원 단위)
 ```json
 {
   "uuid": "123e4567-e89b-12d3-a456-426614174000",
@@ -291,7 +291,7 @@
 
 :pushpin: Response
   - 200 OK
-    - Description : 충전이 성공적으로 완료되었습니다.
+    - Description : 잔액 충전이 성공적으로 완료되었습니다.
     - Content-Type : `application/json`
     - Body
 ```json
@@ -337,12 +337,12 @@
 :pushpin: Endpoint
   - URL : `/users/{uuid}/balance`
   - Method : GET
-  - Description : 특정 사용자의 계정 잔액을 조회합니다.
+  - Description : 사용자의 잔액을 조회합니다.
 
 :pushpin: Request
   - Headers : `Authorization` -> Bearer {token} (필수) - 인증을 위한 토큰
-  - Parameters
-    - `userId` (String, 필수) : 잔액을 충전할 사용자의 고유 UUID
+  - Path Parameters
+    - `userId` (string, 필수) : 잔액을 충전할 사용자의 고유 UUID
 
 :pushpin: Response
   - 200 OK
@@ -389,7 +389,7 @@
 :pushpin: Request
   - Headers
     - `Authorization` -> Bearer {token} (필수) : 인증을 위한 토큰
-  - Parameters
+  - Body
     - `uuid` (String, 필수) : 예약을 요청하는 사용자의 고유 UUID
     - `amount` (Int, 필수) : 결제할 금액
 ```json
