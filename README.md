@@ -2,7 +2,7 @@
 항해 플러스 백앤드5기 3주차
 
 
-## [Chapter 2] 서버구축 [ 콘서트 예약 서비스 ]
+## [ Chapter 2 ] 서버구축 [ 콘서트 예약 서비스 ]
 
 ### :link: DOC 
 - [Milestone](https://github.com/users/jangyoojeong/projects/6)
