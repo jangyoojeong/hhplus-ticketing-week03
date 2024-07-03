@@ -56,9 +56,9 @@
 ---
 
 
-:two: 예약 가능 날짜 / 좌석 API
+### :two: 예약 가능 날짜 / 좌석 API
 
-2-1: 예약 가능 날짜 조회 API
+2-1. 예약 가능 날짜 조회 API
 
 :pushpin: Endpoint
   - URL : `/concerts/{concertId}/dates-for-reservation`
@@ -123,7 +123,7 @@
   - Type : Bearer Token
   - Description : 이 API는 인증된 사용자만 접근할 수 있습니다. 요청 헤더에 Bearer 토큰을 포함해야 합니다.
 
-2-2: 예약 가능 좌석 조회 API
+2-2. 예약 가능 좌석 조회 API
 
 :pushpin: Endpoint
   - URL : `/concerts/{concert_option_id}/seats-for-reservation`
@@ -193,7 +193,7 @@
 
 ---
 
-:three: 좌석 예약 요청 API
+### :three: 좌석 예약 요청 API
 
 :pushpin: Endpoint
   - URL : `/reservations/seats`
@@ -267,9 +267,9 @@
   - Type : Bearer Token
   - Description : 이 API는 인증된 사용자만 접근할 수 있습니다. 요청 헤더에 Bearer 토큰을 포함해야 합니다.
 
-:four: 잔액 충전 / 조회 API
+### :four: 잔액 충전 / 조회 API
 
-4-1: 잔액 충전 API
+4-1. 잔액 충전 API
 
 :pushpin: Endpoint
   - URL : `/payments/deposit`
@@ -332,7 +332,7 @@
 }
 ```
 
-4-2: 잔액 조회 API
+4-2. 잔액 조회 API
 :pushpin: Endpoint
   - URL : `/users/{uuid}/balance`
   - Method : GET
@@ -378,7 +378,7 @@
 
 ---
 
-:five: 결제 API
+### :five: 결제 API
 
 :pushpin: Endpoint
   - URL : `/payments`
