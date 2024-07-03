@@ -5,10 +5,10 @@
 ## [Chapter 2] 서버구축 (콘서트 예약 서비스)
 
 ### DOC
-- [Milestone](https://github.com/users/jangyoojeong/projects/6)
-- [시퀀스 다이어그램](https://github.com/jangyoojeong/hhplus-ticketing-week03/blob/master/doc/SEQUENCS.md)
-- [API 명세](https://github.com/jangyoojeong/hhplus-ticketing-week03/blob/master/doc/API.md)
-- [ERD](https://github.com/jangyoojeong/hhplus-ticketing-week03/blob/master/doc/ERD.md)
+:link: [Milestone](https://github.com/users/jangyoojeong/projects/6)
+:link: [시퀀스 다이어그램](https://github.com/jangyoojeong/hhplus-ticketing-week03/blob/master/doc/SEQUENCS.md)
+:link: [API 명세](https://github.com/jangyoojeong/hhplus-ticketing-week03/blob/master/doc/API.md)
+:link: [ERD](https://github.com/jangyoojeong/hhplus-ticketing-week03/blob/master/doc/ERD.md)
 
 ### 과제
 [ Description ]
