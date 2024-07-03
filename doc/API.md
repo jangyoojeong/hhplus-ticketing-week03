@@ -10,7 +10,7 @@
 
 :pushpin: Request
   - Body
-    - `uuid` (String, 필수) : 대기열에 참여할 유저의 고유 UUID
+    - `uuid` (string, 필수) : 대기열에 참여할 유저의 고유 UUID
 ```json
 {
   "uuid": "123e4567-e89b-12d3-a456-426614174000",
@@ -29,13 +29,13 @@
 ```
 :pushpin: Error
   - 404 Not Found
-    - Description : 요청한 UUID나 콘서트 ID에 해당하는 정보가 존재하지 않습니다.
+    - Description : 요청한 UUID에 해당하는 정보가 존재하지 않습니다.
     - Content-Type : `application/json`
     - Body
 ```json
 {
   "error": "Not Found",
-  "message": "유저 UUID에 해당하는 정보를 찾을 수 없습니다."
+  "message": "UUID 정보를 찾을 수 없습니다."
 }
 ```
 
@@ -66,7 +66,7 @@
   - Headers
     - `Authorization` -> Bearer {token} (필수) : 인증을 위한 토큰
   - Path Parameters
-    - `concertId` (Long, 필수) : 조회할 콘서트의 고유 ID
+    - `concertId` (long, 필수) : 조회할 콘서트의 고유 ID
 
 :pushpin: Response
   - 200 OK
@@ -132,7 +132,7 @@
   - Headers
     - `Authorization` -> Bearer {token} (필수) : 인증을 위한 토큰
   - Path Parameters
-    - `concertOptionId` (Long, 필수) : 조회할 콘서트 옵션의 고유 ID
+    - `concertOptionId` (long, 필수) : 조회할 콘서트 옵션의 고유 ID
 
 :pushpin: Response
   - 200 OK
@@ -203,9 +203,9 @@
   - Headers
     - `Authorization` -> Bearer {token} (필수) : 인증을 위한 토큰
   - Body
-    - `uuid` (String, 필수) : 예약을 요청하는 사용자의 고유 UUID
-    - `concertOptionId` (Long, 필수) : 예약하려는 콘서트옵션의 고유 ID
-    - `seatNumber` (String, 필수) : 예약할 좌석의 번호
+    - `uuid` (string, 필수) : 예약을 요청하는 사용자의 고유 UUID
+    - `concertOptionId` (long, 필수) : 예약하려는 콘서트옵션의 고유 ID
+    - `seatNumber` (int, 필수) : 예약할 좌석의 번호
 ```json
 {
   "uuid": "123e4567-e89b-12d3-a456-426614174000",
@@ -342,7 +342,7 @@
 :pushpin: Request
   - Headers : `Authorization` -> Bearer {token} (필수) - 인증을 위한 토큰
   - Path Parameters
-    - `userId` (string, 필수) : 잔액을 충전할 사용자의 고유 UUID
+    - `uuid` (string, 필수) : 잔액을 충전할 사용자의 고유 UUID
 
 :pushpin: Response
   - 200 OK
@@ -390,8 +390,8 @@
   - Headers
     - `Authorization` -> Bearer {token} (필수) : 인증을 위한 토큰
   - Body
-    - `uuid` (String, 필수) : 예약을 요청하는 사용자의 고유 UUID
-    - `amount` (Int, 필수) : 결제할 금액
+    - `uuid` (string, 필수) : 예약을 요청하는 사용자의 고유 UUID
+    - `amount` (int, 필수) : 결제할 금액
 ```json
 {
   "uuid": "123e4567-e89b-12d3-a456-426614174000",
