@@ -76,7 +76,7 @@
 ```json
     {
         "consertId": 1,
-        "availableDates":
+        "concertAt":
                              [
                             
                              ]
@@ -102,7 +102,7 @@
 ```json
 {
   "error": "Not Found",
-  "message": "유저 또는 콘서트 정보를 찾을 수 없습니다."
+  "message": "콘서트 정보를 찾을 수 없습니다."
 }
 ```
 
@@ -124,15 +124,15 @@
 2-2. 예약 가능 좌석 조회 API
 
 :pushpin: Endpoint
-  - URL : `/concerts/{concert_option_id}/seats-for-reservation`
+  - URL : `/concerts/{concertOptionId}/seats-for-reservation`
   - Method : GET
-  - Description : 특정 콘서트옵션(날짜별 콘서트 개최정보)에 대해 예약 가능한 좌석을 조회합니다.
+  - Description : 특정 콘서트 옵션(날짜별 콘서트 개최정보)에 대해 예약 가능한 좌석을 조회합니다.
 
 :pushpin: Request
   - Headers
     - `Authorization` -> Bearer {token} (필수) : 인증을 위한 토큰
   - Path Parameters
-    - `concert_option_id` (Long, 필수) : 조회할 콘서트옵션의 고유 ID
+    - `concertOptionId` (Long, 필수) : 조회할 콘서트 옵션의 고유 ID
 
 :pushpin: Response
   - 200 OK
@@ -141,7 +141,7 @@
     - Body
 ```json
     {
-        "concert_option_id": 1,
+        "concertOptionId": 1,
         "availableSeats":
                              [
                                 {"seatNumber": "A1", "status": "available"},
@@ -171,7 +171,7 @@
 ```json
 {
   "error": "Not Found",
-  "message": "User or concert not found."
+  "message": "콘서트 옵션 정보를 찾을 수 없습니다."
 }
 ```
 
