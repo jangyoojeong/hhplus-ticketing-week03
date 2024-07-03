@@ -61,18 +61,19 @@
 * 결제 처리하고 결제 내역을 생성하는 API 를 작성합니다.
 * 결제가 완료되면 해당 좌석의 소유권을 유저에게 배정하고 대기열 토큰을 만료시킵니다.
 
-💡 **KEY POINT**
+:bulb: **KEY POINT**
 * 유저간 대기열을 요청 순서대로 정확하게 제공할 방법을 고민해 봅니다.
 * 동시에 여러 사용자가 예약 요청을 했을 때, 좌석이 중복으로 배정 가능하지 않도록 합니다.
 
 
-:black_nib: ### 과제 평가 기준
-:exclamation: [ <span style="color:red">Step 5</span> ]
+### 과제 평가 기준
+
+:exclamation: [ Step 5 ]
 * Milestone 계획을 세웠는지
   > 정답이 없는 부분이므로 합리적인 설계 이유가 포함되었는지로 판단하는 것이 좋을 것 같습니다.
 * 시나리오 별 요구사항 분석 및 API 명세가 합리적으로 설계되었는지
 
-:exclamation: [ <span style="color:red">Step 6</span> ]
+:exclamation: [ Step 6 ]
 * ERD 설계 자료가 포함되었는지
   > 이 부분 또한 필요한 테이블 구조 정도가 있는지만 여기서 파악하는 것이 좋을 것 같습니다.
 * API 명세 및 Mock API 가 작성되었는지
