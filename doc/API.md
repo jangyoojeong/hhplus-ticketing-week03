@@ -7,7 +7,6 @@
   - URL : `/queues/token`
   - Method : POST
   - Description : 콘서트 대기열에 입장할 때 사용하는 토큰을 발급합니다. 사용자는 이 토큰을 통해 대기열에 대한 인증을 받을 수 있습니다.
-                  ###### :star: 토큰은 유저의 UUID 와 해당 유저의 대기열을 관리할 수 있는 정보 ( 대기 순서 or 잔여 시간 등 ) 를 포함합니다.
 
 :pushpin: Request
   - Parameters
@@ -64,7 +63,8 @@
   - Description : 특정 콘서트에 대해 예약 가능한 날짜를 조회합니다.
 
 :pushpin: Request
-  - Headers : `Authorization` -> Bearer {token} (필수) - 인증을 위한 토큰
+  - Headers
+    - `Authorization` -> Bearer {token} (필수) : 인증을 위한 토큰
   - Path Parameters
     - `concertId` (Long, 필수) : 조회할 콘서트의 고유 ID
 
@@ -129,7 +129,8 @@
   - Description : 특정 콘서트옵션(날짜별 콘서트 개최정보)에 대해 예약 가능한 좌석을 조회합니다.
 
 :pushpin: Request
-  - Headers : `Authorization` -> Bearer {token} (필수) - 인증을 위한 토큰
+  - Headers
+    - `Authorization` -> Bearer {token} (필수) : 인증을 위한 토큰
   - Path Parameters
     - `concert_option_id` (Long, 필수) : 조회할 콘서트옵션의 고유 ID
 
@@ -199,7 +200,8 @@
   - Description : 특정 콘서트옵션의 좌석을 예약합니다.
 
 :pushpin: Request
-  - Headers : `Authorization` -> Bearer {token} (필수) - 인증을 위한 토큰
+  - Headers
+    - `Authorization` -> Bearer {token} (필수) : 인증을 위한 토큰
   - Parameters
     - `uuid` (String, 필수) : 예약을 요청하는 사용자의 고유 UUID
     - `concertOptionId` (Long, 필수) : 예약하려는 콘서트옵션의 고유 ID
@@ -275,7 +277,8 @@
   - Description : 특정 사용자의 계정에 잔액을 충전합니다.
 
 :pushpin: Request
-  - Headers : `Authorization` -> Bearer {token} (필수) - 인증을 위한 토큰
+  - Headers
+    - `Authorization` -> Bearer {token} (필수) : 인증을 위한 토큰
   - Parameters
     - `uuid` (String, 필수) : 잔액을 충전할 사용자의 고유 UUID
     - `amount` (Int, 필수) : 충전할 금액 (원 단위)
@@ -384,7 +387,8 @@
   - Description : 예약한 좌석의 결제요청을 처리합니다.
 
 :pushpin: Request
-  - Headers : `Authorization` -> Bearer {token} (필수) - 인증을 위한 토큰
+  - Headers
+    - `Authorization` -> Bearer {token} (필수) : 인증을 위한 토큰
   - Parameters
     - `uuid` (String, 필수) : 예약을 요청하는 사용자의 고유 UUID
     - `amount` (Int, 필수) : 결제할 금액
