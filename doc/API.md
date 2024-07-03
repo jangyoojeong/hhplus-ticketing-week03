@@ -20,7 +20,7 @@
     - Description: 예약 가능한 날짜를 성공적으로 조회합니다.
     - Content-Type: `application/json`
     - Body
-```html
+```json
     {
         "consertId": 1,
         ""
