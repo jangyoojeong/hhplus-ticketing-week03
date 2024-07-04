@@ -13,7 +13,7 @@
     - `uuid` (string, 필수) : 대기열에 참여할 유저의 고유 UUID
 ```json
 {
-  "uuid": "123e4567-e89b-12d3-a456-426614174000",
+    "uuid": "123e4567-e89b-12d3-a456-426614174000"
 }
 ```
 :pushpin: Response
@@ -23,8 +23,9 @@
     - Body
 ```json
 {
-  "uuid": "123e4567-e89b-12d3-a456-426614174000",
-  "tokenValue": "123e4567-e89b-12d3-a456-426614174000-5-300"
+    "uuid": "123e4567-e89b-12d3-a456-426614174000",
+    "token": "123e4567-e89b-12d3-a456-426614174000-5000",
+    "position": 5000
 }
 ```
 :pushpin: Error
@@ -34,8 +35,8 @@
     - Body
 ```json
 {
-  "error": "Not Found",
-  "message": "UUID 정보를 찾을 수 없습니다."
+    "error": "Not Found",
+    "message": "UUID 정보를 찾을 수 없습니다."
 }
 ```
 
@@ -45,8 +46,8 @@
     - Body
 ```json
 {
-  "error": "Internal Server Error",
-  "message": "예상치 못한 오류가 발생했습니다. 잠시 후 다시 시도해 주세요."
+    "error": "Internal Server Error",
+    "message": "예상치 못한 오류가 발생했습니다. 잠시 후 다시 시도해 주세요."
 }
 ```
 
@@ -74,13 +75,13 @@
     - Content-Type : `application/json`
     - Body
 ```json
-    {
-        "consertId": 1,
-        "concertAt":
-                             [
-                            
-                             ]
-    }
+{
+    "concertId": 1,
+    "availableDates": [
+        "2024-07-15",
+        "2024-07-16"
+    ]
+}
 ```
 :pushpin: Error
   - 401 Unauthorized
@@ -90,8 +91,8 @@
 
 ```json
 {
-  "error": "Unauthorized",
-  "message": "유효하지 않은 인증 토큰입니다."
+    "error": "Unauthorized",
+    "message": "유효하지 않은 인증 토큰입니다."
 }
 ```
   
@@ -101,8 +102,8 @@
     - Body
 ```json
 {
-  "error": "Not Found",
-  "message": "콘서트 정보를 찾을 수 없습니다."
+    "error": "Not Found",
+    "message": "콘서트 정보를 찾을 수 없습니다."
 }
 ```
 
@@ -112,8 +113,8 @@
     - Body
 ```json
 {
-  "error": "Internal Server Error",
-  "message": "예상치 못한 오류가 발생했습니다. 잠시 후 다시 시도해 주세요."
+    "error": "Internal Server Error",
+    "message": "예상치 못한 오류가 발생했습니다. 잠시 후 다시 시도해 주세요."
 }
 ```
 
@@ -140,16 +141,16 @@
     - Content-Type : `application/json`
     - Body
 ```json
-    {
-        "concertOptionId": 1,
-        "availableSeats":
-                             [
-                                {"seatNumber": "A1", "status": "available"},
-                                {"seatNumber": "A2", "status": "available"},
-                                {"seatNumber": "B1", "status": "booked"},
-                                {"seatNumber": "B2", "status": "available"}
-                             ]
-    }
+{
+    "concertOptionId": 1,
+    "availableSeats": [
+        3,
+        4,
+        9,
+        15,
+        30
+    ]
+}
 ```
 :pushpin: Error
   - 401 Unauthorized
@@ -159,8 +160,8 @@
 
 ```json
 {
-  "error": "Unauthorized",
-  "message": "Invalid or missing token."
+    "error": "Unauthorized",
+    "message": "유효하지 않은 인증 토큰입니다."
 }
 ```
   
@@ -170,8 +171,8 @@
     - Body
 ```json
 {
-  "error": "Not Found",
-  "message": "콘서트 옵션 정보를 찾을 수 없습니다."
+    "error": "Not Found",
+    "message": "콘서트 옵션 정보를 찾을 수 없습니다."
 }
 ```
 
@@ -181,8 +182,8 @@
     - Body
 ```json
 {
-  "error": "Internal Server Error",
-  "message": "예상치 못한 오류가 발생했습니다. 잠시 후 다시 시도해 주세요."
+    "error": "Internal Server Error",
+    "message": "예상치 못한 오류가 발생했습니다. 잠시 후 다시 시도해 주세요."
 }
 ```
 
@@ -208,9 +209,9 @@
     - `seatNumber` (int, 필수) : 예약할 좌석의 번호
 ```json
 {
-  "uuid": "123e4567-e89b-12d3-a456-426614174000",
-  "concertOptionId": 1,
-  "seatNumber": "1"
+    "uuid": "123e4567-e89b-12d3-a456-426614174000",
+    "concertOptionId": "1",
+    "seatNumber": "1"
 }
 ```
 
@@ -221,11 +222,10 @@
     - Body
 ```json
 {
-  "reservationId": 789,
-  "uuid": "123e4567-e89b-12d3-a456-426614174000",
-  "concertOptionId": 1,
-  "seatNumber": "1"
-  "status": "Reserved"
+    "reservationId": 780,
+    "uuid": "123e4567-e89b-12d3-a456-426614174000",
+    "concertOptionId": 1,
+    "seatNumber": 1
 }
 ```
 :pushpin: Error
@@ -236,8 +236,8 @@
 
 ```json
 {
-  "error": "Unauthorized",
-  "message": "유효하지 않은 인증 토큰입니다."
+    "error": "Unauthorized",
+    "message": "유효하지 않은 인증 토큰입니다."
 }
 ```
   
@@ -247,8 +247,8 @@
     - Body
 ```json
 {
-  "error": "Not Found",
-  "message": "UUID나 콘서트 옵션 정보를 찾을 수 없습니다."
+    "error": "Not Found",
+    "message": "UUID나 콘서트 옵션 정보를 찾을 수 없습니다."
 }
 ```
 
@@ -258,8 +258,8 @@
     - Body
 ```json
 {
-  "error": "Internal Server Error",
-  "message": "예상치 못한 오류가 발생했습니다. 잠시 후 다시 시도해 주세요."
+    "error": "Internal Server Error",
+    "message": "예상치 못한 오류가 발생했습니다. 잠시 후 다시 시도해 주세요."
 }
 ```
 
@@ -284,8 +284,8 @@
     - `amount` (int, 필수) : 충전할 금액 (원 단위)
 ```json
 {
-  "uuid": "123e4567-e89b-12d3-a456-426614174000",
-  "amount": 50000
+    "uuid": "123e4567-e89b-12d3-a456-426614174000",
+    "amount": 50000
 }
 ```
 
@@ -296,8 +296,8 @@
     - Body
 ```json
 {
-  "uuid": "123e4567-e89b-12d3-a456-426614174000",
-  "balance": 100000
+    "uuid": "123e4567-e89b-12d3-a456-426614174000",
+    "point": 100000
 }
 ```
 :pushpin: Error
@@ -307,8 +307,8 @@
     - Body
 ```json
 {
-  "error": "Bad Request",
-  "message": "요청이 잘못되었거나 필수 필드가 누락되었습니다."
+    "error": "Bad Request",
+    "message": "요청이 잘못되었거나 필수 필드가 누락되었습니다."
 }
 ```
   - 404 Not Found
@@ -317,8 +317,8 @@
     - Body
 ```json
 {
-  "error": "Not Found",
-  "message": "UUID 정보를 찾을 수 없습니다."
+    "error": "Not Found",
+    "message": "UUID 정보를 찾을 수 없습니다."
 }
 ```
 
@@ -328,8 +328,8 @@
     - Body
 ```json
 {
-  "error": "Internal Server Error",
-  "message": "예상치 못한 오류가 발생했습니다. 잠시 후 다시 시도해 주세요."
+    "error": "Internal Server Error",
+    "message": "예상치 못한 오류가 발생했습니다. 잠시 후 다시 시도해 주세요."
 }
 ```
 
@@ -351,8 +351,8 @@
     - Body
 ```json
 {
-  "uuid": "123e4567-e89b-12d3-a456-426614174000",
-  "balance": 100000
+    "uuid": "123e4567-e89b-12d3-a456-426614174000",
+    "point": 100000
 }
 ```
   - 404 Not Found
@@ -361,8 +361,8 @@
     - Body
 ```json
 {
-  "error": "Not Found",
-  "message": "UUID 정보를 찾을 수 없습니다."
+    "error": "Not Found",
+    "message": "UUID 정보를 찾을 수 없습니다."
 }
 ```
 
@@ -372,8 +372,8 @@
     - Body
 ```json
 {
-  "error": "Internal Server Error",
-  "message": "예상치 못한 오류가 발생했습니다. 잠시 후 다시 시도해 주세요."
+    "error": "Internal Server Error",
+    "message": "예상치 못한 오류가 발생했습니다. 잠시 후 다시 시도해 주세요."
 }
 ```
 
@@ -394,8 +394,8 @@
     - `amount` (int, 필수) : 결제할 금액
 ```json
 {
-  "uuid": "123e4567-e89b-12d3-a456-426614174000",
-  "amount": 30000,
+    "uuid": "123e4567-e89b-12d3-a456-426614174000",
+    "price": 30000
 }
 ```
 
@@ -406,10 +406,9 @@
     - Body
 ```json
 {
-  "paymentId": "pay123",
-  "uuid": "123e4567-e89b-12d3-a456-426614174000",
-  "amount": 5000,
-  "timestamp": "2024-07-03T12:30:45Z"
+    "paymentId": 460,
+    "uuid": "123e4567-e89b-12d3-a456-426614174000",
+    "point": 2000
 }
 ```
 :pushpin: Error
@@ -420,8 +419,8 @@
 
 ```json
 {
-  "error": "Bad Request",
-  "message": "요청이 잘못되었거나 필수 필드가 누락되었습니다."
+    "error": "Bad Request",
+    "message": "요청이 잘못되었거나 필수 필드가 누락되었습니다."
 }
 ```
   - 401 Unauthorized
@@ -431,8 +430,8 @@
 
 ```json
 {
-  "error": "Unauthorized",
-  "message": "유효하지 않은 인증 토큰입니다."
+    "error": "Unauthorized",
+    "message": "유효하지 않은 인증 토큰입니다."
 }
 ```
   
@@ -442,8 +441,8 @@
     - Body
 ```json
 {
-  "error": "Not Found",
-  "message": "UUID 정보를 찾을 수 없습니다."
+    "error": "Not Found",
+    "message": "UUID 정보를 찾을 수 없습니다."
 }
 ```
 
@@ -453,8 +452,8 @@
     - Body
 ```json
 {
-  "error": "Internal Server Error",
-  "message": "예상치 못한 오류가 발생했습니다. 잠시 후 다시 시도해 주세요."
+    "error": "Internal Server Error",
+    "message": "예상치 못한 오류가 발생했습니다. 잠시 후 다시 시도해 주세요."
 }
 ```
 
