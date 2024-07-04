@@ -1,4 +1,7 @@
-### 1. 유저 대기열 토큰 발급 API 
+# Sequence Diagram
+
+
+### :one: 유저 대기열 토큰 발급 API
 
 ```mermaid
 sequenceDiagram
@@ -13,13 +16,20 @@ sequenceDiagram
     break 유효하지 않은 유저
         유저-->>-사용자: 유효하지 않은 유저입니다
     end
-    대기열->>+대기열: 대기열 토큰 발급 및 대기열 추가
-    대기열-->>-토큰발급API: 대기열 토큰 리턴
-    토큰발급API-->>-사용자: 대기열 토큰 response
+    대기열->>+대기열: 토큰정보확인
+    alt 활성화토큰있음
+        대기열-->>-사용자: 대기열 토큰 리턴
+    else 활성화토큰없음
+
+        대기열->>+대기열: 대기열 토큰 발급 및 대기열 추가
+        대기열-->>-토큰발급API: 대기열 토큰 리턴
+        토큰발급API-->>-사용자: 대기열 토큰 response
+    end
+    
 ```
 ---
 
-### 2. 예약 가능 날짜 / 좌석 API
+### :two: 예약 가능 날짜 / 좌석 API
 
 #### 2-1. 예약 가능 날짜 조회 API
 
@@ -32,7 +42,7 @@ sequenceDiagram
 
     사용자->>+예약가능날짜조회API: 예약 가능 날짜 조회 request
     예약가능날짜조회API->>+콘서트: 예약 가능 날짜 조회 요청
-    콘서트->+대기열:대기열 토큰 상태 조회
+    콘서트->+대기열:대기열 토큰 검증
     break 유효하지 않은 토큰
         대기열-->>-사용자: 유효하지 않은 토큰 error
     end
@@ -52,7 +62,7 @@ sequenceDiagram
 
     사용자->>+예약가능좌석조회API: 예약 가능 좌석 조회 request
     예약가능좌석조회API->>+좌석: 예약 가능 좌석 조회 요청
-    좌석->+대기열:대기열 토큰 상태 조회
+    좌석->+대기열:대기열 토큰 검증
     break 유효하지 않은 토큰
         대기열-->>-사용자: 유효하지 않은 토큰 error
     end
@@ -63,7 +73,7 @@ sequenceDiagram
 
 ---
 
-### 3. 좌석 예약 요청 API
+### :three: 좌석 예약 요청 API
 
 ```mermaid
 sequenceDiagram
@@ -75,7 +85,7 @@ sequenceDiagram
 
     사용자->>+좌석예약요청API: 좌석 예약 request
     좌석예약요청API->>+예약: 좌석 예약 요청
-    예약->+대기열:대기열 토큰 상태 조회
+    예약->+대기열:대기열 토큰 검증
     break 유효하지 않은 토큰
         대기열-->>-사용자: 토큰 정보가 유효하지 않습니다
     end
@@ -91,7 +101,7 @@ sequenceDiagram
 
 ---
 
-### 4. 잔액 충전 / 조회 API
+### :four: 잔액 충전 / 조회 API
 
 #### 4-1. 잔액 조회 API
 
@@ -139,7 +149,7 @@ sequenceDiagram
 
 ---
 
-### 5. 결제 API
+### :five: 결제 API
 
 ```mermaid
 sequenceDiagram
@@ -150,9 +160,9 @@ sequenceDiagram
     participant 예약
     participant 잔액
 
-    사용자->>+결제API: 좌석 예약 request
+    사용자->>+결제API: 결제 request
     결제API->>+결제: 결제
-    결제->+대기열:대기열 토큰 상태 조회
+    결제->+대기열:대기열 토큰 검증
     break 유효하지 않은 토큰
         대기열-->>-사용자: 토큰 정보가 유효하지 않습니다
     end
