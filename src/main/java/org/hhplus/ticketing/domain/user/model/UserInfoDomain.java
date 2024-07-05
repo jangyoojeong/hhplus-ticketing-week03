@@ -1,4 +1,4 @@
 package org.hhplus.ticketing.domain.user.model;
 
-public class UserDomain {
+public class UserInfoDomain {
 }
