@@ -155,13 +155,13 @@ sequenceDiagram
 sequenceDiagram
     actor  사용자
     participant 결제API
-    participant 결제
     participant 대기열
+    participant 결제
     participant 예약
     participant 잔액
 
     사용자->>+결제API: 결제 request
-    결제API->+대기열:대기열 토큰 검증
+    결제API->>+대기열:대기열 토큰 검증
     break 유효하지 않은 토큰
         대기열-->>-사용자: 토큰 정보가 유효하지 않습니다
     end
