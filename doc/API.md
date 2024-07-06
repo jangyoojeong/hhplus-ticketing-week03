@@ -273,7 +273,7 @@
 
 :pushpin: Endpoint
   - URL : `/users/deposit`
-  - Method : POST
+  - Method : PUT
   - Description : 사용자의 잔액을 충전합니다.
 
 :pushpin: Request
