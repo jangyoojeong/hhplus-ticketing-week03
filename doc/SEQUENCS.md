@@ -1,7 +1,9 @@
 # Sequence Diagram
 
 
-### :one: 유저 대기열 토큰 발급 API
+### :one: 유저 대기열 API
+
+#### 1-1. 유저 대기열 토큰 발급 API
 
 ```mermaid
 sequenceDiagram
@@ -27,6 +29,25 @@ sequenceDiagram
     end
     
 ```
+
+#### 1-2. 유저 대기열 확인 API
+
+```mermaid
+sequenceDiagram
+    actor 사용자
+    participant 대기열확인API
+    participant 대기열
+
+    loop 매 2분마다
+        사용자->>+대기열확인API: 대기열 상태 확인 request
+        대기열확인API->>+대기열: 대기열 상태 확인 요청
+        대기열->>+대기열: 대기열 상태 정보 확인
+        대기열-->>+대기열확인API: 대기열 상태 리턴
+        대기열확인API-->>+사용자: 대기열 상태 response
+    end
+    
+```
+
 ---
 
 ### :two: 예약 가능 날짜 / 좌석 API
