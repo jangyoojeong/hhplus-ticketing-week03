@@ -1,7 +1,9 @@
 # API 명세
 
 
-### :one: 유저 대기열 토큰 발급 API
+### :one: 유저 대기열 API
+
+1-1. 유저 대기열 토큰 발급 API
 
 :pushpin: Endpoint
   - URL : `/queues/token`
@@ -26,6 +28,52 @@
     "uuid": "123e4567-e89b-12d3-a456-426614174000",
     "token": "123e4567-e89b-12d3-a456-426614174000-5000",
     "position": 5000
+}
+```
+:pushpin: Error
+  - 404 Not Found
+    - Description : 요청한 UUID에 해당하는 정보가 존재하지 않습니다.
+    - Content-Type : `application/json`
+    - Body
+```json
+{
+    "error": "Not Found",
+    "message": "UUID 정보를 찾을 수 없습니다."
+}
+```
+
+  - 500 Internal Server Error	
+    - Description : 서버에서 예기치 않은 오류가 발생했습니다.
+    - Content-Type : `application/json`
+    - Body
+```json
+{
+    "error": "Internal Server Error",
+    "message": "예상치 못한 오류가 발생했습니다. 잠시 후 다시 시도해 주세요."
+}
+```
+
+1-2. 유저 대기열 확인 API
+
+:pushpin: Endpoint
+  - URL : `/queues/status/{uuid}`
+  - Method : GET
+  - Description : 사용자의 대기열 상태(대기순번 등)를 반환합니다.
+
+:pushpin: Request
+  - Headers
+    - `Authorization` -> Bearer {token} (필수) : 인증을 위한 토큰
+  - Path Parameters
+    - `uuid` (string, 필수) : 대기열 상태를 확인할 유저의 고유 UUID
+      
+:pushpin: Response
+  - 200 OK
+    - Description : 대기열 상태가 성공적으로 반환되었습니다.
+    - Content-Type : `application/json`
+    - Body
+```json
+{
+    ///
 }
 ```
 :pushpin: Error
@@ -272,7 +320,7 @@
 4-1. 잔액 충전 API
 
 :pushpin: Endpoint
-  - URL : `/users/deposit`
+  - URL : `/users/points/deposit`
   - Method : PUT
   - Description : 사용자의 잔액을 충전합니다.
 
