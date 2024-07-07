@@ -1,5 +1,6 @@
 # API 명세
 
+:link: [Postman](https://documenter.getpostman.com/view/36565553/2sA3e1BVGt)
 
 ### :one: 유저 대기열 API
 
