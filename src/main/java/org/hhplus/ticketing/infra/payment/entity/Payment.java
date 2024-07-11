@@ -5,6 +5,11 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hhplus.ticketing.domain.consert.model.ConcertDomain;
+import org.hhplus.ticketing.domain.consert.model.enums.SeatStatus;
+import org.hhplus.ticketing.domain.payment.model.PaymentDomain;
+import org.hhplus.ticketing.domain.payment.model.enums.PaymentStatus;
+import org.hhplus.ticketing.infra.consert.entity.Concert;
 
 import java.time.LocalDateTime;
 
@@ -30,13 +35,45 @@ public class Payment {
     @Column(name = "payment_at", nullable = false)
     private LocalDateTime paymentAt;        // 결제시간
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
-    private String status;                  // 결제상태 (결제완료/결제취소)
+    private PaymentStatus status;           // 결제상태 (결제완료[COMPLETED]/결제취소[CANCELED])
 
-    @Column(name = "created_at", nullable = false)
+    @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;        // 생성일자
 
-    @Column(name = "updated_at", nullable = false)
+    @Column(nullable = false)
     private LocalDateTime updatedAt;        // 수정일자
+
+    @PrePersist
+    private void prePersist() {
+        createdAt = LocalDateTime.now();
+        updatedAt = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    private void preUpdate() {
+        updatedAt = LocalDateTime.now();
+    }
+
+    public static Payment from(PaymentDomain domain) {
+        return Payment.builder()
+                .paymentId(domain.getPaymentId())
+                .reservationId(domain.getReservationId())
+                .price(domain.getPrice())
+                .paymentAt(domain.getPaymentAt())
+                .status(domain.getStatus())
+                .build();
+    }
+
+    public PaymentDomain toDomain() {
+        return PaymentDomain.builder()
+                .paymentId(this.getPaymentId())
+                .reservationId(this.getReservationId())
+                .price(this.getPrice())
+                .paymentAt(this.getPaymentAt())
+                .status(this.getStatus())
+                .build();
+    }
 
 }
