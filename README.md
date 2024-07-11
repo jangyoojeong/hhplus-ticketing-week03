@@ -13,6 +13,8 @@
 
 - [ERD](https://github.com/jangyoojeong/hhplus-ticketing-week03/blob/master/doc/ERD.md)
 
+- [Swagger](https://github.com/user-attachments/assets/8f1d7967-02e6-469f-b6c9-e80250777dc6)
+
 ---
 
 ### :black_nib: 과제
