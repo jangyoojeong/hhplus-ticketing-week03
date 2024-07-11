@@ -8,33 +8,33 @@
 1-1. 유저 대기열 토큰 발급 API
 
 :pushpin: Endpoint
-  - URL : `/queues/token`
+  - URL : `/api/queues/token`
   - Method : POST
   - Description : 콘서트 대기열에 입장할 때 사용하는 토큰을 발급합니다. 사용자는 이 토큰을 통해 대기열에 대한 인증을 받을 수 있습니다.
 
 :pushpin: Request
   - Body
-    - `uuid` (string, 필수) : 대기열에 참여할 유저의 고유 UUID
+    - `userId` (Long, 필수) : 대기열에 참여할 유저의 고유 ID
 ```json
 {
-    "uuid": "123e4567-e89b-12d3-a456-426614174000"
+    "userId": "1"
 }
 ```
 :pushpin: Response
   - 200 OK
     - Description : 토큰이 성공적으로 발급되었습니다.
     - Content-Type : `application/json`
+    - Headers
+    - `Authorization` -> Bearer {token} (필수) : 인증을 위한 토큰
     - Body
 ```json
 {
-    "uuid": "123e4567-e89b-12d3-a456-426614174000",
-    "token": "123e4567-e89b-12d3-a456-426614174000-5000",
-    "position": 5000
+    "userId": "1"
 }
 ```
 :pushpin: Error
   - 404 Not Found
-    - Description : 요청한 UUID에 해당하는 정보가 존재하지 않습니다.
+    - Description : 요청한 userId에 해당하는 정보가 존재하지 않습니다.
     - Content-Type : `application/json`
     - Body
 ```json
@@ -58,7 +58,7 @@
 1-2. 유저 대기열 확인 API
 
 :pushpin: Endpoint
-  - URL : `/queues/status/{uuid}`
+  - URL : `/api/queues/status/{uuid}`
   - Method : GET
   - Description : 사용자의 대기열 상태(대기순번 등)를 반환합니다.
 
@@ -66,7 +66,7 @@
   - Headers
     - `Authorization` -> Bearer {token} (필수) : 인증을 위한 토큰
   - Path Parameters
-    - `uuid` (string, 필수) : 대기열 상태를 확인할 유저의 고유 UUID
+    - `userId` (Long, 필수) : 대기열에 참여할 유저의 고유 ID
       
 :pushpin: Response
   - 200 OK
@@ -75,18 +75,19 @@
     - Body
 ```json
 {
-    ///
+    "userId": 1,
+    "queuePosition": 1
 }
 ```
 :pushpin: Error
   - 404 Not Found
-    - Description : 요청한 UUID에 해당하는 정보가 존재하지 않습니다.
+    - Description : 요청한 userId에 해당하는 정보가 존재하지 않습니다.
     - Content-Type : `application/json`
     - Body
 ```json
 {
     "error": "Not Found",
-    "message": "UUID 정보를 찾을 수 없습니다."
+    "message": "userId 정보를 찾을 수 없습니다."
 }
 ```
 
@@ -110,7 +111,7 @@
 
 
 :pushpin: Endpoint
-  - URL : `/concerts/{concertId}/dates-for-reservation`
+  - URL : `/api/concerts/{concertId}/dates-for-reservation`
   - Method : GET
   - Description : 특정 콘서트에 대해 예약 가능한 날짜를 조회합니다.
 
@@ -129,8 +130,18 @@
 {
     "concertId": 1,
     "availableDates": [
-        "2024-07-15",
-        "2024-07-16"
+        {
+            "concertOptionId": 2,
+            "concertAt": "2024-07-30"
+        },
+        {
+            "concertOptionId": 3,
+            "concertAt": "2024-08-30"
+        },
+        {
+            "concertOptionId": 5,
+            "concertAt": "2024-07-30"
+        }
     ]
 }
 ```
@@ -177,7 +188,7 @@
 
 
 :pushpin: Endpoint
-  - URL : `/concerts/{concertOptionId}/seats-for-reservation`
+  - URL : `/api/concerts/{concertOptionId}/seats-for-reservation`
   - Method : GET
   - Description : 특정 콘서트 옵션(날짜별 콘서트 개최정보)에 대해 예약 가능한 좌석을 조회합니다.
 
@@ -196,11 +207,14 @@
 {
     "concertOptionId": 1,
     "availableSeats": [
-        3,
-        4,
-        9,
-        15,
-        30
+        {
+            "concertSeatId": 3,
+            "seatNumber": 3
+        },
+        {
+            "concertSeatId": 6,
+            "seatNumber": 6
+        }
     ]
 }
 ```
@@ -248,7 +262,7 @@
 ### :three: 좌석 예약 요청 API
 
 :pushpin: Endpoint
-  - URL : `/reservations/seats`
+  - URL : `/api/concerts/reservations/seats`
   - Method : POST
   - Description : 특정 콘서트 옵션의 좌석을 예약합니다.
 
@@ -256,14 +270,12 @@
   - Headers
     - `Authorization` -> Bearer {token} (필수) : 인증을 위한 토큰
   - Body
-    - `uuid` (string, 필수) : 예약을 요청하는 사용자의 고유 UUID
-    - `concertOptionId` (long, 필수) : 예약하려는 콘서트옵션의 고유 ID
-    - `seatNumber` (int, 필수) : 예약할 좌석의 번호
+    - `userId` (long, 필수) : 예약을 요청하는 사용자의 고유 ID
+    - `concertSeatId` (long, 필수) : 예약하려는 콘서트좌석의 고유 ID
 ```json
 {
-    "uuid": "123e4567-e89b-12d3-a456-426614174000",
-    "concertOptionId": "1",
-    "seatNumber": "1"
+    "userId": "1",
+    "concertSeatId": "1"
 }
 ```
 
@@ -275,9 +287,8 @@
 ```json
 {
     "reservationId": 780,
-    "uuid": "123e4567-e89b-12d3-a456-426614174000",
-    "concertOptionId": 1,
-    "seatNumber": 1
+    "userId": "1",
+    "concertSeatId": "1"
 }
 ```
 :pushpin: Error
@@ -294,13 +305,13 @@
 ```
   
   - 404 Not Found
-    - Description : 요청한 UUID나 concertOptionId에 해당하는 콘서트 옵션이 존재하지 않습니다.
+    - Description : 요청한 userId나 concertSeatId에 해당하는 콘서트 옵션이 존재하지 않습니다.
     - Content-Type : `application/json`
     - Body
 ```json
 {
     "error": "Not Found",
-    "message": "UUID나 콘서트 옵션 정보를 찾을 수 없습니다."
+    "message": "userId나 concertSeatId 정보를 찾을 수 없습니다."
 }
 ```
 
@@ -324,7 +335,7 @@
 4-1. 잔액 충전 API
 
 :pushpin: Endpoint
-  - URL : `/users/points/deposit`
+  - URL : `/api/users/points/deposit`
   - Method : PUT
   - Description : 사용자의 잔액을 충전합니다.
 
@@ -332,11 +343,11 @@
   - Headers
     - `Authorization` -> Bearer {token} (필수) : 인증을 위한 토큰
   - Body
-    - `uuid` (string, 필수) : 잔액을 충전할 사용자의 고유 UUID
+    - `userId` (Long, 필수) : 잔액을 충전할 사용자의 고유 ID
     - `amount` (int, 필수) : 충전할 금액 (원 단위)
 ```json
 {
-    "uuid": "123e4567-e89b-12d3-a456-426614174000",
+    "userId": "1",
     "amount": 50000
 }
 ```
@@ -348,7 +359,7 @@
     - Body
 ```json
 {
-    "uuid": "123e4567-e89b-12d3-a456-426614174000",
+    "userId": "1",
     "point": 100000
 }
 ```
@@ -364,7 +375,7 @@
 }
 ```
   - 404 Not Found
-    - Description : 요청한 UUID에 해당하는 정보가 존재하지 않습니다.
+    - Description : 요청한 userId에 해당하는 정보가 존재하지 않습니다.
     - Content-Type : `application/json`
     - Body
 ```json
@@ -387,14 +398,14 @@
 
 4-2. 잔액 조회 API
 :pushpin: Endpoint
-  - URL : `/users/{uuid}/balance`
+  - URL : `/api/users/{userId}/points`
   - Method : GET
   - Description : 사용자의 잔액을 조회합니다.
 
 :pushpin: Request
   - Headers : `Authorization` -> Bearer {token} (필수) - 인증을 위한 토큰
   - Path Parameters
-    - `uuid` (string, 필수) : 잔액을 충전할 사용자의 고유 UUID
+    - `userId` (Long, 필수) : 잔액을 충전할 사용자의 고유 ID
 
 :pushpin: Response
   - 200 OK
@@ -403,18 +414,18 @@
     - Body
 ```json
 {
-    "uuid": "123e4567-e89b-12d3-a456-426614174000",
+    "userId": "1",
     "point": 100000
 }
 ```
   - 404 Not Found
-    - Description : 요청한 UUID에 해당하는 정보가 존재하지 않습니다.
+    - Description : 요청한 userId에 해당하는 정보가 존재하지 않습니다.
     - Content-Type : `application/json`
     - Body
 ```json
 {
     "error": "Not Found",
-    "message": "UUID 정보를 찾을 수 없습니다."
+    "message": "userId 정보를 찾을 수 없습니다."
 }
 ```
 
@@ -434,7 +445,7 @@
 ### :five: 결제 API
 
 :pushpin: Endpoint
-  - URL : `/payments`
+  - URL : `/api/payments`
   - Method : POST
   - Description : 예약한 좌석의 결제요청을 처리합니다.
 
@@ -442,12 +453,13 @@
   - Headers
     - `Authorization` -> Bearer {token} (필수) : 인증을 위한 토큰
   - Body
-    - `uuid` (string, 필수) : 예약을 요청하는 사용자의 고유 UUID
+    - `userId` (string, 필수) : 예약을 요청하는 사용자의 고유 ID
     - `amount` (int, 필수) : 결제할 금액
 ```json
 {
-    "uuid": "123e4567-e89b-12d3-a456-426614174000",
-    "price": 30000
+    "userId": 1,
+    "reservationId": 560,
+    "price": 50000
 }
 ```
 
@@ -458,9 +470,9 @@
     - Body
 ```json
 {
-    "paymentId": 460,
-    "uuid": "123e4567-e89b-12d3-a456-426614174000",
-    "point": 2000
+    "paymentId": 780,
+    "userId": 1,
+    "point": 20000
 }
 ```
 :pushpin: Error
@@ -488,13 +500,13 @@
 ```
   
   - 404 Not Found
-    - Description : 요청한 UUID에 해당하는 정보가 존재하지 않습니다.
+    - Description : 요청한 userId에 해당하는 정보가 존재하지 않습니다.
     - Content-Type : `application/json`
     - Body
 ```json
 {
     "error": "Not Found",
-    "message": "UUID 정보를 찾을 수 없습니다."
+    "message": "userId 정보를 찾을 수 없습니다."
 }
 ```
 
