@@ -40,7 +40,7 @@
 ```json
 {
     "error": "Not Found",
-    "message": "UUID 정보를 찾을 수 없습니다."
+    "message": "userId 정보를 찾을 수 없습니다."
 }
 ```
 
@@ -58,7 +58,7 @@
 1-2. 유저 대기열 확인 API
 
 :pushpin: Endpoint
-  - URL : `/api/queues/status/{uuid}`
+  - URL : `/api/queues/status/{userId}`
   - Method : GET
   - Description : 사용자의 대기열 상태(대기순번 등)를 반환합니다.
 
@@ -119,7 +119,7 @@
   - Headers
     - `Authorization` -> Bearer {token} (필수) : 인증을 위한 토큰
   - Path Parameters
-    - `concertId` (long, 필수) : 조회할 콘서트의 고유 ID
+    - `concertId` (Long, 필수) : 조회할 콘서트의 고유 ID
 
 :pushpin: Response
   - 200 OK
@@ -196,7 +196,7 @@
   - Headers
     - `Authorization` -> Bearer {token} (필수) : 인증을 위한 토큰
   - Path Parameters
-    - `concertOptionId` (long, 필수) : 조회할 콘서트 옵션의 고유 ID
+    - `concertOptionId` (Long, 필수) : 조회할 콘서트 옵션의 고유 ID
 
 :pushpin: Response
   - 200 OK
@@ -270,8 +270,8 @@
   - Headers
     - `Authorization` -> Bearer {token} (필수) : 인증을 위한 토큰
   - Body
-    - `userId` (long, 필수) : 예약을 요청하는 사용자의 고유 ID
-    - `concertSeatId` (long, 필수) : 예약하려는 콘서트좌석의 고유 ID
+    - `userId` (Long, 필수) : 예약을 요청하는 사용자의 고유 ID
+    - `concertSeatId` (Long, 필수) : 예약하려는 콘서트좌석의 고유 ID
 ```json
 {
     "userId": "1",
@@ -381,7 +381,7 @@
 ```json
 {
     "error": "Not Found",
-    "message": "UUID 정보를 찾을 수 없습니다."
+    "message": "userId 정보를 찾을 수 없습니다."
 }
 ```
 
