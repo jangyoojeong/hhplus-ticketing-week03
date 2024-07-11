@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface PaymentJpaRepository  extends JpaRepository<Payment, Long> {
+
 }
