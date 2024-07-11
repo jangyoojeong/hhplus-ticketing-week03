@@ -397,6 +397,7 @@
 ```
 
 4-2. 잔액 조회 API
+
 :pushpin: Endpoint
   - URL : `/api/users/{userId}/points`
   - Method : GET
