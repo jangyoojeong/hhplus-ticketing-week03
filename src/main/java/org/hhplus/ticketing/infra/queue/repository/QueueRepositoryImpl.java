@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.hhplus.ticketing.domain.queue.QueueRepository;
 import org.hhplus.ticketing.domain.queue.model.QueueDomain;
 import org.hhplus.ticketing.domain.queue.model.enums.TokenStatus;
-import org.hhplus.ticketing.infra.consert.entity.Reservation;
 import org.hhplus.ticketing.infra.queue.entity.Queue;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;

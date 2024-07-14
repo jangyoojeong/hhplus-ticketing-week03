@@ -17,7 +17,6 @@ import java.util.UUID;
 @AllArgsConstructor
 @Builder
 public class QueueDomain {
-// @Value("${queue.max.size}")
 
     private Long queueId;                        // 대기열ID (키값)
     private Long userId;                         // 유저ID

@@ -1,6 +1,5 @@
 package org.hhplus.ticketing.domain.payment;
 
-import org.hhplus.ticketing.domain.consert.model.ConcertSeatDomain;
 import org.hhplus.ticketing.domain.payment.model.PaymentDomain;
 
 public interface PaymentRepository {

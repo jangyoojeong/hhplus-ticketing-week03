@@ -5,11 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hhplus.ticketing.domain.consert.model.ConcertDomain;
-import org.hhplus.ticketing.domain.consert.model.enums.SeatStatus;
 import org.hhplus.ticketing.domain.payment.model.PaymentDomain;
 import org.hhplus.ticketing.domain.payment.model.enums.PaymentStatus;
-import org.hhplus.ticketing.infra.consert.entity.Concert;
 
 import java.time.LocalDateTime;
 

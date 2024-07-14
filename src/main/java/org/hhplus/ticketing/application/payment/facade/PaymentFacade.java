@@ -1,8 +1,8 @@
 package org.hhplus.ticketing.application.payment.facade;
 
 import lombok.RequiredArgsConstructor;
-import org.hhplus.ticketing.domain.consert.ConcertService;
-import org.hhplus.ticketing.domain.consert.model.ConcertResult;
+import org.hhplus.ticketing.domain.concert.ConcertService;
+import org.hhplus.ticketing.domain.concert.model.ConcertResult;
 import org.hhplus.ticketing.domain.payment.PaymentService;
 import org.hhplus.ticketing.domain.payment.model.PaymentCommand;
 import org.hhplus.ticketing.domain.payment.model.PaymentResult;

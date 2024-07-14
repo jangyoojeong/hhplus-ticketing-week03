@@ -1,14 +1,9 @@
 package org.hhplus.ticketing.domain.payment;
 
 import lombok.RequiredArgsConstructor;
-import org.hhplus.ticketing.domain.consert.ConcertRepository;
-import org.hhplus.ticketing.domain.consert.ConcertService;
-import org.hhplus.ticketing.domain.consert.model.ConcertResult;
 import org.hhplus.ticketing.domain.payment.model.PaymentCommand;
 import org.hhplus.ticketing.domain.payment.model.PaymentDomain;
 import org.hhplus.ticketing.domain.payment.model.PaymentResult;
-import org.hhplus.ticketing.domain.user.model.UserPointHistoryDomain;
-import org.hhplus.ticketing.domain.user.model.enums.PointType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
