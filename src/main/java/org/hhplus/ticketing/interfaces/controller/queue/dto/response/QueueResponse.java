@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hhplus.ticketing.domain.queue.model.QueueResult;
+import org.hhplus.ticketing.domain.queue.model.enums.TokenStatus;
 
 import java.util.UUID;
 
@@ -35,11 +36,13 @@ public class QueueResponse {
 
         private Long userId;                    // 유저ID
         private Long queuePosition;             // 대기순서
+        private TokenStatus status;             // 토큰상태
 
         public static QueueStatusResponse from(QueueResult.QueueStatusResult result) {
             return QueueStatusResponse.builder()
                     .userId(result.getUserId())
                     .queuePosition(result.getQueuePosition())
+                    .status(result.getStatus())
                     .build();
         }
     }

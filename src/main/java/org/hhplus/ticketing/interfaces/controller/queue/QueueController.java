@@ -25,8 +25,6 @@ import java.util.UUID;
 @Tag(name = "Queue API", description = "대기열 관련 API")
 public class QueueController {
 
-    private static final Logger log = LoggerFactory.getLogger(QueueController.class);
-
     private final QueueFacade queueFacade;
 
     private static final String AUTHORIZATION_HEADER = "Authorization";

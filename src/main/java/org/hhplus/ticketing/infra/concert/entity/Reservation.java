@@ -59,6 +59,7 @@ public class Reservation {
                 .concertSeatId(domain.getConcertSeatId())
                 .userId(domain.getUserId())
                 .reservationAt(domain.getReservationAt())
+                .status(domain.getStatus())
                 .build();
     }
 
@@ -68,6 +69,7 @@ public class Reservation {
                 .concertSeatId(this.getConcertSeatId())
                 .userId(this.getUserId())
                 .reservationAt(this.getReservationAt())
+                .status(this.getStatus())
                 .build();
     }
 }

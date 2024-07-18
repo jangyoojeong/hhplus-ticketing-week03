@@ -7,8 +7,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hhplus.ticketing.domain.queue.model.QueueDomain;
 import org.hhplus.ticketing.domain.queue.model.enums.TokenStatus;
-import org.hhplus.ticketing.domain.user.model.UserInfoDomain;
-import org.hhplus.ticketing.infra.user.entity.UserInfo;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -41,7 +39,7 @@ public class Queue {
     @Column(name = "entered_at")
     private LocalDateTime enteredAt;        // 입장시간
 
-    @Column(name = "created_at", nullable = false)
+    @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;         // 생성일자
 
     @Column(name = "updated_at", nullable = false)

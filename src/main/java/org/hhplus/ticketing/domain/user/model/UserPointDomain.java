@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hhplus.ticketing.domain.common.exception.CustomException;
+import org.hhplus.ticketing.domain.common.exception.ErrorCode;
 
 @Data
 @NoArgsConstructor
@@ -34,7 +36,7 @@ public class UserPointDomain {
     // 포인트 차감
     public void decreasePoint(int amount) {
         if (this.point < amount) {
-            throw new IllegalArgumentException("포인트가 부족합니다.");
+            throw new CustomException(ErrorCode.INSUFFICIENT_POINTS, ErrorCode.INSUFFICIENT_POINTS.getMessage());
         }
         this.point -= amount;
     }

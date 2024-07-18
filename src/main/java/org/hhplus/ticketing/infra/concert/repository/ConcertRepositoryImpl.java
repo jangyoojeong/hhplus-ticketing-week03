@@ -28,7 +28,7 @@ public class ConcertRepositoryImpl implements ConcertRepository {
     private final ReservationJpaRepository reservationJpaRepository;
 
     @Override
-    public Optional<ConcertSeatDomain> findAvailableSeat(Long concertSeatId) {
+    public Optional<ConcertSeatDomain> findAvailableSeatById(Long concertSeatId) {
         return concertSeatJpaRepository.findAvailableSeatById(concertSeatId).map(ConcertSeat::toDomain);
     }
 
@@ -79,6 +79,8 @@ public class ConcertRepositoryImpl implements ConcertRepository {
                 .collect(Collectors.toList());
     }
 
+
+
     @Override
     public List<ConcertSeatDomain> saveAllSeat(List<ConcertSeatDomain> domains) {
         List<ConcertSeat> entities = domains.stream()
@@ -100,6 +102,11 @@ public class ConcertRepositoryImpl implements ConcertRepository {
     }
 
     @Override
+    public Optional<ConcertSeatDomain> findSeatById(Long concertSeatId) {
+        return concertSeatJpaRepository.findById(concertSeatId).map(ConcertSeat::toDomain);
+    }
+
+    @Override
     public List<ConcertOptionDomain> findByConcertIdAndConcertAtAfter(Long concertId, LocalDateTime currentDateTime) {
         return concertOptionJpaRepository.findByConcertIdAndConcertAtAfter(concertId, currentDateTime).stream()
                 .map(ConcertOption::toDomain)
@@ -114,5 +121,12 @@ public class ConcertRepositoryImpl implements ConcertRepository {
     @Override
     public ConcertOptionDomain saveConcertOption(ConcertOptionDomain domain) {
         return concertOptionJpaRepository.save(ConcertOption.from(domain)).toDomain();
+    }
+
+    @Override
+    public List<ReservationDomain> findByUserId(Long userId) {
+        return reservationJpaRepository.findByUserId(userId).stream()
+                .map(Reservation::toDomain)
+                .collect(Collectors.toList());
     }
 }

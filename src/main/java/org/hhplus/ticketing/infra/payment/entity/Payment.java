@@ -36,11 +36,11 @@ public class Payment {
     @Column(name = "status", nullable = false)
     private PaymentStatus status;           // 결제상태 (결제완료[COMPLETED]/결제취소[CANCELED])
 
-    @Column(nullable = false, updatable = false)
-    private LocalDateTime createdAt;        // 생성일자
+    @Column(name = "created_at", nullable = false, updatable = false)
+    private LocalDateTime createdAt;         // 생성일자
 
-    @Column(nullable = false)
-    private LocalDateTime updatedAt;        // 수정일자
+    @Column(name = "updated_at", nullable = false)
+    private LocalDateTime updatedAt;         // 수정일자
 
     @PrePersist
     private void prePersist() {

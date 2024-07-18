@@ -1,5 +1,6 @@
 package org.hhplus.ticketing.domain.concert.model;
 
+import jakarta.persistence.Version;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -29,30 +30,18 @@ public class ConcertSeatDomain {
     }
 
     public ConcertSeatDomain updateSeatAvailable() {
-        return ConcertSeatDomain.builder()
-                .concertSeatId(this.concertSeatId)
-                .concertOptionId(this.concertOptionId)
-                .seatNumber(this.seatNumber)
-                .status(SeatStatus.AVAILABLE)
-                .build();
+        this.status = SeatStatus.AVAILABLE;
+        return this;
     }
 
     public ConcertSeatDomain updateSeatReserved() {
-        return ConcertSeatDomain.builder()
-                .concertSeatId(this.concertSeatId)
-                .concertOptionId(this.concertOptionId)
-                .seatNumber(this.seatNumber)
-                .status(SeatStatus.RESERVED)
-                .build();
+        this.status = SeatStatus.RESERVED;
+        return this;
     }
 
     public ConcertSeatDomain updateSeatOccupied() {
-        return ConcertSeatDomain.builder()
-                .concertSeatId(this.concertSeatId)
-                .concertOptionId(this.concertOptionId)
-                .seatNumber(this.seatNumber)
-                .status(SeatStatus.OCCUPIED)
-                .build();
+        this.status = SeatStatus.OCCUPIED;
+        return this;
     }
 
 }

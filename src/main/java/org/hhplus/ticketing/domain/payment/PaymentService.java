@@ -1,6 +1,9 @@
 package org.hhplus.ticketing.domain.payment;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.hhplus.ticketing.domain.common.exception.CustomException;
+import org.hhplus.ticketing.domain.common.exception.ErrorCode;
 import org.hhplus.ticketing.domain.payment.model.PaymentCommand;
 import org.hhplus.ticketing.domain.payment.model.PaymentDomain;
 import org.hhplus.ticketing.domain.payment.model.PaymentResult;
@@ -12,14 +15,12 @@ import org.springframework.transaction.annotation.Transactional;
 /**
  * 결제 관련 비즈니스 로직을 담당하는 서비스 클래스입니다.
  */
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class PaymentService {
 
-    private static final Logger log = LoggerFactory.getLogger(PaymentService.class);
-
     private final PaymentRepository paymentRepository;
-
 
     /**
      * 예약한 좌석의 결제요청을 처리합니다.
@@ -31,5 +32,4 @@ public class PaymentService {
     public PaymentResult.PaymentProcessingResult requestPayment(PaymentCommand.PaymentProcessingCommand command) {
         return PaymentResult.PaymentProcessingResult.from(paymentRepository.save(PaymentDomain.from(command)));
     }
-
 }

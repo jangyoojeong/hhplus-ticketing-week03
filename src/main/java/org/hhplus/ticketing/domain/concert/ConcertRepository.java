@@ -65,7 +65,16 @@ public interface ConcertRepository {
      * @param concertSeatId 조회할 콘서트좌석ID
      * @return domain 조회된 콘서트좌석 정보
      */
-    Optional<ConcertSeatDomain> findAvailableSeat(Long concertSeatId);
+    Optional<ConcertSeatDomain> findSeatById(Long concertSeatId);
+
+
+    /**
+     * 예약가능한 좌석정보를 조회합니다.
+     *
+     * @param concertSeatId 조회할 콘서트좌석ID
+     * @return domain 조회된 콘서트좌석 정보
+     */
+    Optional<ConcertSeatDomain> findAvailableSeatById(Long concertSeatId);
 
     /**
      * 특정 콘서트옵션ID에 대해 예약가능한 좌석리스트를 조회합니다.
@@ -124,5 +133,13 @@ public interface ConcertRepository {
      * @return 저장된 예약 정보 리스트
      */
     List<ReservationDomain> saveAllReservation(List<ReservationDomain> domains);
+
+    /**
+     * 특정 사용자의 예약정보를 조회합니다.
+     *
+     * @param userId 예약 정보를 조회할 사용자 ID
+     * @return 조회된 예약 정보 리스트
+     */
+    List<ReservationDomain> findByUserId(Long userId);
 
 }

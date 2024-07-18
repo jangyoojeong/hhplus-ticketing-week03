@@ -23,14 +23,14 @@ public class QueueDomain {
     private UUID token;                          // 발급된 토큰
     private TokenStatus status;                  // 토큰상태 (ACTIVE/WAITING/EXPIRED)
     private LocalDateTime enteredAt;             // 입장시간
-
-    public static int getMaxActiveUsers() { return QueueConstants.MAX_ACTIVE_USERS; }
+    private LocalDateTime createAt;              // 생성시간
 
     public static QueueDomain createActiveQueue(Long userId) {
         return QueueDomain.builder()
                 .userId(userId)
                 .status(TokenStatus.ACTIVE)
                 .enteredAt(LocalDateTime.now())
+                .createAt(LocalDateTime.now())
                 .build();
     }
 
@@ -38,6 +38,7 @@ public class QueueDomain {
         return QueueDomain.builder()
                 .userId(userId)
                 .status(TokenStatus.WAITING)
+                .createAt(LocalDateTime.now())
                 .build();
     }
 

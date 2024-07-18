@@ -1,18 +1,22 @@
 package org.hhplus.ticketing.domain.user;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.hhplus.ticketing.domain.common.exception.CustomException;
+import org.hhplus.ticketing.domain.common.exception.ErrorCode;
+import org.hhplus.ticketing.domain.queue.QueueService;
 import org.hhplus.ticketing.domain.user.model.*;
 import org.hhplus.ticketing.domain.user.model.enums.PointType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class UserPointService {
-
-    private static final Logger log = LoggerFactory.getLogger(UserPointService.class);
 
     private final UserPointRepository userPointRepository;
     private final UserPointHistoryRepository userPointHistoryRepository;
@@ -29,11 +33,11 @@ public class UserPointService {
         // 1. 기존 잔액 조회 (기존 잔액 없을 시 default 0 리턴)
         UserPointDomain userPointDomain = userPointRepository.findByUserId(command.getUserId());
 
-        // 3. 포인트 업데이트 (추가)
+        // 2. 포인트 업데이트 (추가)
         userPointDomain.increasePoint(command.getAmount());
         UserResult.AddPointResult result = UserResult.AddPointResult.from(userPointRepository.save(userPointDomain));
 
-        // 2. 히스토리 추가
+        // 3. 히스토리 추가
         UserPointHistoryDomain historyDomain = UserPointHistoryDomain.builder()
                 .userId(command.getUserId())
                 .amount(command.getAmount())
@@ -59,7 +63,7 @@ public class UserPointService {
 
         // 2. 포인트 업데이트 (차감)
         // 포인트 부족할 시
-        // "포인트가 부족합니다." 예외
+        // INSUFFICIENT_POINTS 예외
         userPointDomain.decreasePoint(command.getAmount());
         UserResult.UsePointResult result = UserResult.UsePointResult.from(userPointRepository.save(userPointDomain));
 
@@ -82,6 +86,8 @@ public class UserPointService {
      * @return 잔액 result 객체
      */
     public UserResult.UserPointResult getUserPoint (Long userId) {
-        return UserResult.UserPointResult.from(userPointRepository.findByUserId(userId));
+        UserPointDomain userPointDomain = userPointRepository.findByUserId(userId);
+        log.info("사용자 ID {}의 잔여 포인트를 조회했습니다.", userId);
+        return UserResult.UserPointResult.from(userPointDomain);
     }
 }

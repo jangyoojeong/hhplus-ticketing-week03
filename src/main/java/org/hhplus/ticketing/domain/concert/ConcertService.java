@@ -1,11 +1,17 @@
 package org.hhplus.ticketing.domain.concert;
 
 import lombok.RequiredArgsConstructor;
-import org.hhplus.ticketing.domain.concert.model.*;
+import lombok.extern.slf4j.Slf4j;
+import org.hhplus.ticketing.domain.common.exception.CustomException;
+import org.hhplus.ticketing.domain.common.exception.ErrorCode;
+import org.hhplus.ticketing.domain.concert.model.ConcertCommand;
+import org.hhplus.ticketing.domain.concert.model.ConcertResult;
+import org.hhplus.ticketing.domain.concert.model.ConcertSeatDomain;
+import org.hhplus.ticketing.domain.concert.model.ReservationDomain;
+import org.hhplus.ticketing.domain.concert.model.constants.ConcertConstants;
 import org.hhplus.ticketing.domain.concert.model.enums.ReservationStatus;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.dao.OptimisticLockingFailureException;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,11 +22,10 @@ import java.util.stream.Collectors;
 /**
  * 콘서트 관련 비즈니스 로직을 담당하는 서비스 클래스입니다.
  */
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ConcertService {
-
-    private static final Logger log = LoggerFactory.getLogger(ConcertService.class);
 
     private final ConcertRepository concertRepository;
 
@@ -59,24 +64,24 @@ public class ConcertService {
         try {
             // 1. 좌석 정보 조회 (해당 좌석이 예약 가능한지) > 낙관적락
             // 리턴 결과 없을 시 > "좌석 정보를 찾을 수 없거나 이미 선점된 좌석입니다." 예외 리턴
-            ConcertSeatDomain seatInfo = concertRepository.findAvailableSeat(command.getConcertSeatId()).orElseThrow(()
-                    -> new RuntimeException("좌석 정보를 찾을 수 없거나 이미 선점된 좌석입니다."));
+            ConcertSeatDomain seatInfo = concertRepository.findAvailableSeatById(command.getConcertSeatId()).orElseThrow(()
+                    -> new CustomException(ErrorCode.SEAT_NOT_FOUND, ErrorCode.SEAT_NOT_FOUND.getMessage()));
 
             // 2. 좌석 임시 배정 (약 5분) > 예약시간 + 5분 체크해서 좌석 만료 스케줄러 작업
             // (사용가능 > 예약됨)
             seatInfo.updateSeatReserved();
             concertRepository.saveSeat(seatInfo);
 
-            ReservationDomain reservation = ReservationDomain.builder()
-                    .concertSeatId(command.getConcertSeatId())
-                    .userId(command.getUserId())
-                    .status(ReservationStatus.RESERVED)
-                    .build();
+            // 3. 예약 정보 생성
+            // status > 예약됨
+            ReservationDomain reservation = ReservationDomain.createReservation(command.getConcertSeatId(), command.getUserId());
 
-            return ConcertResult.ReserveSeatResult.from(concertRepository.saveReservation(reservation));
+            ConcertResult.ReserveSeatResult result = ConcertResult.ReserveSeatResult.from(concertRepository.saveReservation(reservation));
 
+            return result;
         } catch (OptimisticLockingFailureException e) {
-            throw new RuntimeException("낙관적락 동시성 오류", e);
+            log.error("이미 선점된 좌석입니다. 좌석 ID: {}", command.getConcertSeatId(), e);
+            throw new CustomException(ErrorCode.CONFLICTING_RESERVATION, ErrorCode.CONFLICTING_RESERVATION.getMessage(), e);
         }
     }
 
@@ -90,9 +95,8 @@ public class ConcertService {
         // 예약 시점을 기준으로 만료되지 않은 예약건 조회
         // 조회결과 없을 시 "예약 정보를 찾을 수 없거나 이미 만료된 예약입니다." 예외 리턴
         return ConcertResult.GetReservationInfoResult.from(concertRepository.findByReservationIdAndStatus(reservationId, ReservationStatus.RESERVED).orElseThrow(()
-                -> new RuntimeException("예약 정보를 찾을 수 없거나 이미 만료된 예약입니다.")));
+                -> new CustomException(ErrorCode.RESERVATION_NOT_FOUND, ErrorCode.RESERVATION_NOT_FOUND.getMessage())));
     }
-
 
     /**
      * 좌석 소유권을 배정합니다.
@@ -109,16 +113,21 @@ public class ConcertService {
         int updateCnt = concertRepository.updateReservationStatus(reservationId, ReservationStatus.OCCUPIED);
 
         if (updateCnt == 0) {
-            throw new RuntimeException("예약 정보 갱신 중에 예기치 못한 오류가 발생하였습니다.");
+            log.warn("예약 정보 갱신 실패 - 예약 ID: {}", reservationId);
+            throw new CustomException(ErrorCode.RESERVATION_UPDATE_FAILED, ErrorCode.RESERVATION_UPDATE_FAILED.getMessage());
         }
 
-        ConcertSeatDomain seatInfo = concertRepository.findAvailableSeat(concertSeatId).orElseThrow(()
-                -> new RuntimeException("좌석 정보를 찾을 수 없습니다."));
+        ConcertSeatDomain seatInfo = concertRepository.findSeatById(concertSeatId).orElseThrow(()
+                -> new CustomException(ErrorCode.INVALID_SEAT_SELECTION, ErrorCode.INVALID_SEAT_SELECTION.getMessage()));
 
         // 좌석 소유권 배정
         // (예약됨 > 점유)
         seatInfo.updateSeatOccupied();
-        return ConcertResult.AssignSeatOwnershipResult.from(concertRepository.saveSeat(seatInfo));
+        ConcertResult.AssignSeatOwnershipResult result = ConcertResult.AssignSeatOwnershipResult.from(concertRepository.saveSeat(seatInfo));
+
+        log.info("좌석 소유권 배정 성공 - 예약 ID: {}, 좌석 ID: {}", reservationId, concertSeatId);
+
+        return result;
     }
 
     /**
@@ -131,8 +140,13 @@ public class ConcertService {
     public void releaseTemporaryReservations() {
 
         // 1. 예약 후 5분 경과했는데, 상태가 예약중인 리스트 조회 합니다.
-        LocalDateTime fiveMinutesAgo = LocalDateTime.now().minusMinutes(5);
+        LocalDateTime fiveMinutesAgo = LocalDateTime.now().minusMinutes(ConcertConstants.RESERVATION_EXPIRATION_MINUTES);
         List<ReservationDomain> reservationToExpire = concertRepository.findReservedBefore(fiveMinutesAgo);
+
+        if (reservationToExpire.isEmpty()) {
+            log.info("만료 대상 임시예약 정보가 없습니다.");
+            return;
+        }
 
         // 2. 예약 상태 만료로 세팅 합니다.
         // (예약됨 > 만료)
@@ -142,6 +156,8 @@ public class ConcertService {
 
         // 3. 예약 정보를 갱신합니다.
         concertRepository.saveAllReservation(expiredReservation);
+
+        log.info("만료된 예약 정보 갱신 성공 - 총 {} 건", expiredReservation.size());
 
         // 4. 좌석 상태를 업데이트합니다.
         // (예약됨 > 사용가능)
@@ -169,5 +185,7 @@ public class ConcertService {
 
         // 4. 좌석 정보를 갱신합니다.
         concertRepository.saveAllSeat(updatedSeats);
+
+        log.info("만료된 좌석 상태 갱신 성공 - 총 {} 건", updatedSeats.size());
     }
 }

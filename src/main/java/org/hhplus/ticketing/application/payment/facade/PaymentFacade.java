@@ -52,7 +52,7 @@ public class PaymentFacade {
         ConcertResult.AssignSeatOwnershipResult seatResult = concertService.assignSeatOwnership(reservationInfo.getReservationId(), reservationInfo.getConcertSeatId());
 
         // 5. 대기열 토큰 만료
-        // 포인트 부족할 시 "포인트가 부족합니다." 예외
+        // 토큰 정보가 없을 시  "토큰 정보가 존재하지 않습니다." 예외
         QueueResult.expireTokenResult queueResult = queueService.expireToken(token);
 
         // 6. 결제 결과 객체에 추가 정보 할당

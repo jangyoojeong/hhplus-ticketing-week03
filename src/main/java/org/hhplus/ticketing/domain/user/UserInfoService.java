@@ -1,9 +1,13 @@
 package org.hhplus.ticketing.domain.user;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.hhplus.ticketing.domain.common.exception.CustomException;
+import org.hhplus.ticketing.domain.common.exception.ErrorCode;
 import org.hhplus.ticketing.domain.user.model.UserResult;
 import org.springframework.stereotype.Service;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class UserInfoService {
@@ -18,6 +22,6 @@ public class UserInfoService {
      */
     public UserResult.UserInfoResult validateUser (Long userId) {
         return UserResult.UserInfoResult.from(userInfoRepository.findById(userId).orElseThrow(()
-                -> new IllegalArgumentException("유저 정보가 존재하지 않습니다")));
+                -> new CustomException(ErrorCode.USER_NOT_FOUND, ErrorCode.USER_NOT_FOUND.getMessage())));
     }
 }
