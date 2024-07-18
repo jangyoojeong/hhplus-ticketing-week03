@@ -12,6 +12,8 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
+
 import static org.mockito.Mockito.times;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -24,26 +26,25 @@ class PaymentServiceTest {
 
     @InjectMocks
     private PaymentService paymentService;
-
     @Mock
     private PaymentRepository paymentRepository;
 
     private PaymentDomain paymentDomain;
-    private PaymentResult.PaymentProcessingResult paymentProcessingResult;
+    private int price;
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
 
+        price = 1000;
+
         paymentDomain = PaymentDomain.builder()
                 .paymentId(1L)
                 .reservationId(1L)
-                .price(10000)
+                .price(price)
                 .paymentAt(LocalDateTime.now())
                 .status(PaymentStatus.COMPLETED)
                 .build();
-
-        paymentProcessingResult = PaymentResult.PaymentProcessingResult.from(paymentDomain);
     }
 
     @Test
@@ -51,7 +52,7 @@ class PaymentServiceTest {
     void requestPayment_좌석_결제_요청_정상적으로_실행된다() {
 
         // Given
-        PaymentCommand.PaymentProcessingCommand command = new PaymentCommand.PaymentProcessingCommand(1L, 1L, 10000);
+        PaymentCommand.PaymentProcessingCommand command = new PaymentCommand.PaymentProcessingCommand(1L, 1L, price);
         given(paymentRepository.save(any(PaymentDomain.class))).willReturn(paymentDomain);
 
         // When
@@ -59,7 +60,7 @@ class PaymentServiceTest {
 
         // Then
         assertNotNull(result);
-        assertEquals(paymentProcessingResult, result);
+        assertEquals(PaymentResult.PaymentProcessingResult.from(paymentDomain), result);
         verify(paymentRepository, times(1)).save(any(PaymentDomain.class));
     }
 }

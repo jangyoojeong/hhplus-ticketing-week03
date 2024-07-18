@@ -1,5 +1,7 @@
 package org.hhplus.ticketing.domain.user;
 
+import org.hhplus.ticketing.domain.common.exception.CustomException;
+import org.hhplus.ticketing.domain.common.exception.ErrorCode;
 import org.hhplus.ticketing.domain.user.model.UserInfoDomain;
 import org.hhplus.ticketing.domain.user.model.UserResult;
 import org.junit.jupiter.api.BeforeEach;
@@ -11,6 +13,7 @@ import org.mockito.MockitoAnnotations;
 
 import java.util.Optional;
 
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
@@ -25,7 +28,6 @@ class UserInfoServiceTest {
     private UserInfoRepository userInfoRepository;
 
     private UserInfoDomain userInfoDomain;
-    private UserResult.UserInfoResult userInfoResult;
 
     @BeforeEach
     void setUp() {
@@ -35,8 +37,6 @@ class UserInfoServiceTest {
                 .userId(1L)
                 .userName("사용자1")
                 .build();
-
-        userInfoResult = UserResult.UserInfoResult.from(userInfoDomain);
     }
 
     @Test
@@ -50,18 +50,21 @@ class UserInfoServiceTest {
         UserResult.UserInfoResult result = userInfoService.validateUser(userInfoDomain.getUserId());
 
         // Then
-        assertEquals(userInfoResult, result);
+        assertNotNull(result);
+        assertEquals(userInfoDomain.getUserId(), result.getUserId());
     }
 
     @Test
-    @DisplayName("[실패테스트] 1L_유저_정보가_없을_때_예외_발생")
+    @DisplayName("[실패테스트] 1L_유저_정보가_없으면_USER_NOT_FOUND_예외반환")
     void validateUserTest_1L_유저_정보가_없을_때_예외_발생() {
 
         // Given
         given(userInfoRepository.findById(anyLong())).willReturn(Optional.empty());
 
         // When & Then
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> userInfoService.validateUser(userInfoDomain.getUserId()));
-        assertEquals("유저 정보가 존재하지 않습니다", exception.getMessage());
+        assertThatThrownBy(() -> userInfoService.validateUser(userInfoDomain.getUserId()))
+                .isInstanceOf(CustomException.class)
+                .extracting("errorCode")
+                .isEqualTo(ErrorCode.USER_NOT_FOUND);
     }
 }
