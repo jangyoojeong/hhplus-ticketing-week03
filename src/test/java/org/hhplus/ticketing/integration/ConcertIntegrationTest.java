@@ -7,7 +7,6 @@ import org.hhplus.ticketing.domain.concert.ConcertRepository;
 import org.hhplus.ticketing.domain.concert.model.*;
 import org.hhplus.ticketing.domain.concert.model.enums.ReservationStatus;
 import org.hhplus.ticketing.domain.concert.model.enums.SeatStatus;
-import org.hhplus.ticketing.domain.queue.model.QueueCommand;
 import org.hhplus.ticketing.domain.user.model.UserInfoDomain;
 import org.hhplus.ticketing.utils.TestDataInitializer;
 import org.junit.jupiter.api.BeforeEach;
@@ -15,7 +14,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 
@@ -176,7 +174,7 @@ public class ConcertIntegrationTest {
         assertThatThrownBy(() -> concertFacade.reserveSeat(command))
                 .isInstanceOf(CustomException.class)
                 .extracting("errorCode")
-                .isEqualTo(ErrorCode.SEAT_NOT_FOUND);
+                .isEqualTo(ErrorCode.SEAT_NOT_FOUND_OR_ALREADY_RESERVED);
     }
 
     @Test

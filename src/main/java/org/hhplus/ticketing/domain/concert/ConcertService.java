@@ -11,7 +11,6 @@ import org.hhplus.ticketing.domain.concert.model.ReservationDomain;
 import org.hhplus.ticketing.domain.concert.model.constants.ConcertConstants;
 import org.hhplus.ticketing.domain.concert.model.enums.ReservationStatus;
 import org.springframework.dao.OptimisticLockingFailureException;
-import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -65,7 +64,7 @@ public class ConcertService {
             // 1. 좌석 정보 조회 (해당 좌석이 예약 가능한지) > 낙관적락
             // 리턴 결과 없을 시 > "좌석 정보를 찾을 수 없거나 이미 선점된 좌석입니다." 예외 리턴
             ConcertSeatDomain seatInfo = concertRepository.findAvailableSeatById(command.getConcertSeatId()).orElseThrow(()
-                    -> new CustomException(ErrorCode.SEAT_NOT_FOUND, ErrorCode.SEAT_NOT_FOUND.getMessage()));
+                    -> new CustomException(ErrorCode.SEAT_NOT_FOUND_OR_ALREADY_RESERVED, ErrorCode.SEAT_NOT_FOUND_OR_ALREADY_RESERVED.getMessage()));
 
             // 2. 좌석 임시 배정 (약 5분) > 예약시간 + 5분 체크해서 좌석 만료 스케줄러 작업
             // (사용가능 > 예약됨)

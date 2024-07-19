@@ -113,8 +113,8 @@ public class ConcertServiceTest {
     }
 
     @Test
-    @DisplayName("[실패테스트] 좌석_예약_테스트_해당_좌석이_예약가능한_상태가_아닐_경우_SEAT_NOT_FOUND_예외반환")
-    void reserveSeatTest_좌석_예약_테스트_해당_좌석이_예약가능한_상태가_아닐_경우_예외반환() {
+    @DisplayName("[실패테스트] 좌석_예약_테스트_해당_좌석이_예약가능한_상태가_아닐_경우_SEAT_NOT_FOUND_OR_ALREADY_RESERVED_예외반환")
+    void reserveSeatTest_좌석_예약_테스트_해당_좌석이_예약가능한_상태가_아닐_경우_SEAT_NOT_FOUND_OR_ALREADY_RESERVED_예외반환() {
 
         // Given
         ConcertCommand.ReserveSeatCommand command = new ConcertCommand.ReserveSeatCommand(1L, 1L);
@@ -124,7 +124,7 @@ public class ConcertServiceTest {
         assertThatThrownBy(() -> concertService.reserveSeat(command))
                 .isInstanceOf(CustomException.class)
                 .extracting("errorCode")
-                .isEqualTo(ErrorCode.SEAT_NOT_FOUND);
+                .isEqualTo(ErrorCode.SEAT_NOT_FOUND_OR_ALREADY_RESERVED);
     }
 
     @Test
