@@ -35,23 +35,12 @@ public class ReservationDomain {
     }
 
     public ReservationDomain updateReservationExpired() {
-        return ReservationDomain.builder()
-                .reservationId(this.reservationId)
-                .concertSeatId(this.concertSeatId)
-                .userId(this.userId)
-                .reservationAt(this.reservationAt)
-                .status(ReservationStatus.EXPIRED)
-                .build();
+        this.status = ReservationStatus.EXPIRED;
+        return this;
     }
 
     public ReservationDomain updateReservationOccupied() {
-        return ReservationDomain.builder()
-                .reservationId(this.reservationId)
-                .concertSeatId(this.concertSeatId)
-                .userId(this.userId)
-                .reservationAt(this.reservationAt)
-                .status(ReservationStatus.OCCUPIED)
-                .build();
+        this.status = ReservationStatus.OCCUPIED;
+        return this;
     }
-
 }

@@ -77,7 +77,7 @@ class InterceptorTest {
 
     @Test
     @DisplayName("[실패테스트] 인터셉터_토큰_검증_테스트_WAITING_토큰은_INVALID_TOKEN_코드를_응답한다")
-    void validateTokenTest_인터셉터_토큰_검증_테스트_유효하지_않은_토큰은_INVALID_TOKEN_코드를_응답한다() {
+    void validateTokenTest_인터셉터_토큰_검증_테스트_WAITING_토큰은_INVALID_TOKEN_코드를_응답한다() {
         // Given
         QueueDomain savedQueue = queueRepository.save(QueueDomain.createWaitingQueue(userId));
 
@@ -127,7 +127,7 @@ class InterceptorTest {
 
     @Test
     @DisplayName("[실패테스트] 인터셉터_토큰_검증_테스트_헤더가_누락되었을경우_UNAUTHORIZED_상태를_응답한다")
-    void validateTokenTest_토큰_검증_테스트_헤더가_누락되었을경우_UNAUTHORIZED_상태를_응답한다() {
+    void validateTokenTest_인터셉터_토큰_검증_테스트_헤더가_누락되었을경우_UNAUTHORIZED_상태를_응답한다() {
 
         // Given
         // HTTP 엔티티 생성
@@ -146,8 +146,8 @@ class InterceptorTest {
     }
 
     @Test
-    @DisplayName("[실패테스트] 인터셉터_토큰_검증_테스트_헤더가_누락되었을경우_BAD_REQUEST_상태를_응답한다")
-    void validateTokenTest_토큰_검증_테스트_헤더가_누락되었을경우_BAD_REQUEST_상태를_응답한다() {
+    @DisplayName("[실패테스트] 인터셉터_토큰_검증_테스트_토큰_형식이_잘못되었을_경우_BAD_REQUEST_상태를_응답한다")
+    void validateTokenTest_인터셉터_토큰_검증_테스트_토큰_형식이_잘못되었을_경우_BAD_REQUEST_상태를_응답한다() {
 
         // Given
         HttpHeaders headers = new HttpHeaders();

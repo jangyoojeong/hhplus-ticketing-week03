@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hhplus.ticketing.domain.concert.model.ConcertSeatDomain;
+import org.hhplus.ticketing.domain.concert.model.enums.SeatStatus;
 import org.hhplus.ticketing.domain.queue.model.constants.QueueConstants;
 import org.hhplus.ticketing.domain.queue.model.enums.TokenStatus;
 import org.hhplus.ticketing.domain.user.model.UserCommand;
@@ -43,23 +45,13 @@ public class QueueDomain {
     }
 
     public QueueDomain updateQueueExpired() {
-        return QueueDomain.builder()
-                .queueId(this.queueId)
-                .userId(this.userId)
-                .token(this.token)
-                .status(TokenStatus.EXPIRED)
-                .enteredAt(this.enteredAt)
-                .build();
+        this.status = TokenStatus.EXPIRED;
+        return this;
     }
 
     public QueueDomain updateQueueActive() {
-        return QueueDomain.builder()
-                .queueId(this.queueId)
-                .userId(this.userId)
-                .token(this.token)
-                .status(TokenStatus.ACTIVE)
-                .enteredAt(LocalDateTime.now())
-                .build();
+        this.status = TokenStatus.ACTIVE;
+        this.enteredAt = LocalDateTime.now();
+        return this;
     }
-
 }

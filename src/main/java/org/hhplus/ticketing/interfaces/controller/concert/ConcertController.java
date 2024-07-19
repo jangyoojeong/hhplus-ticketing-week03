@@ -6,8 +6,6 @@ import lombok.RequiredArgsConstructor;
 import org.hhplus.ticketing.application.concert.facade.ConcertFacade;
 import org.hhplus.ticketing.interfaces.controller.concert.dto.request.ConcertRequest;
 import org.hhplus.ticketing.interfaces.controller.concert.dto.response.ConcertResponse;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

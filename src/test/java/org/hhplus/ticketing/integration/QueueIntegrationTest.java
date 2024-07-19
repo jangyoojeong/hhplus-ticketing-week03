@@ -125,7 +125,37 @@ public class QueueIntegrationTest {
     }
 
     @Test
-    @DisplayName("[실패테스트] 대기열_토큰_검증_테스트_유효하지_않은_토큰_INVALID_TOKEN_예외반환")
+    @DisplayName("[성공테스트] 대기열_상태_조회_통합_테스트_30번째_발급된_대기열_토큰의_대기순서는_10을_리턴한다")
+    void getQueueStatusTest_대기열_상태_조회_통합_테스트_30번째_발급된_대기열_토큰의_대기순서는_10을_리턴한다() {
+        // Given
+        // 모든 활성화 슬롯 채우기
+        int maxActiveUsers = QueueConstants.MAX_ACTIVE_USERS;
+        for (int i = 0; i < maxActiveUsers; i++) {
+            QueueDomain activeQueue = QueueDomain.createActiveQueue((long) i);
+            queueRepository.save(activeQueue);
+        }
+
+        // 대기열 채우기 (9명)
+        for (int i = 0; i < 9; i++) {
+            QueueDomain activeQueue = QueueDomain.createWaitingQueue((long) maxActiveUsers + i);
+            queueRepository.save(activeQueue);
+        }
+
+        // 10번째 대기열 토큰 발급
+        QueueCommand.IssueTokenCommand command = new QueueCommand.IssueTokenCommand(userId);
+        QueueResult.IssueTokenResult tokenResult = queueFacade.issueToken(command);
+        UUID issuedToken = tokenResult.getToken();
+
+        // When
+        QueueResult.QueueStatusResult actualStatusResult = queueFacade.getQueueStatus(issuedToken);
+
+        // Then
+        assertNotNull(actualStatusResult);
+        assertEquals(10, actualStatusResult.getQueuePosition());
+    }
+
+    @Test
+    @DisplayName("[실패테스트] 대기열_토큰_검증_테스트_WAITING_토큰_INVALID_TOKEN_예외반환")
     void validateTokenTest_대기열_토큰_검증_테스트_유효하지_않은_토큰_INVALID_TOKEN_예외반환() {
         // Given
         QueueDomain queueDomain = QueueDomain.builder()
@@ -202,7 +232,6 @@ public class QueueIntegrationTest {
 
     @Test
     @DisplayName("[성공테스트] 대기_중인_토큰_활성화_상태로_변경_테스트_슬롯이_없으면_활성화되지_않는다")
-    @Transactional
     void activateWaitingTokensTest_대기_중인_토큰_활성화_상태로_변경_테스트_슬롯이_없으면_활성화되지_않는다() {
         // Given
         // 모든 활성화 슬롯을 채워서 대기 중인 토큰이 활성화될 수 없도록 설정

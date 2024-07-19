@@ -6,7 +6,11 @@ import org.hhplus.ticketing.domain.common.exception.ErrorCode;
 import org.hhplus.ticketing.domain.concert.ConcertRepository;
 import org.hhplus.ticketing.domain.concert.model.ConcertSeatDomain;
 import org.hhplus.ticketing.domain.concert.model.ReservationDomain;
+import org.hhplus.ticketing.domain.concert.model.enums.ReservationStatus;
+import org.hhplus.ticketing.domain.concert.model.enums.SeatStatus;
+import org.hhplus.ticketing.domain.payment.PaymentRepository;
 import org.hhplus.ticketing.domain.payment.model.PaymentCommand;
+import org.hhplus.ticketing.domain.payment.model.PaymentDomain;
 import org.hhplus.ticketing.domain.payment.model.PaymentResult;
 import org.hhplus.ticketing.domain.queue.QueueRepository;
 import org.hhplus.ticketing.domain.queue.model.QueueDomain;
@@ -25,11 +29,11 @@ import org.springframework.test.context.ActiveProfiles;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @ActiveProfiles("test")
@@ -45,6 +49,8 @@ public class PaymentIntegrationTest {
     private UserPointRepository userPointRepository;
     @Autowired
     private QueueRepository queueRepository;
+    @Autowired
+    private PaymentRepository paymentRepository;
     @Autowired
     TestDataInitializer testDataInitializer;
 
@@ -116,11 +122,64 @@ public class PaymentIntegrationTest {
     }
 
     @Test
+    @DisplayName("[성공테스트] 결제_요청_통합_테스트_결제가_성공하고_결제정보가_적재된다")
+    void requestPaymentTest_결제_요청_통합_테스트_결제가_성공하고_결제정보가_적재된다() {
+
+        // Given
+        PaymentCommand.PaymentProcessingCommand command = new PaymentCommand.PaymentProcessingCommand(userId, reservationId, price);
+
+        // When
+        PaymentResult.PaymentProcessingResult actualResult = paymentFacade.requestPayment(token, command);
+
+        // Then
+        Optional<PaymentDomain> paymentDomain = paymentRepository.findById(actualResult.getPaymentId());
+        assertNotNull(actualResult);
+        assertTrue(paymentDomain.isPresent(), "결제 정보가 적재되지 않았습니다.");
+    }
+    
+    @Test
+    @DisplayName("[성공테스트] 결제_요청_통합_테스트_결제가_성공하고_좌석_소유권이_배정된다")
+    void requestPaymentTest_결제_요청_통합_테스트_결제가_성공하고_좌석_소유권이_배정된다() {
+
+        // Given
+        PaymentCommand.PaymentProcessingCommand command = new PaymentCommand.PaymentProcessingCommand(userId, reservationId, price);
+
+        // When
+        PaymentResult.PaymentProcessingResult actualResult = paymentFacade.requestPayment(token, command);
+
+        // Then
+        Optional<ReservationDomain> reservationDomain = concertRepository.findReservationById(reservationId);
+        Optional<ConcertSeatDomain> seatDomain = concertRepository.findSeatById(reservationDomain.get().getConcertSeatId());
+        assertNotNull(actualResult);
+        assertEquals(ReservationStatus.OCCUPIED, reservationDomain.get().getStatus());
+        assertEquals(SeatStatus.OCCUPIED, seatDomain.get().getStatus());
+    }
+    
+    @Test
+    @DisplayName("[성공테스트] 결제_요청_통합_테스트_결제가_성공하고_대기열_토큰이_만료된다")
+    void requestPaymentTest_결제_요청_통합_테스트_결제가_성공하고_대기열_토큰이_만료된다() {
+
+        // Given
+        PaymentCommand.PaymentProcessingCommand command = new PaymentCommand.PaymentProcessingCommand(userId, reservationId, price);
+
+        // When
+        PaymentResult.PaymentProcessingResult actualResult = paymentFacade.requestPayment(token, command);
+
+        // Then
+        Optional<QueueDomain> queueDomain = queueRepository.findByToken(token);
+
+        assertNotNull(actualResult);
+        assertEquals(TokenStatus.EXPIRED, queueDomain.get().getStatus());
+    }
+
+    @Test
     @DisplayName("[실패테스트] 결제_요청_통합_테스트_예약정보_없으면_RESERVATION_NOT_FOUND_예외반환")
     void requestPaymentTest_결제_요청_통합_테스트_예약정보_없으면_RESERVATION_NOT_FOUND_예외반환() {
 
         // Given
-        PaymentCommand.PaymentProcessingCommand command = new PaymentCommand.PaymentProcessingCommand(userId, 99L, price);
+        Long nonExistentReservationId = 99L;    // 존재하지 않는 예약코드
+
+        PaymentCommand.PaymentProcessingCommand command = new PaymentCommand.PaymentProcessingCommand(userId, nonExistentReservationId, price);
 
         // When & Then
         assertThatThrownBy(() -> paymentFacade.requestPayment(token, command))

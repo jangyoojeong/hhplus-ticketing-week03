@@ -106,7 +106,7 @@ public class QueueServiceTest {
     }
 
     @Test
-    @DisplayName("[성공테스트] 토큰_검증_테스트_유효하지_않은_토큰은_INVALID_TOKEN_예외반환")
+    @DisplayName("[성공테스트] 토큰_검증_테스트_WAITING_토큰은_INVALID_TOKEN_예외반환")
     void validateTokenTest_토큰_검증_테스트_유효한토큰() {
 
         // Given
