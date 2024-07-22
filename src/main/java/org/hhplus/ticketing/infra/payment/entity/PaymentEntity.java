@@ -5,8 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hhplus.ticketing.domain.payment.model.PaymentDomain;
-import org.hhplus.ticketing.domain.payment.model.enums.PaymentStatus;
+import org.hhplus.ticketing.domain.payment.model.Payment;
 
 import java.time.LocalDateTime;
 
@@ -16,7 +15,7 @@ import java.time.LocalDateTime;
 @Builder
 @Entity
 @Table(name = "payment")
-public class Payment {
+public class PaymentEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -34,7 +33,7 @@ public class Payment {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
-    private PaymentStatus status;           // 결제상태 (결제완료[COMPLETED]/결제취소[CANCELED])
+    private Payment.Status status;          // 결제상태 (결제완료[COMPLETED]/결제취소[CANCELED])
 
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;         // 생성일자
@@ -53,8 +52,8 @@ public class Payment {
         updatedAt = LocalDateTime.now();
     }
 
-    public static Payment from(PaymentDomain domain) {
-        return Payment.builder()
+    public static PaymentEntity from(Payment domain) {
+        return PaymentEntity.builder()
                 .paymentId(domain.getPaymentId())
                 .reservationId(domain.getReservationId())
                 .price(domain.getPrice())
@@ -63,8 +62,8 @@ public class Payment {
                 .build();
     }
 
-    public PaymentDomain toDomain() {
-        return PaymentDomain.builder()
+    public Payment toDomain() {
+        return Payment.builder()
                 .paymentId(this.getPaymentId())
                 .reservationId(this.getReservationId())
                 .price(this.getPrice())

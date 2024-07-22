@@ -2,7 +2,7 @@ package org.hhplus.ticketing.domain.user;
 
 import org.hhplus.ticketing.domain.common.exception.CustomException;
 import org.hhplus.ticketing.domain.common.exception.ErrorCode;
-import org.hhplus.ticketing.domain.user.model.UserInfoDomain;
+import org.hhplus.ticketing.domain.user.model.UserInfo;
 import org.hhplus.ticketing.domain.user.model.UserResult;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -27,20 +27,20 @@ class UserInfoServiceTest {
     @Mock
     private UserInfoRepository userInfoRepository;
 
-    private UserInfoDomain userInfoDomain;
+    private UserInfo userInfoDomain;
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
 
-        userInfoDomain = UserInfoDomain.builder()
+        userInfoDomain = UserInfo.builder()
                 .userId(1L)
                 .userName("사용자1")
                 .build();
     }
 
     @Test
-    @DisplayName("[성공테스트] 1L_유저_정보를_성공적으로_조회")
+    @DisplayName("🟢 1L_유저_정보를_성공적으로_조회")
     void validateUserTest_1L_유저_정보를_성공적으로_조회() {
 
         // Given
@@ -55,7 +55,7 @@ class UserInfoServiceTest {
     }
 
     @Test
-    @DisplayName("[실패테스트] 1L_유저_정보가_없으면_USER_NOT_FOUND_예외반환")
+    @DisplayName("🔴 1L_유저_정보가_없으면_USER_NOT_FOUND_예외반환")
     void validateUserTest_1L_유저_정보가_없을_때_예외_발생() {
 
         // Given

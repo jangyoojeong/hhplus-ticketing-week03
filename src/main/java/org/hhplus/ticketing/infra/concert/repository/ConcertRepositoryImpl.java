@@ -2,15 +2,14 @@ package org.hhplus.ticketing.infra.concert.repository;
 
 import lombok.RequiredArgsConstructor;
 import org.hhplus.ticketing.domain.concert.ConcertRepository;
-import org.hhplus.ticketing.domain.concert.model.ConcertDomain;
-import org.hhplus.ticketing.domain.concert.model.ConcertOptionDomain;
-import org.hhplus.ticketing.domain.concert.model.ConcertSeatDomain;
-import org.hhplus.ticketing.domain.concert.model.ReservationDomain;
-import org.hhplus.ticketing.domain.concert.model.enums.ReservationStatus;
-import org.hhplus.ticketing.infra.concert.entity.ConcertSeat;
-import org.hhplus.ticketing.infra.concert.entity.Concert;
-import org.hhplus.ticketing.infra.concert.entity.ConcertOption;
-import org.hhplus.ticketing.infra.concert.entity.Reservation;
+import org.hhplus.ticketing.domain.concert.model.Concert;
+import org.hhplus.ticketing.domain.concert.model.ConcertOption;
+import org.hhplus.ticketing.domain.concert.model.ConcertSeat;
+import org.hhplus.ticketing.domain.concert.model.Reservation;
+import org.hhplus.ticketing.infra.concert.entity.ConcertSeatEntity;
+import org.hhplus.ticketing.infra.concert.entity.ConcertEntity;
+import org.hhplus.ticketing.infra.concert.entity.ConcertOptionEntity;
+import org.hhplus.ticketing.infra.concert.entity.ReservationEntity;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
@@ -28,110 +27,105 @@ public class ConcertRepositoryImpl implements ConcertRepository {
     private final ReservationJpaRepository reservationJpaRepository;
 
     @Override
-    public Optional<ConcertSeatDomain> findAvailableSeatById(Long concertSeatId) {
-        return concertSeatJpaRepository.findAvailableSeatById(concertSeatId).map(ConcertSeat::toDomain);
+    public Optional<ConcertSeat> getAvailableSeat(Long concertSeatId) {
+        return concertSeatJpaRepository.findAvailableSeatById(concertSeatId).map(ConcertSeatEntity::toDomain);
     }
 
     @Override
-    public List<ConcertSeatDomain> findByConcertOptionIdAndStatus(Long concertOptionId) {
+    public List<ConcertSeat> getAvailableSeats(Long concertOptionId) {
         return concertSeatJpaRepository.findByConcertOptionIdAndStatus(concertOptionId).stream()
-                .map(ConcertSeat::toDomain)
+                .map(ConcertSeatEntity::toDomain)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public ConcertSeatDomain saveSeat(ConcertSeatDomain domain) {
-        return concertSeatJpaRepository.save(ConcertSeat.from(domain)).toDomain();
+    public ConcertSeat saveSeat(ConcertSeat domain) {
+        return concertSeatJpaRepository.save(ConcertSeatEntity.from(domain)).toDomain();
     }
 
     @Override
-    public Optional<ReservationDomain> findByReservationIdAndStatus(Long reservationId, ReservationStatus status) {
-        return reservationJpaRepository.findByReservationIdAndStatus(reservationId, status).map(Reservation::toDomain);
+    public Optional<Reservation> getActiveReservation(Long reservationId) {
+        return reservationJpaRepository.findByReservationIdAndStatusReserved(reservationId).map(ReservationEntity::toDomain);
     }
 
     @Override
-    public ReservationDomain saveReservation(ReservationDomain domain) {
-        return reservationJpaRepository.save(Reservation.from(domain)).toDomain();
+    public Reservation saveReservation(Reservation domain) {
+        return reservationJpaRepository.save(ReservationEntity.from(domain)).toDomain();
     }
 
     @Override
-    public List<ReservationDomain> findReservedBefore(LocalDateTime time) {
+    public List<Reservation> getExpiredReservations(LocalDateTime time) {
         return reservationJpaRepository.findReservedBefore(time).stream()
-                .map(Reservation::toDomain)
+                .map(ReservationEntity::toDomain)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public int updateReservationStatus(Long reservationId, ReservationStatus status) {
-        return reservationJpaRepository.updateReservationStatus(reservationId, status);
-    }
-
-    @Override
-    public List<ReservationDomain> saveAllReservation(List<ReservationDomain> domains) {
-        List<Reservation> entities = domains.stream()
-                .map(Reservation::from)
+    public List<Reservation> saveAllReservation(List<Reservation> domains) {
+        List<ReservationEntity> entities = domains.stream()
+                .map(ReservationEntity::from)
                 .collect(Collectors.toList());
 
-        List<Reservation> savedEntities = reservationJpaRepository.saveAll(entities);
+        List<ReservationEntity> savedEntities = reservationJpaRepository.saveAll(entities);
 
         return savedEntities.stream()
-                .map(Reservation::toDomain)
+                .map(ReservationEntity::toDomain)
                 .collect(Collectors.toList());
     }
 
 
 
     @Override
-    public List<ConcertSeatDomain> saveAllSeat(List<ConcertSeatDomain> domains) {
-        List<ConcertSeat> entities = domains.stream()
-                .map(ConcertSeat::from)
+    public List<ConcertSeat> saveAllSeat(List<ConcertSeat> domains) {
+        List<ConcertSeatEntity> entities = domains.stream()
+                .map(ConcertSeatEntity::from)
                 .collect(Collectors.toList());
 
-        List<ConcertSeat> savedEntities = concertSeatJpaRepository.saveAll(entities);
+        List<ConcertSeatEntity> savedEntities = concertSeatJpaRepository.saveAll(entities);
 
         return savedEntities.stream()
-                .map(ConcertSeat::toDomain)
+                .map(ConcertSeatEntity::toDomain)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public List<ConcertSeatDomain> findByConcertSeatIdIn(List<Long> concertSeatIds) {
+    public List<ConcertSeat> getSeats(List<Long> concertSeatIds) {
         return concertSeatJpaRepository.findByConcertSeatIdIn(concertSeatIds).stream()
-                .map(ConcertSeat::toDomain)
+                .map(ConcertSeatEntity::toDomain)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public Optional<ConcertSeatDomain> findSeatById(Long concertSeatId) {
-        return concertSeatJpaRepository.findById(concertSeatId).map(ConcertSeat::toDomain);
+    public Optional<ConcertSeat> findSeatById(Long concertSeatId) {
+        return concertSeatJpaRepository.findById(concertSeatId).map(ConcertSeatEntity::toDomain);
     }
 
     @Override
-    public List<ConcertOptionDomain> findByConcertIdAndConcertAtAfter(Long concertId, LocalDateTime currentDateTime) {
+    public List<ConcertOption> getAvailableDates(Long concertId, LocalDateTime currentDateTime) {
         return concertOptionJpaRepository.findByConcertIdAndConcertAtAfter(concertId, currentDateTime).stream()
-                .map(ConcertOption::toDomain)
+                .map(ConcertOptionEntity::toDomain)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public ConcertDomain saveConcert(ConcertDomain domain) {
-        return concertJpaRepository.save(Concert.from(domain)).toDomain();
+    public Concert saveConcert(Concert domain) {
+        return concertJpaRepository.save(ConcertEntity.from(domain)).toDomain();
     }
 
     @Override
-    public ConcertOptionDomain saveConcertOption(ConcertOptionDomain domain) {
-        return concertOptionJpaRepository.save(ConcertOption.from(domain)).toDomain();
+    public ConcertOption saveConcertOption(ConcertOption domain) {
+        return concertOptionJpaRepository.save(ConcertOptionEntity.from(domain)).toDomain();
     }
 
     @Override
-    public List<ReservationDomain> findByUserId(Long userId) {
+    public List<Reservation> findByUserId(Long userId) {
         return reservationJpaRepository.findByUserId(userId).stream()
-                .map(Reservation::toDomain)
+                .map(ReservationEntity::toDomain)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public Optional<ReservationDomain> findReservationById(Long reservationId) {
-        return reservationJpaRepository.findById(reservationId).map(Reservation::toDomain);
+    public Optional<Reservation> findReservationById(Long reservationId) {
+        return reservationJpaRepository.findById(reservationId).map(ReservationEntity::toDomain);
     }
 }

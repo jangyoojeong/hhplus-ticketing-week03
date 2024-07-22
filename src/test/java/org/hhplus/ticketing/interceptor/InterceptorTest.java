@@ -3,7 +3,7 @@ package org.hhplus.ticketing.interceptor;
 import org.hhplus.ticketing.TicketingApplication;
 import org.hhplus.ticketing.domain.common.exception.ErrorCode;
 import org.hhplus.ticketing.domain.queue.QueueRepository;
-import org.hhplus.ticketing.domain.queue.model.QueueDomain;
+import org.hhplus.ticketing.domain.queue.model.Queue;
 import org.hhplus.ticketing.interfaces.controller.concert.dto.response.ConcertResponse;
 import org.hhplus.ticketing.interfaces.controller.user.dto.UserResponse;
 import org.hhplus.ticketing.support.exception.ErrorResponseEntity;
@@ -51,11 +51,11 @@ class InterceptorTest {
     }
 
     @Test
-    @DisplayName("[성공테스트] 인터셉터_토큰_검증_테스트_ACTIVE_토큰은_200상태코드를_응답한다")
+    @DisplayName("🟢 인터셉터_토큰_검증_테스트_ACTIVE_토큰은_200상태코드를_응답한다")
     void validateTokenTest_인터셉터_토큰_검증_테스트_ACTIVE_토큰은_200상태코드를_응답한다() {
 
         // Given
-        QueueDomain savedQueue = queueRepository.save(QueueDomain.createActiveQueue(userId));
+        Queue savedQueue = queueRepository.save(Queue.createActive(userId));
 
         // HTTP 헤더에 인증 토큰 추가
         HttpHeaders headers = new HttpHeaders();
@@ -66,9 +66,9 @@ class InterceptorTest {
 
         // When
         // API 요청을 발송
-        ResponseEntity<ConcertResponse.DatesForReservationResponse> response = restTemplate.exchange(
-                getBaseUrl() + "/api/concerts/" + concertId + "/dates-for-reservation",
-                HttpMethod.GET, entity, ConcertResponse.DatesForReservationResponse.class);
+        ResponseEntity<ConcertResponse.getAvailableDatesResponse> response = restTemplate.exchange(
+                getBaseUrl() + "/api/concerts/" + concertId + "/available-dates",
+                HttpMethod.GET, entity, ConcertResponse.getAvailableDatesResponse.class);
 
         // Then
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -76,10 +76,10 @@ class InterceptorTest {
     }
 
     @Test
-    @DisplayName("[실패테스트] 인터셉터_토큰_검증_테스트_WAITING_토큰은_INVALID_TOKEN_코드를_응답한다")
+    @DisplayName("🔴 인터셉터_토큰_검증_테스트_WAITING_토큰은_INVALID_TOKEN_코드를_응답한다")
     void validateTokenTest_인터셉터_토큰_검증_테스트_WAITING_토큰은_INVALID_TOKEN_코드를_응답한다() {
         // Given
-        QueueDomain savedQueue = queueRepository.save(QueueDomain.createWaitingQueue(userId));
+        Queue savedQueue = queueRepository.save(Queue.createWaiting(userId));
 
         // HTTP 헤더에 인증 토큰 추가
         HttpHeaders headers = new HttpHeaders();
@@ -91,17 +91,17 @@ class InterceptorTest {
         // When
         // API 요청을 발송
         ResponseEntity<ErrorResponseEntity> response = restTemplate.exchange(
-                getBaseUrl() + "/api/concerts/" + concertId + "/dates-for-reservation",
+                getBaseUrl() + "/api/concerts/" + concertId + "/available-dates",
                 HttpMethod.GET, entity, ErrorResponseEntity.class);
 
         // Then
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
         assertThat(response.getBody()).isNotNull();
         assertThat(response.getBody().getCode()).isEqualTo(ErrorCode.INVALID_TOKEN.name());
     }
 
     @Test
-    @DisplayName("[실패테스트] 인터셉터_토큰_검증_테스트_토큰이_존재하지_않을_경우_TOKEN_NOT_FOUND_코드를_응답한다")
+    @DisplayName("🔴 인터셉터_토큰_검증_테스트_토큰이_존재하지_않을_경우_TOKEN_NOT_FOUND_코드를_응답한다")
     void validateTokenTest_인터셉터_토큰_검증_테스트_토큰이_존재하지_않을_경우_TOKEN_NOT_FOUND_코드를_응답한다() {
         // Given
         UUID invalidToken = UUID.randomUUID();
@@ -116,7 +116,7 @@ class InterceptorTest {
         // When
         // API 요청을 발송
         ResponseEntity<ErrorResponseEntity> response = restTemplate.exchange(
-                getBaseUrl() + "/api/concerts/" + concertId + "/dates-for-reservation",
+                getBaseUrl() + "/api/concerts/" + concertId + "/available-dates",
                 HttpMethod.GET, entity, ErrorResponseEntity.class);
 
         // Then
@@ -126,7 +126,7 @@ class InterceptorTest {
     }
 
     @Test
-    @DisplayName("[실패테스트] 인터셉터_토큰_검증_테스트_헤더가_누락되었을경우_UNAUTHORIZED_상태를_응답한다")
+    @DisplayName("🔴 인터셉터_토큰_검증_테스트_헤더가_누락되었을경우_UNAUTHORIZED_상태를_응답한다")
     void validateTokenTest_인터셉터_토큰_검증_테스트_헤더가_누락되었을경우_UNAUTHORIZED_상태를_응답한다() {
 
         // Given
@@ -136,7 +136,7 @@ class InterceptorTest {
         // When
         // API 요청을 발송
         ResponseEntity<ErrorResponseEntity> response = restTemplate.exchange(
-                getBaseUrl() + "/api/concerts/" + concertId + "/dates-for-reservation",
+                getBaseUrl() + "/api/concerts/" + concertId + "/available-dates",
                 HttpMethod.GET, entity, ErrorResponseEntity.class);
 
         // Then
@@ -146,7 +146,7 @@ class InterceptorTest {
     }
 
     @Test
-    @DisplayName("[실패테스트] 인터셉터_토큰_검증_테스트_토큰_형식이_잘못되었을_경우_BAD_REQUEST_상태를_응답한다")
+    @DisplayName("🔴 인터셉터_토큰_검증_테스트_토큰_형식이_잘못되었을_경우_BAD_REQUEST_상태를_응답한다")
     void validateTokenTest_인터셉터_토큰_검증_테스트_토큰_형식이_잘못되었을_경우_BAD_REQUEST_상태를_응답한다() {
 
         // Given
@@ -159,7 +159,7 @@ class InterceptorTest {
         // When
         // API 요청을 발송
         ResponseEntity<ErrorResponseEntity> response = restTemplate.exchange(
-                getBaseUrl() + "/api/concerts/" + concertId + "/dates-for-reservation",
+                getBaseUrl() + "/api/concerts/" + concertId + "/available-dates",
                 HttpMethod.GET, entity, ErrorResponseEntity.class);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
@@ -168,7 +168,7 @@ class InterceptorTest {
     }
 
     @Test
-    @DisplayName("[성공테스트] 인터셉터_토큰_검증_테스트_적용되지_않는_URL은_헤더에_영향받지_않는다")
+    @DisplayName("🟢 인터셉터_토큰_검증_테스트_적용되지_않는_URL은_헤더에_영향받지_않는다")
     void validateTokenTest_인터셉터_토큰_검증_테스트_적용되지_않는_URL은_헤더에_영향받지_않는다() {
 
         // Given

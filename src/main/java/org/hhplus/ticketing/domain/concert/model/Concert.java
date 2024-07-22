@@ -13,11 +13,13 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ConcertDomain {
+public class Concert {
     private Long concertId;        // 콘서트ID (키값)
     private String concertName;    // 콘서트명
 
-    public ConcertDomain(String concertName) {
-        this.concertName = concertName;
+    public static Concert create(String concertName) {
+        return Concert.builder()
+                .concertName(concertName)
+                .build();
     }
 }

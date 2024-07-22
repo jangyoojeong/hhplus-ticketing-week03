@@ -19,8 +19,6 @@ import org.springframework.web.bind.annotation.*;
 @Tag(name = "User API", description = "유저 관련 API")
 public class UserController {
 
-    private static final Logger log = LoggerFactory.getLogger(UserController.class);
-
     private final UserFacade userFacade;
 
     /**
@@ -29,10 +27,10 @@ public class UserController {
      * @param request 잔액 충전 요청 객체
      * @return 충전된 잔액 정보를 포함한 응답 객체
      */
-    @PutMapping("/points/deposit")
+    @PutMapping("/points/charge")
     @Operation(summary = "잔액 충전 API", description = "사용자의 잔액을 충전합니다.")
-    public ResponseEntity<UserResponse.AddPointResponse> addUserPoint(@Valid @RequestBody UserRequest.AddPointRequest request) {
-        UserResponse.AddPointResponse response = UserResponse.AddPointResponse.from(userFacade.addUserPoint(request.toCommand()));
+    public ResponseEntity<UserResponse.ChargePointResponse> addUserPoint(@Valid @RequestBody UserRequest.ChargePointRequest request) {
+        UserResponse.ChargePointResponse response = UserResponse.ChargePointResponse.from(userFacade.chargePoint(request.toCommand()));
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
@@ -45,7 +43,7 @@ public class UserController {
     @GetMapping("/{userId}/points")
     @Operation(summary = "잔액 조회 API", description = "사용자의 잔액을 조회합니다.")
     public ResponseEntity<UserResponse.UserPointResponse> getUserPoint (@PathVariable Long userId) {
-        UserResponse.UserPointResponse response = UserResponse.UserPointResponse.from(userFacade.getUserPoint(userId));
+        UserResponse.UserPointResponse response = UserResponse.UserPointResponse.from(userFacade.getPoint(userId));
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 }

@@ -18,7 +18,7 @@ public class PaymentResult {
         private Long userId;                    // 사용자ID
         private int point;                      // 포인트 (결제 후 포인트)
 
-        public static PaymentProcessingResult from(PaymentDomain domain) {
+        public static PaymentProcessingResult from(Payment domain) {
             return PaymentProcessingResult.builder()
                     .paymentId(domain.getPaymentId())
                     .build();

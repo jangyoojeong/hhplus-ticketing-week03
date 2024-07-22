@@ -2,10 +2,9 @@ package org.hhplus.ticketing.interfaces.controller.concert;
 
 import org.hhplus.ticketing.application.concert.facade.ConcertFacade;
 import org.hhplus.ticketing.domain.concert.model.ConcertCommand;
-import org.hhplus.ticketing.domain.concert.model.ConcertOptionDomain;
+import org.hhplus.ticketing.domain.concert.model.ConcertOption;
 import org.hhplus.ticketing.domain.concert.model.ConcertResult;
-import org.hhplus.ticketing.domain.concert.model.ConcertSeatDomain;
-import org.hhplus.ticketing.domain.concert.model.enums.SeatStatus;
+import org.hhplus.ticketing.domain.concert.model.ConcertSeat;
 import org.hhplus.ticketing.interfaces.controller.concert.dto.request.ConcertRequest;
 import org.hhplus.ticketing.interfaces.controller.concert.dto.response.ConcertResponse;
 import org.junit.jupiter.api.BeforeEach;
@@ -20,7 +19,6 @@ import org.springframework.http.ResponseEntity;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
-import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
@@ -44,23 +42,23 @@ public class ConcertControllerUnitTest {
     }
 
     @Test
-    @DisplayName("[성공테스트] 예약_가능한_날짜_조회_컨트롤러_테스트_예상_리턴_확인")
-    void getDatesForReservationTest_예약_가능한_날짜_조회_컨트롤러_테스트_예상_리턴_확인 () throws Exception {
+    @DisplayName("🟢 예약_가능한_날짜_조회_컨트롤러_테스트_예상_리턴_확인")
+    void getAvailableDatesTest_예약_가능한_날짜_조회_컨트롤러_테스트_예상_리턴_확인() throws Exception {
 
         // Given
         Long concertId = 1L;
-        List<ConcertOptionDomain> concertOptions = Arrays.asList(
-                new ConcertOptionDomain(1L, concertId, LocalDateTime.of(2024, 7, 15, 18, 0), 50),
-                new ConcertOptionDomain(2L, concertId, LocalDateTime.of(2024, 7, 16, 18, 0), 50)
+        List<ConcertOption> concertOptions = Arrays.asList(
+                ConcertOption.create(1L, concertId, LocalDateTime.now().plusDays(15), 50),
+                ConcertOption.create(2L, concertId, LocalDateTime.now().plusDays(13), 50)
         );
 
-        ConcertResult.DatesForReservationResult result = ConcertResult.DatesForReservationResult.from(concertOptions);
-        ConcertResponse.DatesForReservationResponse response = ConcertResponse.DatesForReservationResponse.from(result);
+        ConcertResult.getAvailableDatesResult result = ConcertResult.getAvailableDatesResult.from(concertOptions);
+        ConcertResponse.getAvailableDatesResponse response = ConcertResponse.getAvailableDatesResponse.from(result);
 
-        given(concertFacade.getDatesForReservation(concertId)).willReturn(result);
+        given(concertFacade.getAvailableDates(concertId)).willReturn(result);
 
         // When
-        ResponseEntity<ConcertResponse.DatesForReservationResponse> responseEntity = concertController.getDatesForReservation(concertId);
+        ResponseEntity<ConcertResponse.getAvailableDatesResponse> responseEntity = concertController.getAvailableDates(concertId);
 
         // Then
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
@@ -68,22 +66,22 @@ public class ConcertControllerUnitTest {
     }
 
     @Test
-    @DisplayName("[성공테스트] 좌석_예약_컨트롤러_테스트_예상_리턴_확인")
-    void getSeatsForReservationTest_좌석_예약_컨트롤러_테스트_예상_리턴_확인 () throws Exception {
+    @DisplayName("🟢 좌석_예약_컨트롤러_테스트_예상_리턴_확인")
+    void getAvailableSeatsTest_좌석_예약_컨트롤러_테스트_예상_리턴_확인() throws Exception {
         // Given
         Long concertOptionId = 1L;
-        List<ConcertSeatDomain> concertSeat = Arrays.asList(
-                new ConcertSeatDomain(1L, concertOptionId, 1, SeatStatus.AVAILABLE),
-                new ConcertSeatDomain(2L, concertOptionId, 2, SeatStatus.AVAILABLE)
+        List<ConcertSeat> concertSeat = Arrays.asList(
+                ConcertSeat.create(1L, concertOptionId, 1, ConcertSeat.Grade.VIP, ConcertSeat.Status.AVAILABLE),
+                ConcertSeat.create(2L, concertOptionId, 2, ConcertSeat.Grade.REGULAR, ConcertSeat.Status.AVAILABLE)
         );
 
-        ConcertResult.SeatsForReservationResult result = ConcertResult.SeatsForReservationResult.from(concertSeat);
-        ConcertResponse.SeatsForReservationResponse response = ConcertResponse.SeatsForReservationResponse.from(result);
+        ConcertResult.getAvailableSeatsResult result = ConcertResult.getAvailableSeatsResult.from(concertSeat);
+        ConcertResponse.getAvailableSeatsResponse response = ConcertResponse.getAvailableSeatsResponse.from(result);
 
-        given(concertFacade.getSeatsForReservation(concertOptionId)).willReturn(result);
+        given(concertFacade.getAvailableSeats(concertOptionId)).willReturn(result);
 
         // When
-        ResponseEntity<ConcertResponse.SeatsForReservationResponse> responseEntity = concertController.getSeatsForReservation(concertOptionId);
+        ResponseEntity<ConcertResponse.getAvailableSeatsResponse> responseEntity = concertController.getAvailableSeats(concertOptionId);
 
         // Then
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
@@ -91,7 +89,7 @@ public class ConcertControllerUnitTest {
     }
 
     @Test
-    @DisplayName("[성공테스트] 좌석_예약_컨트롤러_테스트_예상_리턴_확인")
+    @DisplayName("🟢 좌석_예약_컨트롤러_테스트_예상_리턴_확인")
     void reserveSeatTest_좌석_예약_컨트롤러_테스트_예상_리턴_확인 () throws Exception {
         // Given
         Long concertSeatId = 1L;
@@ -108,5 +106,4 @@ public class ConcertControllerUnitTest {
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         assertEquals(response, responseEntity.getBody());
     }
-
 }

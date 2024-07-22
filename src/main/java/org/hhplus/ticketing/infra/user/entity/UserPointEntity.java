@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hhplus.ticketing.domain.user.model.UserPointDomain;
+import org.hhplus.ticketing.domain.user.model.UserPoint;
 
 import java.time.LocalDateTime;
 
@@ -14,15 +14,15 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 @Entity
-@Table(name = "user_point")
-public class UserPoint {
+@Table(name = "user_point", uniqueConstraints = @UniqueConstraint(columnNames = "user_id"))
+public class UserPointEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_point_id")
     private Long userPointId;               // 포인트ID (키값)
 
-    @Column(name = "user_id", nullable = false)
+    @Column(name = "user_id", nullable = false, unique = true)
     private Long userId;                    // 유저ID
 
     @Column(name = "point", nullable = false)
@@ -45,16 +45,16 @@ public class UserPoint {
         updatedAt = LocalDateTime.now();
     }
 
-    public static UserPoint from(UserPointDomain domain) {
-        return UserPoint.builder()
+    public static UserPointEntity from(UserPoint domain) {
+        return UserPointEntity.builder()
                 .userPointId(domain.getUserPointId())
                 .userId(domain.getUserId())
                 .point(domain.getPoint())
                 .build();
     }
 
-    public UserPointDomain toDomain() {
-        return UserPointDomain.builder()
+    public UserPoint toDomain() {
+        return UserPoint.builder()
                 .userPointId(this.getUserPointId())
                 .userId(this.getUserId())
                 .point(this.getPoint())

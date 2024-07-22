@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hhplus.ticketing.domain.concert.model.ConcertDomain;
+import org.hhplus.ticketing.domain.concert.model.Concert;
 
 import java.time.LocalDateTime;
 
@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 @Builder
 @Entity
 @Table(name = "consert")
-public class Concert {
+public class ConcertEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -42,15 +42,15 @@ public class Concert {
         updatedAt = LocalDateTime.now();
     }
 
-    public static Concert from(ConcertDomain domain) {
-        return Concert.builder()
+    public static ConcertEntity from(Concert domain) {
+        return ConcertEntity.builder()
                 .concertId(domain.getConcertId())
                 .concertName(domain.getConcertName())
                 .build();
     }
 
-    public ConcertDomain toDomain() {
-        return ConcertDomain.builder()
+    public Concert toDomain() {
+        return Concert.builder()
                 .concertId(this.getConcertId())
                 .concertName(this.getConcertName())
                 .build();

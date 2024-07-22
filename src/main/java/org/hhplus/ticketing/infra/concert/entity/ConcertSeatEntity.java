@@ -5,8 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hhplus.ticketing.domain.concert.model.ConcertSeatDomain;
-import org.hhplus.ticketing.domain.concert.model.enums.SeatStatus;
+import org.hhplus.ticketing.domain.concert.model.ConcertSeat;
 
 import java.time.LocalDateTime;
 
@@ -16,7 +15,7 @@ import java.time.LocalDateTime;
 @Builder
 @Entity
 @Table(name = "concert_seat")
-public class ConcertSeat {
+public class ConcertSeatEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,9 +28,15 @@ public class ConcertSeat {
     @Column(name = "seat_number", nullable = false)
     private int seatNumber;                 // 좌석번호 (1~50)
 
+    @Column(name = "grade", nullable = false)
+    private ConcertSeat.Grade grade;        // 좌석등급
+    
+    @Column(name = "price", nullable = false)
+    private int price;                      // 좌석가격
+    
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
-    private SeatStatus status;              // 좌석상태 (사용가능[AVAILABLE]/예약됨[RESERVED]/점유[OCCUPIED])
+    private ConcertSeat.Status status;      // 좌석상태 (사용가능[AVAILABLE]/예약됨[RESERVED]/점유[OCCUPIED])
 
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;        // 생성일자
@@ -54,21 +59,25 @@ public class ConcertSeat {
         updatedAt = LocalDateTime.now();
     }
 
-    public static ConcertSeat from(ConcertSeatDomain domain) {
-        return ConcertSeat.builder()
+    public static ConcertSeatEntity from(ConcertSeat domain) {
+        return ConcertSeatEntity.builder()
                 .concertSeatId(domain.getConcertSeatId())
                 .concertOptionId(domain.getConcertOptionId())
                 .seatNumber(domain.getSeatNumber())
+                .grade(domain.getGrade())
+                .price(domain.getPrice())
                 .status(domain.getStatus())
                 .version(domain.getVersion())
                 .build();
     }
 
-    public ConcertSeatDomain toDomain() {
-        return ConcertSeatDomain.builder()
+    public ConcertSeat toDomain() {
+        return ConcertSeat.builder()
                 .concertSeatId(this.getConcertSeatId())
                 .concertOptionId(this.getConcertOptionId())
                 .seatNumber(this.getSeatNumber())
+                .grade(this.getGrade())
+                .price(this.getPrice())
                 .status(this.getStatus())
                 .version(this.getVersion())
                 .build();

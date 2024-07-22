@@ -14,23 +14,23 @@ public class ConcertResponse {
     @NoArgsConstructor
     @AllArgsConstructor
     @Builder
-    public static class DatesForReservationResponse {
+    public static class getAvailableDatesResponse {
 
         private Long concertId;                     // 콘서트ID
-        private List<ConcertResult.DatesForReservationResult.DateInfo> availableDates;     // 예약 가능한 날짜
+        private List<ConcertResult.getAvailableDatesResult.DateInfo> availableDates;     // 예약 가능한 날짜
 
-        public static DatesForReservationResponse from(ConcertResult.DatesForReservationResult result) {
-            List<ConcertResult.DatesForReservationResult.DateInfo> availableDates =
+        public static getAvailableDatesResponse from(ConcertResult.getAvailableDatesResult result) {
+            List<ConcertResult.getAvailableDatesResult.DateInfo> availableDates =
                     Optional.ofNullable(result.getAvailableDates())
                             .orElse(Collections.emptyList())
                             .stream()
-                            .map(dateInfo -> ConcertResult.DatesForReservationResult.DateInfo.builder()
+                            .map(dateInfo -> ConcertResult.getAvailableDatesResult.DateInfo.builder()
                                     .concertOptionId(dateInfo.getConcertOptionId())
                                     .concertAt(dateInfo.getConcertAt())
                                     .build())
                             .collect(Collectors.toList());
 
-            return DatesForReservationResponse.builder()
+            return getAvailableDatesResponse.builder()
                     .concertId(result.getConcertId())
                     .availableDates(availableDates)
                     .build();
@@ -41,23 +41,23 @@ public class ConcertResponse {
     @NoArgsConstructor
     @AllArgsConstructor
     @Builder
-    public static class SeatsForReservationResponse {
+    public static class getAvailableSeatsResponse {
 
         private Long concertOptionId;       // 콘서트옵션ID  
-        private List<ConcertResult.SeatsForReservationResult.SeatInfo> availableSeats;     // 예약 가능한 좌석 리스트
+        private List<ConcertResult.getAvailableSeatsResult.SeatInfo> availableSeats;     // 예약 가능한 좌석 리스트
 
-        public static SeatsForReservationResponse from(ConcertResult.SeatsForReservationResult result) {
-            List<ConcertResult.SeatsForReservationResult.SeatInfo> availableSeats =
+        public static getAvailableSeatsResponse from(ConcertResult.getAvailableSeatsResult result) {
+            List<ConcertResult.getAvailableSeatsResult.SeatInfo> availableSeats =
                     Optional.ofNullable(result.getAvailableSeats())
                             .orElse(Collections.emptyList())
                             .stream()
-                            .map(seatInfo -> ConcertResult.SeatsForReservationResult.SeatInfo.builder()
+                            .map(seatInfo -> ConcertResult.getAvailableSeatsResult.SeatInfo.builder()
                                     .concertSeatId(seatInfo.getConcertSeatId())
                                     .seatNumber(seatInfo.getSeatNumber())
                                     .build())
                             .collect(Collectors.toList());
 
-            return SeatsForReservationResponse.builder()
+            return getAvailableSeatsResponse.builder()
                     .concertOptionId(result.getConcertOptionId())
                     .availableSeats(availableSeats)
                     .build();

@@ -5,14 +5,17 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
-class ConcertDomainTest {
+class ConcertTest {
     @Test
-    @DisplayName("[성공테스트] 콘서트_객체_생성_테스트_콘서트명으로_객체가_생성된다")
+    @DisplayName("🟢 콘서트_객체_생성_테스트_콘서트명으로_객체가_생성된다")
     void createConcertDomainTest_콘서트_객체_생성_테스트_콘서트명으로_객체가_생성된다() {
+        // Given
         String concertName = "콘서트1";
 
-        ConcertDomain concertDomain = new ConcertDomain(concertName);
+        // When
+        Concert concert = Concert.create(concertName);
 
-        assertThat(concertDomain.getConcertName()).isEqualTo(concertName);
+        //Then
+        assertThat(concert.getConcertName()).isEqualTo(concertName);
     }
 }

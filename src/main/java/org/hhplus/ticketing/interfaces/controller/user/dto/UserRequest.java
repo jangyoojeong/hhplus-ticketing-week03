@@ -15,15 +15,15 @@ public class UserRequest {
     @NoArgsConstructor
     @AllArgsConstructor
     @Builder
-    public static class AddPointRequest {
+    public static class ChargePointRequest {
 
         @NotNull(message = "사용자 ID는 비어 있을 수 없습니다.")
         private Long userId;                    // 유저ID
         @Min(value = 1, message = "충전 금액은 1원 이상이어야 합니다.")
         private int amount;                     // 충전금액
 
-        public UserCommand.AddPointCommand toCommand() {
-            return UserCommand.AddPointCommand.builder().userId(this.getUserId()).amount(this.getAmount()).build();
+        public UserCommand.ChargePointCommand toCommand() {
+            return UserCommand.ChargePointCommand.builder().userId(this.getUserId()).amount(this.getAmount()).build();
         }
     }
 

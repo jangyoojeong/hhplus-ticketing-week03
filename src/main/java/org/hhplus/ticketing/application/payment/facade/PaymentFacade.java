@@ -34,25 +34,22 @@ public class PaymentFacade {
      * @param command 결제 요청 command 객체
      * @return 결제 result 객체
      */
-    @Transactional
+    @Transactional(rollbackFor = {Exception.class})
     public PaymentResult.PaymentProcessingResult requestPayment(UUID token, PaymentCommand.PaymentProcessingCommand command) {
 
-        // 1. 예약 정보 조회 (예약 정보 만료 확인)
-        // 조회결과 없을 시 "예약 정보를 찾을 수 없거나 이미 만료된 예약입니다." 예외
-        ConcertResult.GetReservationInfoResult reservationInfo = concertService.getReservationInfo(command.getReservationId());
+        // 1. 좌석 소유권 배정 (예약됨 > 점유)
+        ConcertResult.assignSeatResult seatResult = concertService.assignSeat(command.getReservationId());
 
-        // 2. 포인트 잔액 차감 (포인트 부족할 시 예외 반환)
-        // 포인트 부족할 시 "포인트가 부족합니다." 예외
-        UserResult.UsePointResult pointResult = userPointService.useUserPoint(new UserCommand.UsePointCommand(command.getUserId(), command.getPrice()));
+        // 2. 결제 금액 설정 (좌석 정보의 가격 사용)
+        command.setPrice(seatResult.getPrice());
 
-        // 3. 결제 등록
+        // 3. 포인트 잔액 차감 (포인트 부족할 시 예외 반환 > "포인트가 부족합니다.")
+        UserResult.UsePointResult pointResult = userPointService.usePoint(new UserCommand.UsePointCommand(command.getUserId(), command.getPrice()));
+
+        // 4. 결제 등록
         PaymentResult.PaymentProcessingResult paymentResult = paymentService.requestPayment(command);
 
-        // 4. 좌석 소유권 배정 (예약됨 > 점유)
-        ConcertResult.AssignSeatOwnershipResult seatResult = concertService.assignSeatOwnership(reservationInfo.getReservationId(), reservationInfo.getConcertSeatId());
-
-        // 5. 대기열 토큰 만료
-        // 토큰 정보가 없을 시  "토큰 정보가 존재하지 않습니다." 예외
+        // 5. 대기열 토큰 만료 (토큰 정보 없을 시 예외 반환 > "토큰 정보가 존재하지 않습니다.")
         QueueResult.expireTokenResult queueResult = queueService.expireToken(token);
 
         // 6. 결제 결과 객체에 추가 정보 할당

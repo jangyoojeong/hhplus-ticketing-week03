@@ -1,11 +1,13 @@
-package org.hhplus.ticketing.utils;
+package org.hhplus.ticketing.support.config;
 
+import lombok.RequiredArgsConstructor;
 import org.hhplus.ticketing.domain.concert.ConcertRepository;
 import org.hhplus.ticketing.domain.concert.model.Concert;
 import org.hhplus.ticketing.domain.concert.model.ConcertOption;
 import org.hhplus.ticketing.domain.concert.model.ConcertSeat;
 import org.hhplus.ticketing.domain.user.UserInfoRepository;
 import org.hhplus.ticketing.domain.user.model.UserInfo;
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,30 +18,27 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
-@Transactional(rollbackFor = {Exception.class})
-public class TestDataInitializer {
+@RequiredArgsConstructor
+public class DataLoader implements CommandLineRunner {
 
     private final UserInfoRepository userInfoRepository;
     private final ConcertRepository concertRepository;
-
-    public TestDataInitializer(UserInfoRepository userInfoRepository, ConcertRepository concertRepository) {
-        this.userInfoRepository = userInfoRepository;
-        this.concertRepository = concertRepository;
-    }
 
     private List<UserInfo> savedusers;
     private Concert savedConcert;
     private List<ConcertOption> savedConcertOptions;
     private List<ConcertSeat> savedconcertSeats;
 
-    public void initializeTestData() {
+    @Override
+    @Transactional(rollbackFor = {Exception.class})
+    public void run(String... args) throws Exception {
 
         // User Dummy 데이터 생성
         List<UserInfo> users = new ArrayList<>();
         for (int i = 1; i <= 5; i++) {
             users.add(UserInfo.builder()
-                .userName("사용자" + i)
-                .build());
+                    .userName("사용자" + i)
+                    .build());
         }
 
         savedusers = users.stream()
@@ -90,21 +89,5 @@ public class TestDataInitializer {
         savedconcertSeats = concertSeats.stream()
                 .map(concertRepository::saveSeat)
                 .collect(Collectors.toList());
-    }
-
-    public List<UserInfo> getSavedusers() {
-        return savedusers;
-    }
-
-    public Concert getSavedConcert() {
-        return savedConcert;
-    }
-
-    public List<ConcertOption> getSavedConcertOptions() {
-        return savedConcertOptions;
-    }
-
-    public List<ConcertSeat> getSavedconcertSeats() {
-        return savedconcertSeats;
     }
 }

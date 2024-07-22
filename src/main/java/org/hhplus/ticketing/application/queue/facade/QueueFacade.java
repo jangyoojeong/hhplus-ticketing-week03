@@ -62,10 +62,10 @@ public class QueueFacade {
      * 대기열 상태를 업데이트합니다.
      * 1. 만료 대상 토큰 만료
      * 2. 빈자리 만큼 활성화
-     * >> 스케줄러 2분 주기 작업 (@Scheduled(fixedRate = 120000))
+     * >> 스케줄러 2분 주기 작업 (@Scheduled(fixedRate = 2 * 60 * 1000))
      */
-    @Transactional
+    @Transactional(rollbackFor = {Exception.class})
     public void updateQueueStatuses() {
-        queueService.updateQueueStatuses();
+        queueService.refreshQueue();
     }
 }

@@ -5,14 +5,15 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
-class UserInfoDomainTest {
+class UserInfoTest {
+
     @Test
-    @DisplayName("[성공테스트] 유저정보_객체_생성_테스트_유저이름으로_객체가_생성된다")
+    @DisplayName("🟢 유저정보_객체_생성_테스트_유저이름으로_객체가_생성된다")
     void createUserInfoDomainTest_유저정보_객체_생성_테스트_유저이름으로_객체가_생성된다() {
-        String userName = "홍길동";
+        String userName = "사용자1";
 
-        UserInfoDomain userInfoDomain = new UserInfoDomain(userName);
+        UserInfo userInfo = UserInfo.create(userName);
 
-        assertThat(userInfoDomain.getUserName()).isEqualTo(userName);
+        assertThat(userInfo.getUserName()).isEqualTo(userName);
     }
 }

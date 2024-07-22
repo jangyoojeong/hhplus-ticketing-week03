@@ -6,6 +6,7 @@ import org.hhplus.ticketing.domain.common.exception.CustomException;
 import org.hhplus.ticketing.domain.common.exception.ErrorCode;
 import org.hhplus.ticketing.domain.user.model.UserResult;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Service
@@ -20,8 +21,9 @@ public class UserInfoService {
      * @param userId 조회할 사용자의 ID
      * @return userId에 해당하는 사용자를 포함하는 Optional 객체
      */
+    @Transactional(readOnly = true)
     public UserResult.UserInfoResult validateUser (Long userId) {
         return UserResult.UserInfoResult.from(userInfoRepository.findById(userId).orElseThrow(()
-                -> new CustomException(ErrorCode.USER_NOT_FOUND, ErrorCode.USER_NOT_FOUND.getMessage())));
+                -> new CustomException(ErrorCode.USER_NOT_FOUND)));
     }
 }

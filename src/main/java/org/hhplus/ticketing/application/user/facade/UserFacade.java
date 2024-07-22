@@ -5,8 +5,6 @@ import org.hhplus.ticketing.domain.user.UserInfoService;
 import org.hhplus.ticketing.domain.user.UserPointService;
 import org.hhplus.ticketing.domain.user.model.UserCommand;
 import org.hhplus.ticketing.domain.user.model.UserResult;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 /**
@@ -16,25 +14,8 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class UserFacade {
 
-    private static final Logger log = LoggerFactory.getLogger(UserFacade.class);
-
     private final UserPointService userPointService;
     private final UserInfoService userInfoService;
-
-    /**
-     * 사용자의 잔액을 충전합니다.
-     *
-     * @param command 잔액 충전 요청 객체
-     * @return 충전된 잔액 정보를 포함한 응답 객체
-     */
-    public UserResult.AddPointResult addUserPoint(UserCommand.AddPointCommand command) {
-
-        // 1. 유저 정보 확인 (유저 정보 없을 시 예외 리턴)
-        UserResult.UserInfoResult validateUser = userInfoService.validateUser(command.getUserId());
-        
-        // 2. 잔액 충전 및 리턴
-        return userPointService.addUserPoint(command);
-    }
 
     /**
      * 사용자의 잔액을 조회합니다.
@@ -42,7 +23,20 @@ public class UserFacade {
      * @param userId 잔액을 조회할 사용자의 ID
      * @return 잔액 result 객체
      */
-    public UserResult.UserPointResult getUserPoint(Long userId) {
-        return userPointService.getUserPoint(userId);
+    public UserResult.UserPointResult getPoint(Long userId) {
+        return userPointService.getPoint(userId);
+    }
+
+    /**
+     * 사용자의 잔액을 충전합니다.
+     *
+     * @param command 잔액 충전 요청 객체
+     * @return 충전된 잔액 정보를 포함한 응답 객체
+     */
+    public UserResult.ChargePointResult chargePoint(UserCommand.ChargePointCommand command) {
+        // 1. 유저 정보 확인 (유저 정보 없을 시 예외 리턴)
+        UserResult.UserInfoResult validateUser = userInfoService.validateUser(command.getUserId());
+        // 2. 잔액 충전 및 리턴
+        return userPointService.chargePoint(command);
     }
 }

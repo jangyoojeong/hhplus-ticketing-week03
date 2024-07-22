@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hhplus.ticketing.domain.user.model.UserInfoDomain;
+import org.hhplus.ticketing.domain.user.model.UserInfo;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -16,7 +16,7 @@ import java.util.UUID;
 @Builder
 @Entity
 @Table(name = "user_info")
-public class UserInfo {
+public class UserInfoEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -49,16 +49,16 @@ public class UserInfo {
         updatedAt = LocalDateTime.now();
     }
 
-    public static UserInfo from(UserInfoDomain domain) {
-        return UserInfo.builder()
+    public static UserInfoEntity from(UserInfo domain) {
+        return UserInfoEntity.builder()
                 .userId(domain.getUserId())
                 .uuid(domain.getUuid())
                 .userName(domain.getUserName())
                 .build();
     }
 
-    public UserInfoDomain toDomain() {
-        return UserInfoDomain.builder()
+    public UserInfo toDomain() {
+        return UserInfo.builder()
                 .userId(this.getUserId())
                 .uuid(this.getUuid())
                 .userName(this.getUserName())

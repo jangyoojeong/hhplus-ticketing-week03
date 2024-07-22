@@ -5,8 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hhplus.ticketing.domain.concert.model.ReservationDomain;
-import org.hhplus.ticketing.domain.concert.model.enums.ReservationStatus;
+import org.hhplus.ticketing.domain.concert.model.Reservation;
 
 import java.time.LocalDateTime;
 
@@ -16,7 +15,7 @@ import java.time.LocalDateTime;
 @Builder
 @Entity
 @Table(name = "reservation")
-public class Reservation {
+public class ReservationEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,9 +31,12 @@ public class Reservation {
     @Column(name = "reservation_at", nullable = false)
     private LocalDateTime reservationAt;            // 예약시간
 
+    @Column(name = "price", nullable = false)
+    private int price;                              // 좌석가격
+
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
-    private ReservationStatus status;                // 예약상태 (예약됨[RESERVED]/점유[OCCUPIED]/만료[EXPIRED])
+    private Reservation.Status status;              // 예약상태 (예약됨[RESERVED]/점유[OCCUPIED]/만료[EXPIRED])
     
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;                // 생성일자
@@ -53,22 +55,24 @@ public class Reservation {
         updatedAt = LocalDateTime.now();
     }
 
-    public static Reservation from(ReservationDomain domain) {
-        return Reservation.builder()
+    public static ReservationEntity from(Reservation domain) {
+        return ReservationEntity.builder()
                 .reservationId(domain.getReservationId())
                 .concertSeatId(domain.getConcertSeatId())
                 .userId(domain.getUserId())
                 .reservationAt(domain.getReservationAt())
+                .price(domain.getPrice())
                 .status(domain.getStatus())
                 .build();
     }
 
-    public ReservationDomain toDomain() {
-        return ReservationDomain.builder()
+    public Reservation toDomain() {
+        return Reservation.builder()
                 .reservationId(this.getReservationId())
                 .concertSeatId(this.getConcertSeatId())
                 .userId(this.getUserId())
                 .reservationAt(this.getReservationAt())
+                .price(this.getPrice())
                 .status(this.getStatus())
                 .build();
     }

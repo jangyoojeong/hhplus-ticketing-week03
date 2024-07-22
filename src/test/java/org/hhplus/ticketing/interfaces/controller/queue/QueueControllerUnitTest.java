@@ -1,9 +1,9 @@
 package org.hhplus.ticketing.interfaces.controller.queue;
 
 import org.hhplus.ticketing.application.queue.facade.QueueFacade;
+import org.hhplus.ticketing.domain.queue.model.Queue;
 import org.hhplus.ticketing.domain.queue.model.QueueCommand;
 import org.hhplus.ticketing.domain.queue.model.QueueResult;
-import org.hhplus.ticketing.domain.queue.model.enums.TokenStatus;
 import org.hhplus.ticketing.interfaces.controller.queue.dto.request.QueueRequest;
 import org.hhplus.ticketing.interfaces.controller.queue.dto.response.QueueResponse;
 import org.junit.jupiter.api.BeforeEach;
@@ -41,7 +41,7 @@ public class QueueControllerUnitTest {
     }
 
     @Test
-    @DisplayName("[성공테스트] 대기열_토큰_발급_컨트롤러_테스트_헤더_토큰정보_리턴_확인")
+    @DisplayName("🟢 대기열_토큰_발급_컨트롤러_테스트_헤더_토큰정보_리턴_확인")
     void issueTokenTest_대기열_토큰_발급_컨트롤러_테스트_헤더_토큰정보_리턴_확인 () throws Exception {
         // Given
         QueueRequest.IssueTokenRequest request = new QueueRequest.IssueTokenRequest(userId);
@@ -60,10 +60,10 @@ public class QueueControllerUnitTest {
     }
 
     @Test
-    @DisplayName("[성공테스트] 대기열_확인_컨트롤러_테스트_예상_리턴_데이터_확인")
+    @DisplayName("🟢 대기열_확인_컨트롤러_테스트_예상_리턴_데이터_확인")
     void getQueueStatusTest_대기열_확인_컨트롤러_테스트_예상_리턴_데이터_확인 () throws Exception {
         // Given
-        QueueResult.QueueStatusResult result = new QueueResult.QueueStatusResult(userId, token, 0L, TokenStatus.ACTIVE);
+        QueueResult.QueueStatusResult result = new QueueResult.QueueStatusResult(userId, token, 0L, Queue.Status.ACTIVE);
         QueueResponse.QueueStatusResponse response = QueueResponse.QueueStatusResponse.from(result);
 
         given(queueFacade.getQueueStatus(any(UUID.class))).willReturn(result);

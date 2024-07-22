@@ -2,8 +2,8 @@ package org.hhplus.ticketing.infra.user.repository;
 
 import lombok.RequiredArgsConstructor;
 import org.hhplus.ticketing.domain.user.UserPointHistoryRepository;
-import org.hhplus.ticketing.domain.user.model.UserPointHistoryDomain;
-import org.hhplus.ticketing.infra.user.entity.UserPointHistory;
+import org.hhplus.ticketing.domain.user.model.UserPointHistory;
+import org.hhplus.ticketing.infra.user.entity.UserPointHistoryEntity;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -21,8 +21,8 @@ public class UserPointHistoryRepositoryImpl implements UserPointHistoryRepositor
      * @return userId에 해당하는 유저포인트 히스토리 도메인 객체
      */
     @Override
-    public List<UserPointHistoryDomain> findByUserId(Long userId) {
-        return UserPointHistory.toDomainList(repository.findByUserId(userId));
+    public List<UserPointHistory> findByUserId(Long userId) {
+        return UserPointHistoryEntity.toDomainList(repository.findByUserId(userId));
     }
 
     /**
@@ -32,7 +32,7 @@ public class UserPointHistoryRepositoryImpl implements UserPointHistoryRepositor
      * @return domain 저장된 유저포인트 히스토리 도메인 객체
      */
     @Override
-    public UserPointHistoryDomain save(UserPointHistoryDomain domain) {
-        return UserPointHistory.toDomain(repository.save(UserPointHistory.from(domain)));
+    public UserPointHistory save(UserPointHistory domain) {
+        return UserPointHistoryEntity.toDomain(repository.save(UserPointHistoryEntity.from(domain)));
     }
 }

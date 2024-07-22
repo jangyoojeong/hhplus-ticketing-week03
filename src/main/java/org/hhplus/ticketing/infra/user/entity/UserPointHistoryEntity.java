@@ -5,8 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hhplus.ticketing.domain.user.model.enums.PointType;
-import org.hhplus.ticketing.domain.user.model.UserPointHistoryDomain;
+import org.hhplus.ticketing.domain.user.model.UserPointHistory;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -18,7 +17,7 @@ import java.util.stream.Collectors;
 @Builder
 @Entity
 @Table(name = "user_point_history")
-public class UserPointHistory {
+public class UserPointHistoryEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,7 +32,7 @@ public class UserPointHistory {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "point_type", nullable = false)
-    private PointType type;                   // 유형(CHARGE/USE)
+    private UserPointHistory.Type type;         // 유형(CHARGE/USE)
 
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;            // 생성일자
@@ -52,8 +51,8 @@ public class UserPointHistory {
         updatedAt = LocalDateTime.now();
     }
 
-    public static UserPointHistory from(UserPointHistoryDomain domain) {
-        return UserPointHistory.builder()
+    public static UserPointHistoryEntity from(UserPointHistory domain) {
+        return UserPointHistoryEntity.builder()
                 .userPointHistoryId(domain.getUserPointHistoryId())
                 .userId(domain.getUserId())
                 .amount(domain.getAmount())
@@ -61,8 +60,8 @@ public class UserPointHistory {
                 .build();
     }
 
-    public static UserPointHistoryDomain toDomain(UserPointHistory entity) {
-        return UserPointHistoryDomain.builder()
+    public static UserPointHistory toDomain(UserPointHistoryEntity entity) {
+        return UserPointHistory.builder()
                 .userPointHistoryId(entity.userPointHistoryId)
                 .userId(entity.userId)
                 .amount(entity.amount)
@@ -70,9 +69,9 @@ public class UserPointHistory {
                 .build();
     }
 
-    public static List<UserPointHistoryDomain> toDomainList(List<UserPointHistory> entityList) {
+    public static List<UserPointHistory> toDomainList(List<UserPointHistoryEntity> entityList) {
         return entityList.stream()
-                .map(UserPointHistory::toDomain)
+                .map(UserPointHistoryEntity::toDomain)
                 .collect(Collectors.toList());
     }
 }

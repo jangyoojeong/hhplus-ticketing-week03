@@ -1,6 +1,6 @@
 package org.hhplus.ticketing.infra.concert.repository;
 
-import org.hhplus.ticketing.infra.concert.entity.ConcertOption;
+import org.hhplus.ticketing.infra.concert.entity.ConcertOptionEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
-public interface ConcertOptionJpaRepository extends JpaRepository<ConcertOption, Long> {
+public interface ConcertOptionJpaRepository extends JpaRepository<ConcertOptionEntity, Long> {
 
     /**
      * 주어진 콘서트 ID와 현재 시간 이후의 콘서트 일정을 가진 콘서트 옵션들을 조회합니다.
@@ -17,5 +17,5 @@ public interface ConcertOptionJpaRepository extends JpaRepository<ConcertOption,
      * @param currentDateTime 현재 시간
      * @return 주어진 콘서트 ID와 현재 시간 이후의 콘서트 일정을 가진 콘서트 옵션 리스트
      */
-    List<ConcertOption> findByConcertIdAndConcertAtAfter(Long concertId, LocalDateTime currentDateTime);
+    List<ConcertOptionEntity> findByConcertIdAndConcertAtAfter(Long concertId, LocalDateTime currentDateTime);
 }

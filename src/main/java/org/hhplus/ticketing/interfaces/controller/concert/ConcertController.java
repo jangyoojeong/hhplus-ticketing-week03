@@ -27,10 +27,10 @@ public class ConcertController {
      * @param concertId 조회할 콘서트의 고유 ID
      * @return 예약 가능한 날짜 목록을 포함한 응답 객체
      */
-    @GetMapping("/{concertId}/dates-for-reservation")
+    @GetMapping("/{concertId}/available-dates")
     @Operation(summary = "예약 가능 날짜 조회 API", description = "특정 콘서트에 대해 예약 가능한 날짜를 조회합니다.")
-    public ResponseEntity<ConcertResponse.DatesForReservationResponse> getDatesForReservation (@PathVariable Long concertId) {
-            ConcertResponse.DatesForReservationResponse response = ConcertResponse.DatesForReservationResponse.from(concertFacade.getDatesForReservation(concertId));
+    public ResponseEntity<ConcertResponse.getAvailableDatesResponse> getAvailableDates(@PathVariable Long concertId) {
+            ConcertResponse.getAvailableDatesResponse response = ConcertResponse.getAvailableDatesResponse.from(concertFacade.getAvailableDates(concertId));
             return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
@@ -40,10 +40,10 @@ public class ConcertController {
      * @param concertOptionId 조회할 콘서트의 고유 ID
      * @return 예약 가능한 좌석 목록을 포함한 응답 객체
      */
-    @GetMapping("/{concertOptionId}/seats-for-reservation")
+    @GetMapping("/{concertOptionId}/available-seats")
     @Operation(summary = "예약 가능 좌석 조회 API", description = "특정 콘서트 옵션에 대해 예약 가능한 좌석을 조회합니다.")
-    public ResponseEntity<ConcertResponse.SeatsForReservationResponse> getSeatsForReservation (@PathVariable Long concertOptionId) {
-        ConcertResponse.SeatsForReservationResponse response = ConcertResponse.SeatsForReservationResponse.from(concertFacade.getSeatsForReservation(concertOptionId));
+    public ResponseEntity<ConcertResponse.getAvailableSeatsResponse> getAvailableSeats(@PathVariable Long concertOptionId) {
+        ConcertResponse.getAvailableSeatsResponse response = ConcertResponse.getAvailableSeatsResponse.from(concertFacade.getAvailableSeats(concertOptionId));
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 

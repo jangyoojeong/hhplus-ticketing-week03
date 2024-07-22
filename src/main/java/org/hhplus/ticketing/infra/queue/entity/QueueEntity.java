@@ -5,8 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hhplus.ticketing.domain.queue.model.QueueDomain;
-import org.hhplus.ticketing.domain.queue.model.enums.TokenStatus;
+import org.hhplus.ticketing.domain.queue.model.Queue;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -19,7 +18,7 @@ import java.util.stream.Collectors;
 @Builder
 @Entity
 @Table(name = "queue")
-public class Queue {
+public class QueueEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -34,7 +33,7 @@ public class Queue {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
-    private TokenStatus status;             // 토큰상태 (ACTIVE/WAITING/EXPIRED)
+    private Queue.Status status;             // 토큰상태 (ACTIVE/WAITING/EXPIRED)
 
     @Column(name = "entered_at")
     private LocalDateTime enteredAt;        // 입장시간
@@ -59,8 +58,8 @@ public class Queue {
         updatedAt = LocalDateTime.now();
     }
 
-    public static Queue from(QueueDomain domain) {
-        return Queue.builder()
+    public static QueueEntity from(Queue domain) {
+        return QueueEntity.builder()
                 .queueId(domain.getQueueId())
                 .userId(domain.getUserId())
                 .token(domain.getToken())
@@ -69,8 +68,8 @@ public class Queue {
                 .build();
     }
 
-    public static QueueDomain toDomain(Queue entity) {
-        return QueueDomain.builder()
+    public static Queue toDomain(QueueEntity entity) {
+        return Queue.builder()
                 .queueId(entity.getQueueId())
                 .userId(entity.getUserId())
                 .token(entity.getToken())
@@ -79,9 +78,9 @@ public class Queue {
                 .build();
     }
 
-    public static List<QueueDomain> toDomainList(List<Queue> entityList) {
+    public static List<Queue> toDomainList(List<QueueEntity> entityList) {
         return entityList.stream()
-                .map(Queue::toDomain)
+                .map(QueueEntity::toDomain)
                 .collect(Collectors.toList());
     }
 }

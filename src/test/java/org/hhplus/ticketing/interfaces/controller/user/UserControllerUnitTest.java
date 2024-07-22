@@ -36,19 +36,19 @@ public class UserControllerUnitTest {
     }
 
     @Test
-    @DisplayName("[성공테스트] 잔액_충전_컨트롤러_테스트_기존_0포인트_충전_후_50000_포인트_리턴_확인")
+    @DisplayName("🟢 잔액_충전_컨트롤러_테스트_기존_0포인트_충전_후_50000_포인트_리턴_확인")
     void addUserPointTest_잔액_충전_컨트롤러_테스트_기존_0포인트_충전_후_50000_포인트_리턴_확인 () throws Exception {
         // Given
         int currentPoints = 0;
 
-        UserRequest.AddPointRequest request = new UserRequest.AddPointRequest(userId, 50000);
-        UserResult.AddPointResult result = new UserResult.AddPointResult(userId, currentPoints + 50000);
-        UserResponse.AddPointResponse response = UserResponse.AddPointResponse.from(result);
+        UserRequest.ChargePointRequest request = new UserRequest.ChargePointRequest(userId, 50000);
+        UserResult.ChargePointResult result = new UserResult.ChargePointResult(userId, currentPoints + 50000);
+        UserResponse.ChargePointResponse response = UserResponse.ChargePointResponse.from(result);
 
-        given(userFacade.addUserPoint(any(UserCommand.AddPointCommand.class))).willReturn(result);
+        given(userFacade.chargePoint(any(UserCommand.ChargePointCommand.class))).willReturn(result);
 
         // When
-        ResponseEntity<UserResponse.AddPointResponse> responseEntity = userController.addUserPoint(request);
+        ResponseEntity<UserResponse.ChargePointResponse> responseEntity = userController.addUserPoint(request);
 
         // Then
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
@@ -56,13 +56,13 @@ public class UserControllerUnitTest {
     }
     
     @Test
-    @DisplayName("[성공테스트] 잔액_충전_컨트롤러_테스트_조회_후_50000_포인트_리턴_확인")
+    @DisplayName("🟢 잔액_충전_컨트롤러_테스트_조회_후_50000_포인트_리턴_확인")
     void getUserPointTest_잔액_충전_컨트롤러_테스트_조회_후_50000_포인트_리턴_확인 () throws Exception {
         // Given
         UserResult.UserPointResult result = new UserResult.UserPointResult(userId, 50000);
         UserResponse.UserPointResponse response = UserResponse.UserPointResponse.from(result);
 
-        given(userFacade.getUserPoint(userId)).willReturn(result);
+        given(userFacade.getPoint(userId)).willReturn(result);
 
         // When
         ResponseEntity<UserResponse.UserPointResponse> responseEntity = userController.getUserPoint(userId);

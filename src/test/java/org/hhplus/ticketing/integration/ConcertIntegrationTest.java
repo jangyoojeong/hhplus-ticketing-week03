@@ -5,9 +5,7 @@ import org.hhplus.ticketing.domain.common.exception.CustomException;
 import org.hhplus.ticketing.domain.common.exception.ErrorCode;
 import org.hhplus.ticketing.domain.concert.ConcertRepository;
 import org.hhplus.ticketing.domain.concert.model.*;
-import org.hhplus.ticketing.domain.concert.model.enums.ReservationStatus;
-import org.hhplus.ticketing.domain.concert.model.enums.SeatStatus;
-import org.hhplus.ticketing.domain.user.model.UserInfoDomain;
+import org.hhplus.ticketing.domain.user.model.UserInfo;
 import org.hhplus.ticketing.utils.TestDataInitializer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -45,10 +43,10 @@ public class ConcertIntegrationTest {
     @Autowired
     TestDataInitializer testDataInitializer;
 
-    private List<UserInfoDomain> savedusers;
-    private ConcertDomain savedConcert;
-    private List<ConcertOptionDomain> savedConcertOptions;
-    private List<ConcertSeatDomain> savedconcertSeats;
+    private List<UserInfo> savedusers;
+    private Concert savedConcert;
+    private List<ConcertOption> savedConcertOptions;
+    private List<ConcertSeat> savedconcertSeats;
 
     private Long userId;
     private Long concertId;
@@ -76,47 +74,47 @@ public class ConcertIntegrationTest {
 
         // 예약정보 초기데이터 적재
         // 만료대상 X
-        ReservationDomain reservation1 = ReservationDomain.builder()
+        Reservation reservation1 = Reservation.builder()
                 .concertSeatId(concertSeatId2)
                 .userId(userId)
                 .reservationAt(LocalDateTime.now())
-                .status(ReservationStatus.RESERVED)
+                .status(Reservation.Status.RESERVED)
                 .build();
         concertRepository.saveReservation(reservation1);
 
         // 만료대상 O
-        ReservationDomain reservation2 = ReservationDomain.builder()
+        Reservation reservation2 = Reservation.builder()
                 .concertSeatId(concertSeatId3)
                 .userId(userId)
                 .reservationAt(LocalDateTime.now().minusMinutes(6))
-                .status(ReservationStatus.RESERVED)
+                .status(Reservation.Status.RESERVED)
                 .build();
         concertRepository.saveReservation(reservation2);
 
-        ConcertSeatDomain concertSeat1 = savedconcertSeats.get(1);
-        concertSeat1.updateSeatReserved();
+        ConcertSeat concertSeat1 = savedconcertSeats.get(1);
+        concertSeat1.setReserved();
         concertRepository.saveSeat(concertSeat1);
 
-        ConcertSeatDomain concertSeat2 = savedconcertSeats.get(2);
-        concertSeat2.updateSeatReserved();
+        ConcertSeat concertSeat2 = savedconcertSeats.get(2);
+        concertSeat2.setReserved();
         concertRepository.saveSeat(concertSeat2);
     }
 
     @Test
-    @DisplayName("[성공테스트] 예약_가능한_날짜_조회_테스트_적재된_2건의_데이터에서_필터링된_리스트와_리턴된_리스트가_일치한다")
+    @DisplayName("🟢 예약_가능한_날짜_조회_테스트_적재된_2건의_데이터에서_필터링된_리스트와_리턴된_리스트가_일치한다")
     void getDatesForReservationTest_예약_가능한_날짜_조회_테스트_적재된_2건의_데이터에서_필터링된_리스트와_리턴된_리스트가_일치한다() {
 
         // Given
         // 초기 적재 데이터에서 조회할 concertId 의 예약가능한상태(콘서트일자가 현재일 이후) 콘서트옵션리스트 세팅
-        List<ConcertOptionDomain> availableConcertDates = savedConcertOptions.stream()
+        List<ConcertOption> availableConcertDates = savedConcertOptions.stream()
                 .filter(option -> option.getConcertId().equals(concertId))
                 .filter(option -> option.getConcertAt().isAfter(LocalDateTime.now())) // 현재 날짜 이후 필터링
                 .collect(Collectors.toList());
 
-        ConcertResult.DatesForReservationResult expectedResult = ConcertResult.DatesForReservationResult.from(availableConcertDates);
+        ConcertResult.getAvailableDatesResult expectedResult = ConcertResult.getAvailableDatesResult.from(availableConcertDates);
 
         // When
-        ConcertResult.DatesForReservationResult actualResult = concertFacade.getDatesForReservation(concertId);
+        ConcertResult.getAvailableDatesResult actualResult = concertFacade.getAvailableDates(concertId);
 
         // Then
         assertNotNull(actualResult);
@@ -124,20 +122,20 @@ public class ConcertIntegrationTest {
     }
 
     @Test
-    @DisplayName("[성공테스트] 예약_가능한_좌석_조회_테스트_적재된_좌석_데이터에서_필터링된_리스트와_리턴된_리스트가_일치한다")
+    @DisplayName("🟢 예약_가능한_좌석_조회_테스트_적재된_좌석_데이터에서_필터링된_리스트와_리턴된_리스트가_일치한다")
     void getSeatsForReservationTest_예약_가능한_좌석_조회_테스트_적재된_좌석_데이터에서_필터링된_리스트와_리턴된_리스트가_일치한다() {
 
         // Given
         // 초기 적재 데이터에서 조회할 concertOptionId 의 AVAILABLE 상태의 좌석리스트 세팅
-        List<ConcertSeatDomain> availableConcertSeats = savedconcertSeats.stream()
+        List<ConcertSeat> availableConcertSeats = savedconcertSeats.stream()
                 .filter(seat -> seat.getConcertOptionId().equals(concertOptionId))
-                .filter(seat -> seat.getStatus() == SeatStatus.AVAILABLE)
+                .filter(seat -> seat.getStatus() == ConcertSeat.Status.AVAILABLE)
                 .collect(Collectors.toList());
 
-        ConcertResult.SeatsForReservationResult expectedResult = ConcertResult.SeatsForReservationResult.from(availableConcertSeats);
+        ConcertResult.getAvailableSeatsResult expectedResult = ConcertResult.getAvailableSeatsResult.from(availableConcertSeats);
 
         // When
-        ConcertResult.SeatsForReservationResult actualResult = concertFacade.getSeatsForReservation(concertOptionId);
+        ConcertResult.getAvailableSeatsResult actualResult = concertFacade.getAvailableSeats(concertOptionId);
 
         // Then
         assertNotNull(actualResult);
@@ -145,7 +143,7 @@ public class ConcertIntegrationTest {
     }
 
     @Test
-    @DisplayName("[성공테스트] 좌석_예약_테스트_좌석_예약_성공시_예약된_정보가_반환된다")
+    @DisplayName("🟢 좌석_예약_테스트_좌석_예약_성공시_예약된_정보가_반환된다")
     void reserveSeatTest_좌석_예약_테스트_좌석_예약_성공시_예약된_정보가_반환된다() {
         // Given
         ConcertCommand.ReserveSeatCommand command = new ConcertCommand.ReserveSeatCommand(userId, concertSeatId1);
@@ -154,7 +152,7 @@ public class ConcertIntegrationTest {
         ConcertResult.ReserveSeatResult actualResult = concertFacade.reserveSeat(command);
 
         // Then
-        List<ReservationDomain> userReservations = concertRepository.findByUserId(userId);
+        List<Reservation> userReservations = concertRepository.findByUserId(userId);
         assertNotNull(actualResult);
         // 기존 2건에 1건이 추가된 3건이 리턴된다
         assertThat(userReservations).hasSize(3);
@@ -162,7 +160,7 @@ public class ConcertIntegrationTest {
     }
 
     @Test
-    @DisplayName("[실패테스트] 좌석_예약_테스트_해당_좌석이_예약가능한_상태가_아닐_경우_SEAT_NOT_FOUND_예외반환")
+    @DisplayName("🔴 좌석_예약_테스트_해당_좌석이_예약가능한_상태가_아닐_경우_SEAT_NOT_FOUND_예외반환")
     void reserveSeatTest_좌석_예약_테스트_해당_좌석이_예약가능한_상태가_아닐_경우_SEAT_NOT_FOUND_예외반환() {
         // Given
         ConcertCommand.ReserveSeatCommand command = new ConcertCommand.ReserveSeatCommand(userId, concertSeatId1);
@@ -178,7 +176,7 @@ public class ConcertIntegrationTest {
     }
 
     @Test
-    @DisplayName("[실패테스트] 좌석_예약_테스트_여러_스레드에서_동시에_좌석_예약시_하나를_제외하고_전부_실패해야한다")
+    @DisplayName("🔴 좌석_예약_테스트_여러_스레드에서_동시에_좌석_예약시_하나를_제외하고_전부_실패해야한다")
     void concurrentReserveSeatTest_좌석_예약_테스트_여러_스레드에서_동시에_좌석_예약시_하나를_제외하고_전부_실패해야한다() throws InterruptedException, ExecutionException {
 
         // Given
@@ -216,7 +214,7 @@ public class ConcertIntegrationTest {
         }
 
         // 예약 성공 결과 확인 (단 하나의 예약만 성공했는지 확인)
-        List<ReservationDomain> userReservations = concertRepository.findByUserId(userId);
+        List<Reservation> userReservations = concertRepository.findByUserId(userId);
         assertThat(userReservations).hasSize(1);
 
         // 예외 발생 스레드 개수 체크 (단 하나의 스레드만 성공했는지 검증)
@@ -225,29 +223,29 @@ public class ConcertIntegrationTest {
     }
 
     @Test
-    @DisplayName("[성공테스트] 임시_예약_만료_처리_테스트_총_2건_중_만료대상_1건이_만료된다")
+    @DisplayName("🟢 임시_예약_만료_처리_테스트_총_2건_중_만료대상_1건이_만료된다")
     void releaseTemporaryReservationsTest_임시_예약_만료_처리_테스트_총_2건_중_만료대상_1건이_만료된다() {
 
         // Given
         // When
         concertFacade.releaseTemporaryReservations();
 
-        List<ReservationDomain> expiredReservations = concertRepository.findReservedBefore(LocalDateTime.now().minusMinutes(5));
+        List<Reservation> expiredReservations = concertRepository.getExpiredReservations(LocalDateTime.now().minusMinutes(5));
         assertThat(expiredReservations).hasSize(0);
     }
 
     @Test
-    @DisplayName("[성공테스트] 만료_예약_좌석_상태_갱신_테스트_만료된_1건의_좌석상태가_사용가능으로_갱신된다")
+    @DisplayName("🟢 만료_예약_좌석_상태_갱신_테스트_만료된_1건의_좌석상태가_사용가능으로_갱신된다")
     void releaseTemporaryReservationsTest_만료_예약_좌석_상태_갱신_테스트_만료된_1건의_좌석상태가_사용가능으로_갱신된다() {
 
         // Given
         // When
         concertFacade.releaseTemporaryReservations();
 
-        Optional<ConcertSeatDomain> seatInfo1 = concertRepository.findSeatById(concertSeatId2);
-        Optional<ConcertSeatDomain> seatInfo2 = concertRepository.findSeatById(concertSeatId3);
+        Optional<ConcertSeat> seatInfo1 = concertRepository.findSeatById(concertSeatId2);
+        Optional<ConcertSeat> seatInfo2 = concertRepository.findSeatById(concertSeatId3);
 
-        assertThat(seatInfo1.get().getStatus()).isEqualTo(SeatStatus.RESERVED);
-        assertThat(seatInfo2.get().getStatus()).isEqualTo(SeatStatus.AVAILABLE);
+        assertThat(seatInfo1.get().getStatus()).isEqualTo(ConcertSeat.Status.RESERVED);
+        assertThat(seatInfo2.get().getStatus()).isEqualTo(ConcertSeat.Status.AVAILABLE);
     }
 }
