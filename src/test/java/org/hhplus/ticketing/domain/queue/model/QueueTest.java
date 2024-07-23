@@ -2,6 +2,7 @@ package org.hhplus.ticketing.domain.queue.model;
 
 import org.hhplus.ticketing.domain.common.exception.CustomException;
 import org.hhplus.ticketing.domain.common.exception.ErrorCode;
+import org.hhplus.ticketing.domain.queue.model.constants.QueueConstants;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -21,7 +22,7 @@ class QueueTest {
         Long userId = 1L;
 
         // When
-        Queue queue = Queue.createActive(userId);
+        Queue queue = Queue.create(0L, userId);
 
         // Then
         assertThat(queue.getUserId()).isEqualTo(userId);
@@ -37,7 +38,7 @@ class QueueTest {
         Long userId = 1L;
 
         // When
-        Queue queue = Queue.createWaiting(userId);
+        Queue queue = Queue.create((long) QueueConstants.MAX_ACTIVE_USERS, userId);
 
         // Then
         assertThat(queue.getUserId()).isEqualTo(userId);

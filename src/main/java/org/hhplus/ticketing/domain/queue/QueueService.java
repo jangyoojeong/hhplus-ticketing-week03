@@ -37,19 +37,9 @@ public class QueueService {
      */
     @Transactional(rollbackFor = {Exception.class})
     public QueueResult.IssueTokenResult issueToken(QueueCommand.IssueTokenCommand command) {
-        Queue queue = createQueue(command.getUserId());
-        return QueueResult.IssueTokenResult.from(queueRepository.save(queue));
-    }
-
-    /**
-     * 대기열 정보를 확인하여 초기 객체를 세팅합니다.
-     *
-     * @param userId 초기 객체 세팅할 사용자 ID
-     * @return queue 초기 객체
-     */
-    private Queue createQueue(Long userId) {
         Long activeCount = queueRepository.countByStatus(Queue.Status.ACTIVE);
-        return activeCount < QueueConstants.MAX_ACTIVE_USERS ? Queue.createActive(userId) : Queue.createWaiting(userId);
+        Queue queue = Queue.create(activeCount, command.getUserId());
+        return QueueResult.IssueTokenResult.from(queueRepository.save(queue));
     }
 
     /**

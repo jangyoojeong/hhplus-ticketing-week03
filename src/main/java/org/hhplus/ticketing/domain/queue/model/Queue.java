@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hhplus.ticketing.domain.common.exception.CustomException;
 import org.hhplus.ticketing.domain.common.exception.ErrorCode;
+import org.hhplus.ticketing.domain.queue.model.constants.QueueConstants;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -24,22 +25,13 @@ public class Queue {
     private LocalDateTime enteredAt;             // 입장시간
     private LocalDateTime createAt;              // 생성시간
 
-    public static Queue createActive(Long userId) {
+    public static Queue create(Long activeCount, Long userId) {
         return Queue.builder()
                 .userId(userId)
                 .token(UUID.randomUUID())
-                .status(Status.ACTIVE)
-                .enteredAt(LocalDateTime.now())
                 .createAt(LocalDateTime.now())
-                .build();
-    }
-
-    public static Queue createWaiting(Long userId) {
-        return Queue.builder()
-                .userId(userId)
-                .token(UUID.randomUUID())
-                .status(Status.WAITING)
-                .createAt(LocalDateTime.now())
+                .status(activeCount < QueueConstants.MAX_ACTIVE_USERS ? Status.ACTIVE : Status.WAITING)
+                .enteredAt(activeCount < QueueConstants.MAX_ACTIVE_USERS ? LocalDateTime.now() : null)
                 .build();
     }
 

@@ -14,6 +14,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.data.domain.Pageable;
 
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -45,7 +46,13 @@ public class QueueServiceTest {
 
         // Given
         Long userId = 1L;
-        Queue queue = Queue.createActive(userId);
+        Queue queue = Queue.builder()
+                .userId(userId)
+                .token(UUID.randomUUID())
+                .status(Queue.Status.ACTIVE)
+                .enteredAt(LocalDateTime.now())
+                .createAt(LocalDateTime.now())
+                .build();
         given(queueRepository.save(any(Queue.class))).willReturn(queue);
 
         // When
@@ -63,7 +70,14 @@ public class QueueServiceTest {
     void getQueueStatusTest_대기열_상태_조회_테스트_대기열_정보를_정상적으로_반환한다() {
 
         // Given
-        Queue queue = Queue.createActive(1L);
+        Long userId = 1L;
+        Queue queue = Queue.builder()
+                .userId(userId)
+                .token(UUID.randomUUID())
+                .status(Queue.Status.ACTIVE)
+                .enteredAt(LocalDateTime.now())
+                .createAt(LocalDateTime.now())
+                .build();
         queue.setToken(UUID.randomUUID());
         given(queueRepository.findByToken(any(UUID.class))).willReturn(Optional.of(queue));
         given(queueRepository.getLastActiveQueue(Queue.Status.ACTIVE)).willReturn(Optional.empty());
@@ -96,7 +110,13 @@ public class QueueServiceTest {
     void validateTokenTest_토큰_검증_테스트_유효한토큰() {
 
         // Given
-        Queue queue = Queue.createWaiting(1L);
+        Long userId = 1L;
+        Queue queue = Queue.builder()
+                .userId(userId)
+                .token(UUID.randomUUID())
+                .status(Queue.Status.WAITING)
+                .createAt(LocalDateTime.now())
+                .build();
         given(queueRepository.findByToken(any(UUID.class))).willReturn(Optional.of(queue));
 
         // When & Then
@@ -125,7 +145,14 @@ public class QueueServiceTest {
     void expireTokenTest_토큰_만료_테스트_토큰만료_후_결과를_정상적으로_반환한다() {
 
         // Given
-        Queue queue = Queue.createActive(1L);
+        Long userId = 1L;
+        Queue queue = Queue.builder()
+                .userId(userId)
+                .token(UUID.randomUUID())
+                .status(Queue.Status.ACTIVE)
+                .enteredAt(LocalDateTime.now())
+                .createAt(LocalDateTime.now())
+                .build();
         given(queueRepository.findByToken(any(UUID.class))).willReturn(Optional.of(queue));
         given(queueRepository.save(any(Queue.class))).willReturn(queue);
 

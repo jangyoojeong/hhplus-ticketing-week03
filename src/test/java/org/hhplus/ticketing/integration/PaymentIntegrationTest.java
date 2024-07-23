@@ -24,6 +24,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -74,7 +75,13 @@ public class PaymentIntegrationTest {
         price = savedconcertSeats.get(0).getPrice();
 
         // 초기 활성화 토큰 적재
-        Queue queue = Queue.createActive(userId);
+        Queue queue = Queue.builder()
+                .userId(userId)
+                .token(UUID.randomUUID())
+                .status(Queue.Status.ACTIVE)
+                .enteredAt(LocalDateTime.now())
+                .createAt(LocalDateTime.now())
+                .build();
         Queue savedQueue = queueRepository.save(queue);
         token = savedQueue.getToken();
 
@@ -125,7 +132,7 @@ public class PaymentIntegrationTest {
         assertNotNull(actualResult);
         assertTrue(paymentDomain.isPresent(), "결제 정보가 적재되지 않았습니다.");
     }
-    
+
     @Test
     @DisplayName("🟢 결제_요청_통합_테스트_결제가_성공하고_좌석_소유권이_배정된다")
     void requestPaymentTest_결제_요청_통합_테스트_결제가_성공하고_좌석_소유권이_배정된다() {
@@ -143,7 +150,7 @@ public class PaymentIntegrationTest {
         assertEquals(Reservation.Status.OCCUPIED, reservation.get().getStatus());
         assertEquals(ConcertSeat.Status.OCCUPIED, seat.get().getStatus());
     }
-    
+
     @Test
     @DisplayName("🟢 결제_요청_통합_테스트_결제가_성공하고_대기열_토큰이_만료된다")
     void requestPaymentTest_결제_요청_통합_테스트_결제가_성공하고_대기열_토큰이_만료된다() {

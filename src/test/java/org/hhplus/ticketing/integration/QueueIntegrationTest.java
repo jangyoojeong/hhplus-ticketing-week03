@@ -78,7 +78,7 @@ public class QueueIntegrationTest {
         // 모든 활성화 슬롯 채우기
         int maxActiveUsers = QueueConstants.MAX_ACTIVE_USERS;
         for (int i = 0; i < maxActiveUsers; i++) {
-            Queue activeQueue = Queue.createActive((long) i);
+            Queue activeQueue = Queue.create((long) i, (long) i);
             queueRepository.save(activeQueue);
         }
 
@@ -129,14 +129,14 @@ public class QueueIntegrationTest {
         // 모든 활성화 슬롯 채우기
         int maxActiveUsers = QueueConstants.MAX_ACTIVE_USERS;
         for (int i = 0; i < maxActiveUsers; i++) {
-            Queue activeQueue = Queue.createActive((long) i);
+            Queue activeQueue = Queue.create((long) i, (long) i);
             queueRepository.save(activeQueue);
         }
 
         // 대기열 채우기 (9명)
         for (int i = 0; i < 9; i++) {
-            Queue activeQueue = Queue.createWaiting((long) maxActiveUsers + i);
-            queueRepository.save(activeQueue);
+            Queue watingQueue = Queue.create((long) maxActiveUsers, (long) i);
+            queueRepository.save(watingQueue);
         }
 
         // 10번째 대기열 토큰 발급
@@ -176,12 +176,12 @@ public class QueueIntegrationTest {
 
         // Given
         // 활성화토큰1 (만료대상토큰)
-        Queue activeQueue1 = Queue.createActive(1L);
+        Queue activeQueue1 = Queue.create(1L, 1L);
         activeQueue1.setEnteredAt(LocalDateTime.now().minusMinutes(QueueConstants.TOKEN_EXPIRATION_MINUTES - 1));
         queueRepository.save(activeQueue1);
 
         // 활성화토큰2 (만료대상이 아닌 토큰)
-        Queue activeQueue2 = Queue.createActive(2L);
+        Queue activeQueue2 = Queue.create(2L, 2L);
         activeQueue2.setEnteredAt(LocalDateTime.now().minusMinutes(QueueConstants.TOKEN_EXPIRATION_MINUTES + 1));
         queueRepository.save(activeQueue2);
 
@@ -202,17 +202,31 @@ public class QueueIntegrationTest {
 
         // Given
         // 활성화토큰1
-        Queue activeQueue1 = Queue.createActive(3L);
+        Queue activeQueue1 = Queue.builder()
+                .userId(3L)
+                .token(UUID.randomUUID())
+                .status(Queue.Status.ACTIVE)
+                .enteredAt(LocalDateTime.now())
+                .createAt(LocalDateTime.now())
+                .build();
         queueRepository.save(activeQueue1);
 
         // 대기토큰1 (대기순서1)
-        Queue waitingQueue1 = Queue.createWaiting(4L);
-        waitingQueue1.setCreateAt(LocalDateTime.now().minusMinutes(10));
+        Queue waitingQueue1 = Queue.builder()
+                .userId(4L)
+                .token(UUID.randomUUID())
+                .status(Queue.Status.WAITING)
+                .createAt(LocalDateTime.now().minusMinutes(10))
+                .build();
         queueRepository.save(waitingQueue1);
 
         // 대기토큰2 (대기순서2)
-        Queue waitingQueue2 = Queue.createWaiting(5L);
-        waitingQueue2.setCreateAt(LocalDateTime.now().minusMinutes(5));
+        Queue waitingQueue2 = Queue.builder()
+                .userId(5L)
+                .token(UUID.randomUUID())
+                .status(Queue.Status.WAITING)
+                .createAt(LocalDateTime.now().minusMinutes(5))
+                .build();
         queueRepository.save(waitingQueue2);
 
         // When
@@ -235,13 +249,17 @@ public class QueueIntegrationTest {
         // 모든 활성화 슬롯을 채워서 대기 중인 토큰이 활성화될 수 없도록 설정
         int maxActiveUsers = QueueConstants.MAX_ACTIVE_USERS;
         for (int i = 0; i < maxActiveUsers; i++) {
-            Queue activeQueue = Queue.createActive((long) (i + 4));
+            Queue activeQueue = Queue.create((long) i, (long) i);
             queueRepository.save(activeQueue);
         }
 
         // 대기토큰1 (대기순서1)
-        Queue waitingQueue1 = Queue.createWaiting(4L);
-        waitingQueue1.setCreateAt(LocalDateTime.now().minusMinutes(10));
+        Queue waitingQueue1 = Queue.builder()
+                .userId(4L)
+                .token(UUID.randomUUID())
+                .status(Queue.Status.WAITING)
+                .createAt(LocalDateTime.now().minusMinutes(10))
+                .build();
         queueRepository.save(waitingQueue1);
 
         // When

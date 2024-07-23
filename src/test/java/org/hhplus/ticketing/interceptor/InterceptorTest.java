@@ -20,6 +20,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -55,7 +56,13 @@ class InterceptorTest {
     void validateTokenTest_인터셉터_토큰_검증_테스트_ACTIVE_토큰은_200상태코드를_응답한다() {
 
         // Given
-        Queue savedQueue = queueRepository.save(Queue.createActive(userId));
+        Queue savedQueue = queueRepository.save(Queue.builder()
+                .userId(userId)
+                .token(UUID.randomUUID())
+                .status(Queue.Status.ACTIVE)
+                .enteredAt(LocalDateTime.now())
+                .createAt(LocalDateTime.now())
+                .build());
 
         // HTTP 헤더에 인증 토큰 추가
         HttpHeaders headers = new HttpHeaders();
@@ -79,7 +86,12 @@ class InterceptorTest {
     @DisplayName("🔴 인터셉터_토큰_검증_테스트_WAITING_토큰은_INVALID_TOKEN_코드를_응답한다")
     void validateTokenTest_인터셉터_토큰_검증_테스트_WAITING_토큰은_INVALID_TOKEN_코드를_응답한다() {
         // Given
-        Queue savedQueue = queueRepository.save(Queue.createWaiting(userId));
+        Queue savedQueue = queueRepository.save(Queue.builder()
+                .userId(userId)
+                .token(UUID.randomUUID())
+                .status(Queue.Status.WAITING)
+                .createAt(LocalDateTime.now())
+                .build());
 
         // HTTP 헤더에 인증 토큰 추가
         HttpHeaders headers = new HttpHeaders();
