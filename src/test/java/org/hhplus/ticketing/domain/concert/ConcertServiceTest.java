@@ -56,7 +56,7 @@ public class ConcertServiceTest {
         given(concertRepository.getAvailableDates(anyLong(), any(LocalDateTime.class))).willReturn(concertOptions);
 
         // When
-        ConcertResult.getAvailableDatesResult result = concertService.getAvailableDates(1L);
+        ConcertResult.GetAvailableDatesResult result = concertService.getAvailableDates(1L);
 
         // Then
         assertNotNull(result);
@@ -73,7 +73,7 @@ public class ConcertServiceTest {
         given(concertRepository.getAvailableSeats(anyLong())).willReturn(concertSeats);
 
         // When
-        ConcertResult.getAvailableSeatsResult result = concertService.getAvailableSeats(1L);
+        ConcertResult.GetAvailableSeatsResult result = concertService.getAvailableSeats(1L);
 
         // Then
         assertNotNull(result);
@@ -162,7 +162,7 @@ public class ConcertServiceTest {
         given(concertRepository.saveSeat(any(ConcertSeat.class))).willReturn(seat);
 
         // When
-        ConcertResult.assignSeatResult result = concertService.assignSeat(reservationId);
+        ConcertResult.AssignSeatResult result = concertService.assignSeat(reservationId);
 
         // Then
         assertNotNull(result);

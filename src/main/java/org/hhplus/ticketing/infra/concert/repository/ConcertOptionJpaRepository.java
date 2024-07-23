@@ -2,12 +2,10 @@ package org.hhplus.ticketing.infra.concert.repository;
 
 import org.hhplus.ticketing.infra.concert.entity.ConcertOptionEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Repository
 public interface ConcertOptionJpaRepository extends JpaRepository<ConcertOptionEntity, Long> {
 
     /**

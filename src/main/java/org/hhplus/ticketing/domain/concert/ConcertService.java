@@ -34,8 +34,8 @@ public class ConcertService {
      * @return 예약 가능한 날짜 목록을 포함한 result 객체
      */
     @Transactional(readOnly = true)
-    public ConcertResult.getAvailableDatesResult getAvailableDates(Long concertId) {
-        return ConcertResult.getAvailableDatesResult.from(concertRepository.getAvailableDates(concertId, LocalDateTime.now()));
+    public ConcertResult.GetAvailableDatesResult getAvailableDates(Long concertId) {
+        return ConcertResult.GetAvailableDatesResult.from(concertRepository.getAvailableDates(concertId, LocalDateTime.now()));
     }
 
     /**
@@ -45,8 +45,8 @@ public class ConcertService {
      * @return 예약 가능한 좌석 목록을 포함한 result 객체
      */
     @Transactional(readOnly = true)
-    public ConcertResult.getAvailableSeatsResult getAvailableSeats(Long concertOptionId) {
-        return ConcertResult.getAvailableSeatsResult.from(concertRepository.getAvailableSeats(concertOptionId));
+    public ConcertResult.GetAvailableSeatsResult getAvailableSeats(Long concertOptionId) {
+        return ConcertResult.GetAvailableSeatsResult.from(concertRepository.getAvailableSeats(concertOptionId));
     }
 
     /**
@@ -96,7 +96,7 @@ public class ConcertService {
      * @throws CustomException 예약 또는 좌석 정보가 유효하지 않은 경우 발생
      */
     @Transactional(rollbackFor = {Exception.class})
-    public ConcertResult.assignSeatResult assignSeat(Long reservationId) {
+    public ConcertResult.AssignSeatResult assignSeat(Long reservationId) {
 
         Reservation reservation = getReservation(reservationId);
         reservation.setOccupied();
@@ -106,7 +106,7 @@ public class ConcertService {
                 -> new CustomException(ErrorCode.INVALID_SEAT_SELECTION));
         seat.setOccupied();
 
-        return ConcertResult.assignSeatResult.from(concertRepository.saveSeat(seat));
+        return ConcertResult.AssignSeatResult.from(concertRepository.saveSeat(seat));
     }
 
     /**
@@ -119,15 +119,12 @@ public class ConcertService {
     public void releaseReservations() {
         LocalDateTime expirationTime = LocalDateTime.now().minusMinutes(ConcertConstants.RESERVATION_EXPIRATION_MINUTES);
         List<Reservation> expiredReservations = concertRepository.getExpiredReservations(expirationTime);
+        expiredReservations.forEach(Reservation::setExpired);
+        concertRepository.saveAllReservation(expiredReservations);
 
-        if (!expiredReservations.isEmpty()) {
-            expiredReservations.forEach(Reservation::setExpired);
-            concertRepository.saveAllReservation(expiredReservations);
+        log.info("만료된 예약 정보 갱신 성공 - 총 {} 건", expiredReservations.size());
 
-            log.info("만료된 예약 정보 갱신 성공 - 총 {} 건", expiredReservations.size());
-
-            releaseSeats(expiredReservations);
-        }
+        releaseSeats(expiredReservations);
     }
 
     /**

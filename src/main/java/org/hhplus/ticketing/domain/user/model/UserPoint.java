@@ -26,7 +26,7 @@ public class UserPoint {
                 .build();
     }
 
-    public static UserPoint creat(Long userId) {
+    public static UserPoint create(Long userId) {
         return UserPoint.builder()
                 .userId(userId)
                 .point(0)
@@ -48,12 +48,5 @@ public class UserPoint {
             throw new CustomException(ErrorCode.INSUFFICIENT_POINTS);
         }
         this.point -= amount;
-    }
-
-    public static UserPoint from (UserCommand.ChargePointCommand command) {
-        return UserPoint.builder()
-                .userId(command.getUserId())
-                .point(command.getAmount())
-                .build();
     }
 }

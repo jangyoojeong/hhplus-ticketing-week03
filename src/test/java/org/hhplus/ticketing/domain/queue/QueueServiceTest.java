@@ -130,7 +130,7 @@ public class QueueServiceTest {
         given(queueRepository.save(any(Queue.class))).willReturn(queue);
 
         // When
-        QueueResult.expireTokenResult result = queueService.expireToken(queue.getToken());
+        QueueResult.ExpireTokenResult result = queueService.expireToken(queue.getToken());
 
         // Then
         assertNotNull(result);

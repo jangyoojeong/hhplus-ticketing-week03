@@ -6,18 +6,18 @@ import org.hhplus.ticketing.domain.concert.model.Concert;
 import org.hhplus.ticketing.domain.concert.model.ConcertOption;
 import org.hhplus.ticketing.domain.concert.model.ConcertSeat;
 import org.hhplus.ticketing.domain.concert.model.Reservation;
-import org.hhplus.ticketing.infra.concert.entity.ConcertSeatEntity;
 import org.hhplus.ticketing.infra.concert.entity.ConcertEntity;
 import org.hhplus.ticketing.infra.concert.entity.ConcertOptionEntity;
+import org.hhplus.ticketing.infra.concert.entity.ConcertSeatEntity;
 import org.hhplus.ticketing.infra.concert.entity.ReservationEntity;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-@Component
+@Repository
 @RequiredArgsConstructor
 public class ConcertRepositoryImpl implements ConcertRepository {
 
@@ -33,7 +33,7 @@ public class ConcertRepositoryImpl implements ConcertRepository {
 
     @Override
     public List<ConcertSeat> getAvailableSeats(Long concertOptionId) {
-        return concertSeatJpaRepository.findByConcertOptionIdAndStatus(concertOptionId).stream()
+        return concertSeatJpaRepository.findByConcertOptionId(concertOptionId).stream()
                 .map(ConcertSeatEntity::toDomain)
                 .collect(Collectors.toList());
     }
@@ -45,7 +45,7 @@ public class ConcertRepositoryImpl implements ConcertRepository {
 
     @Override
     public Optional<Reservation> getActiveReservation(Long reservationId) {
-        return reservationJpaRepository.findByReservationIdAndStatusReserved(reservationId).map(ReservationEntity::toDomain);
+        return reservationJpaRepository.findByReservationId(reservationId).map(ReservationEntity::toDomain);
     }
 
     @Override

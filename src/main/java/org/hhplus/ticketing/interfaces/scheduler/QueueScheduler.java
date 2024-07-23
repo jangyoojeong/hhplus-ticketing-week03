@@ -17,8 +17,8 @@ public class QueueScheduler {
      * 2. 빈자리 만큼 활성화
      */
     @Scheduled(fixedRate = 2 * 60 * 1000)
-    public void updateQueueStatuses() {
-        queueFacade.updateQueueStatuses();
+    public void refreshQueue() {
+        queueFacade.refreshQueue();
     }
 
 }

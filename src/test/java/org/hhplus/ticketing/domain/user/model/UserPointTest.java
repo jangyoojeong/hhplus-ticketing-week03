@@ -27,7 +27,7 @@ class UserPointTest {
     void creatTest_디폴트_유저포인트_객체_생성_테스트_포인트가_0인_객체가_생성된다() {
         Long userId = 1L;
 
-        UserPoint userPoint = UserPoint.creat(userId);
+        UserPoint userPoint = UserPoint.create(userId);
 
         assertThat(userPoint.getUserId()).isEqualTo(userId);
         assertThat(userPoint.getPoint()).isEqualTo(0);

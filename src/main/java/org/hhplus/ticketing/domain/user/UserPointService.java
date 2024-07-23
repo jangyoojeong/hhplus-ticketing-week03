@@ -26,7 +26,7 @@ public class UserPointService {
      */
     private UserPoint getOrCreatePoint (Long userId) {
         return userPointRepository.findByUserId(userId)
-                .orElse(UserPoint.creat(userId));
+                .orElse(UserPoint.create(userId));
     }
 
     /**

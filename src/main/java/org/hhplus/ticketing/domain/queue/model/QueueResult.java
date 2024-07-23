@@ -51,11 +51,11 @@ public class QueueResult {
     @NoArgsConstructor
     @AllArgsConstructor
     @Builder
-    public static class expireTokenResult {
+    public static class ExpireTokenResult {
         private Long userId;                    // 유저ID
 
-        public static expireTokenResult from(Queue domain) {
-            return expireTokenResult.builder()
+        public static ExpireTokenResult from(Queue domain) {
+            return ExpireTokenResult.builder()
                     .userId(domain.getUserId())
                     .build();
         }

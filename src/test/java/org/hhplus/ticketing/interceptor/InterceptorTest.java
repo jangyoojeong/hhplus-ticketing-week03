@@ -66,9 +66,9 @@ class InterceptorTest {
 
         // When
         // API 요청을 발송
-        ResponseEntity<ConcertResponse.getAvailableDatesResponse> response = restTemplate.exchange(
+        ResponseEntity<ConcertResponse.GetAvailableDatesResponse> response = restTemplate.exchange(
                 getBaseUrl() + "/api/concerts/" + concertId + "/available-dates",
-                HttpMethod.GET, entity, ConcertResponse.getAvailableDatesResponse.class);
+                HttpMethod.GET, entity, ConcertResponse.GetAvailableDatesResponse.class);
 
         // Then
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);

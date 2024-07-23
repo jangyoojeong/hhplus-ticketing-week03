@@ -16,7 +16,7 @@ public class ConcertScheduler {
      * 1. 좌석 (예약됨 > 사용가능)
      */
     @Scheduled(fixedRate = 2 * 60 * 1000)
-    public void releaseTemporaryReservations() {
-        concertFacade.releaseTemporaryReservations();
+    public void releaseReservations() {
+        concertFacade.releaseReservations();
     }
 }

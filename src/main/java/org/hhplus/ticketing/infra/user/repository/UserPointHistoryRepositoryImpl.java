@@ -4,11 +4,11 @@ import lombok.RequiredArgsConstructor;
 import org.hhplus.ticketing.domain.user.UserPointHistoryRepository;
 import org.hhplus.ticketing.domain.user.model.UserPointHistory;
 import org.hhplus.ticketing.infra.user.entity.UserPointHistoryEntity;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-@Component
+@Repository
 @RequiredArgsConstructor
 public class UserPointHistoryRepositoryImpl implements UserPointHistoryRepository {
 

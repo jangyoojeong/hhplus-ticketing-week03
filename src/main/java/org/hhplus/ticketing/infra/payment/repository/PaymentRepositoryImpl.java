@@ -4,11 +4,11 @@ import lombok.RequiredArgsConstructor;
 import org.hhplus.ticketing.domain.payment.PaymentRepository;
 import org.hhplus.ticketing.domain.payment.model.Payment;
 import org.hhplus.ticketing.infra.payment.entity.PaymentEntity;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
-@Component
+@Repository
 @RequiredArgsConstructor
 public class PaymentRepositoryImpl implements PaymentRepository {
 

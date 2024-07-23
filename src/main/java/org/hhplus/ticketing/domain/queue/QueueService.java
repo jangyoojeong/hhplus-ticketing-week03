@@ -40,6 +40,7 @@ public class QueueService {
         Queue queue = createQueue(command.getUserId());
         return QueueResult.IssueTokenResult.from(queueRepository.save(queue));
     }
+
     /**
      * 대기열 정보를 확인하여 초기 객체를 세팅합니다.
      *
@@ -110,10 +111,10 @@ public class QueueService {
      * @throws CustomException 토큰 정보가 존재하지 않는 경우
      */
     @Transactional(rollbackFor = {Exception.class})
-    public QueueResult.expireTokenResult expireToken(UUID token) {
+    public QueueResult.ExpireTokenResult expireToken(UUID token) {
         Queue queue = getQueue(token);
         queue.setExpired();
-        return QueueResult.expireTokenResult.from(queueRepository.save(queue));
+        return QueueResult.ExpireTokenResult.from(queueRepository.save(queue));
     }
 
     /**
@@ -131,12 +132,9 @@ public class QueueService {
     private void expire() {
         LocalDateTime expirationTime = LocalDateTime.now().minusMinutes(QueueConstants.TOKEN_EXPIRATION_MINUTES);
         List<Queue> expiredTokens = queueRepository.getExpiredTokens(Queue.Status.ACTIVE, expirationTime);
-
-        if (!expiredTokens.isEmpty()) {
-            expiredTokens.forEach(Queue::setExpired);
-            queueRepository.saveAll(expiredTokens);
-            log.info("총 {}개의 토큰이 만료되었습니다.", expiredTokens.size());
-        }
+        expiredTokens.forEach(Queue::setExpired);
+        queueRepository.saveAll(expiredTokens);
+        log.info("총 {}개의 토큰이 만료되었습니다.", expiredTokens.size());
     }
 
     /**
@@ -150,12 +148,9 @@ public class QueueService {
         if (slotsAvailable > 0) {
             Pageable pageable = PageRequest.of(0, slotsAvailable);
             List<Queue> activeQueues = queueRepository.getActivatableTokens(Queue.Status.WAITING, pageable);
-
-            if (!activeQueues.isEmpty()) {
-                activeQueues.forEach(Queue::setActive);
-                queueRepository.saveAll(activeQueues);
-                log.info("총 {}개의 대기 중인 토큰이 활성화되었습니다.", activeQueues.size());
-            }
+            activeQueues.forEach(Queue::setActive);
+            queueRepository.saveAll(activeQueues);
+            log.info("총 {}개의 대기 중인 토큰이 활성화되었습니다.", activeQueues.size());
         }
     }
 }

@@ -186,7 +186,7 @@ public class QueueIntegrationTest {
         queueRepository.save(activeQueue2);
 
         // When
-        queueFacade.updateQueueStatuses();
+        queueFacade.refreshQueue();
 
         // Then
         Long expiredQueueCnt = queueRepository.countByStatus(Queue.Status.EXPIRED);
@@ -216,7 +216,7 @@ public class QueueIntegrationTest {
         queueRepository.save(waitingQueue2);
 
         // When
-        queueFacade.updateQueueStatuses();
+        queueFacade.refreshQueue();
 
         // Then
         Long activeQueueCnt = queueRepository.countByStatus(Queue.Status.ACTIVE);
@@ -245,7 +245,7 @@ public class QueueIntegrationTest {
         queueRepository.save(waitingQueue1);
 
         // When
-        queueFacade.updateQueueStatuses();
+        queueFacade.refreshQueue();
 
         // Then
         Long activeQueueCnt = queueRepository.countByStatus(Queue.Status.ACTIVE);

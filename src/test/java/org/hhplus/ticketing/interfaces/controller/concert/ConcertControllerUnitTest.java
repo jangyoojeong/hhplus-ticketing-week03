@@ -52,13 +52,13 @@ public class ConcertControllerUnitTest {
                 ConcertOption.create(2L, concertId, LocalDateTime.now().plusDays(13), 50)
         );
 
-        ConcertResult.getAvailableDatesResult result = ConcertResult.getAvailableDatesResult.from(concertOptions);
-        ConcertResponse.getAvailableDatesResponse response = ConcertResponse.getAvailableDatesResponse.from(result);
+        ConcertResult.GetAvailableDatesResult result = ConcertResult.GetAvailableDatesResult.from(concertOptions);
+        ConcertResponse.GetAvailableDatesResponse response = ConcertResponse.GetAvailableDatesResponse.from(result);
 
         given(concertFacade.getAvailableDates(concertId)).willReturn(result);
 
         // When
-        ResponseEntity<ConcertResponse.getAvailableDatesResponse> responseEntity = concertController.getAvailableDates(concertId);
+        ResponseEntity<ConcertResponse.GetAvailableDatesResponse> responseEntity = concertController.getAvailableDates(concertId);
 
         // Then
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
@@ -75,13 +75,13 @@ public class ConcertControllerUnitTest {
                 ConcertSeat.create(2L, concertOptionId, 2, ConcertSeat.Grade.REGULAR, ConcertSeat.Status.AVAILABLE)
         );
 
-        ConcertResult.getAvailableSeatsResult result = ConcertResult.getAvailableSeatsResult.from(concertSeat);
-        ConcertResponse.getAvailableSeatsResponse response = ConcertResponse.getAvailableSeatsResponse.from(result);
+        ConcertResult.GetAvailableSeatsResult result = ConcertResult.GetAvailableSeatsResult.from(concertSeat);
+        ConcertResponse.GetAvailableSeatsResponse response = ConcertResponse.GetAvailableSeatsResponse.from(result);
 
         given(concertFacade.getAvailableSeats(concertOptionId)).willReturn(result);
 
         // When
-        ResponseEntity<ConcertResponse.getAvailableSeatsResponse> responseEntity = concertController.getAvailableSeats(concertOptionId);
+        ResponseEntity<ConcertResponse.GetAvailableSeatsResponse> responseEntity = concertController.getAvailableSeats(concertOptionId);
 
         // Then
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());

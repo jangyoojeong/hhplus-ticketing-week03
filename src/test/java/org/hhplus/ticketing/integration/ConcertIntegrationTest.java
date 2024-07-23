@@ -111,10 +111,10 @@ public class ConcertIntegrationTest {
                 .filter(option -> option.getConcertAt().isAfter(LocalDateTime.now())) // 현재 날짜 이후 필터링
                 .collect(Collectors.toList());
 
-        ConcertResult.getAvailableDatesResult expectedResult = ConcertResult.getAvailableDatesResult.from(availableConcertDates);
+        ConcertResult.GetAvailableDatesResult expectedResult = ConcertResult.GetAvailableDatesResult.from(availableConcertDates);
 
         // When
-        ConcertResult.getAvailableDatesResult actualResult = concertFacade.getAvailableDates(concertId);
+        ConcertResult.GetAvailableDatesResult actualResult = concertFacade.getAvailableDates(concertId);
 
         // Then
         assertNotNull(actualResult);
@@ -132,10 +132,10 @@ public class ConcertIntegrationTest {
                 .filter(seat -> seat.getStatus() == ConcertSeat.Status.AVAILABLE)
                 .collect(Collectors.toList());
 
-        ConcertResult.getAvailableSeatsResult expectedResult = ConcertResult.getAvailableSeatsResult.from(availableConcertSeats);
+        ConcertResult.GetAvailableSeatsResult expectedResult = ConcertResult.GetAvailableSeatsResult.from(availableConcertSeats);
 
         // When
-        ConcertResult.getAvailableSeatsResult actualResult = concertFacade.getAvailableSeats(concertOptionId);
+        ConcertResult.GetAvailableSeatsResult actualResult = concertFacade.getAvailableSeats(concertOptionId);
 
         // Then
         assertNotNull(actualResult);
@@ -228,7 +228,7 @@ public class ConcertIntegrationTest {
 
         // Given
         // When
-        concertFacade.releaseTemporaryReservations();
+        concertFacade.releaseReservations();
 
         List<Reservation> expiredReservations = concertRepository.getExpiredReservations(LocalDateTime.now().minusMinutes(5));
         assertThat(expiredReservations).hasSize(0);
@@ -240,7 +240,7 @@ public class ConcertIntegrationTest {
 
         // Given
         // When
-        concertFacade.releaseTemporaryReservations();
+        concertFacade.releaseReservations();
 
         Optional<ConcertSeat> seatInfo1 = concertRepository.findSeatById(concertSeatId2);
         Optional<ConcertSeat> seatInfo2 = concertRepository.findSeatById(concertSeatId3);

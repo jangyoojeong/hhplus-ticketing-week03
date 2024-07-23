@@ -7,7 +7,6 @@ import org.hhplus.ticketing.domain.payment.PaymentService;
 import org.hhplus.ticketing.domain.payment.model.PaymentCommand;
 import org.hhplus.ticketing.domain.payment.model.PaymentResult;
 import org.hhplus.ticketing.domain.queue.QueueService;
-import org.hhplus.ticketing.domain.queue.model.QueueResult;
 import org.hhplus.ticketing.domain.user.UserPointService;
 import org.hhplus.ticketing.domain.user.model.UserCommand;
 import org.hhplus.ticketing.domain.user.model.UserResult;
@@ -38,7 +37,7 @@ public class PaymentFacade {
     public PaymentResult.PaymentProcessingResult requestPayment(UUID token, PaymentCommand.PaymentProcessingCommand command) {
 
         // 1. 좌석 소유권 배정 (예약됨 > 점유)
-        ConcertResult.assignSeatResult seatResult = concertService.assignSeat(command.getReservationId());
+        ConcertResult.AssignSeatResult seatResult = concertService.assignSeat(command.getReservationId());
 
         // 2. 결제 금액 설정 (좌석 정보의 가격 사용)
         command.setPrice(seatResult.getPrice());
@@ -50,7 +49,7 @@ public class PaymentFacade {
         PaymentResult.PaymentProcessingResult paymentResult = paymentService.requestPayment(command);
 
         // 5. 대기열 토큰 만료 (토큰 정보 없을 시 예외 반환 > "토큰 정보가 존재하지 않습니다.")
-        QueueResult.expireTokenResult queueResult = queueService.expireToken(token);
+        queueService.expireToken(token);
 
         // 6. 결제 결과 객체에 추가 정보 할당
         return paymentResult.toBuilder()

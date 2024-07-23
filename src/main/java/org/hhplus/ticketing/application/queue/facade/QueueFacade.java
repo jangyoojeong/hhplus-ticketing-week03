@@ -44,8 +44,6 @@ public class QueueFacade {
      * @return 대기순번 등 대기열 상태 result 객체
      */
     public QueueResult.QueueStatusResult getQueueStatus(UUID token) {
-
-        // 1. 사용자의 대기열 상태(대기순번 등)를 반환
         return queueService.getQueueStatus(token);
     }
 
@@ -65,7 +63,7 @@ public class QueueFacade {
      * >> 스케줄러 2분 주기 작업 (@Scheduled(fixedRate = 2 * 60 * 1000))
      */
     @Transactional(rollbackFor = {Exception.class})
-    public void updateQueueStatuses() {
+    public void refreshQueue() {
         queueService.refreshQueue();
     }
 }

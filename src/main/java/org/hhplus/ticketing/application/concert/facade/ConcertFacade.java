@@ -22,7 +22,7 @@ public class ConcertFacade {
      * @param concertId 조회할 콘서트의 고유 ID
      * @return 예약 가능한 날짜 목록을 포함한 result 객체
      */
-    public ConcertResult.getAvailableDatesResult getAvailableDates(Long concertId) {
+    public ConcertResult.GetAvailableDatesResult getAvailableDates(Long concertId) {
         return concertService.getAvailableDates(concertId);
     }
 
@@ -32,7 +32,7 @@ public class ConcertFacade {
      * @param concertOptionId 좌석 예약 요청 command 객체
      * @return 예약 가능한 좌석 목록을 포함한 result 객체
      */
-    public ConcertResult.getAvailableSeatsResult getAvailableSeats(Long concertOptionId) {
+    public ConcertResult.GetAvailableSeatsResult getAvailableSeats(Long concertOptionId) {
         return concertService.getAvailableSeats(concertOptionId);
     }
 
@@ -51,7 +51,7 @@ public class ConcertFacade {
      * 1. 좌석 (예약됨 > 사용가능)
      */
     @Transactional(rollbackFor = {Exception.class})
-    public void releaseTemporaryReservations() {
+    public void releaseReservations() {
         concertService.releaseReservations();
     }
 }
