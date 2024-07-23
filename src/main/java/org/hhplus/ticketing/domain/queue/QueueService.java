@@ -132,9 +132,11 @@ public class QueueService {
     private void expire() {
         LocalDateTime expirationTime = LocalDateTime.now().minusMinutes(QueueConstants.TOKEN_EXPIRATION_MINUTES);
         List<Queue> expiredTokens = queueRepository.getExpiredTokens(Queue.Status.ACTIVE, expirationTime);
-        expiredTokens.forEach(Queue::setExpired);
-        queueRepository.saveAll(expiredTokens);
-        log.info("총 {}개의 토큰이 만료되었습니다.", expiredTokens.size());
+        if (!expiredTokens.isEmpty()) {
+            expiredTokens.forEach(Queue::setExpired);
+            queueRepository.saveAll(expiredTokens);
+            log.info("총 {}개의 토큰이 만료되었습니다.", expiredTokens.size());
+        }
     }
 
     /**
@@ -148,9 +150,11 @@ public class QueueService {
         if (slotsAvailable > 0) {
             Pageable pageable = PageRequest.of(0, slotsAvailable);
             List<Queue> activeQueues = queueRepository.getActivatableTokens(Queue.Status.WAITING, pageable);
-            activeQueues.forEach(Queue::setActive);
-            queueRepository.saveAll(activeQueues);
-            log.info("총 {}개의 대기 중인 토큰이 활성화되었습니다.", activeQueues.size());
+            if (!activeQueues.isEmpty()) {
+                activeQueues.forEach(Queue::setActive);
+                queueRepository.saveAll(activeQueues);
+                log.info("총 {}개의 대기 중인 토큰이 활성화되었습니다.", activeQueues.size());
+            }
         }
     }
 }

@@ -29,17 +29,6 @@ public class ConcertSeat {
                 .build();
     }
 
-    public static ConcertSeat create(Long concertSeatId, Long concertOptionId, int seatNumber, Grade grade, Status status) {
-        return ConcertSeat.builder()
-                .concertSeatId(concertSeatId)
-                .concertOptionId(concertOptionId)
-                .seatNumber(seatNumber)
-                .grade(grade)
-                .price(grade.getPrice())
-                .status(status)
-                .build();
-    }
-
     public ConcertSeat setAvailable() {
         this.status = Status.AVAILABLE;
         return this;

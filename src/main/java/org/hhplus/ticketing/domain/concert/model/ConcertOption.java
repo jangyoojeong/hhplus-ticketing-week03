@@ -28,14 +28,4 @@ public class ConcertOption {
                 .capacity(capacity)
                 .build();
     }
-
-    public static ConcertOption create(Long concertOptionId, Long concertId, LocalDateTime concertAt, int capacity) {
-        return ConcertOption.builder()
-                .concertOptionId(concertOptionId)
-                .concertId(concertId)
-                .concertAt(concertAt)
-                .capacity(capacity)
-                .build();
-    }
-
 }

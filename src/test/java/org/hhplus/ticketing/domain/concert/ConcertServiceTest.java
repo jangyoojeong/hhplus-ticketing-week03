@@ -40,8 +40,22 @@ public class ConcertServiceTest {
     void setUp() {
         MockitoAnnotations.openMocks(this);
 
-        seat = ConcertSeat.create(1L, 1L, 1, ConcertSeat.Grade.VIP, ConcertSeat.Status.AVAILABLE);
-        reservation = Reservation.create(1L, 1L, 1L, 50000);
+        seat = ConcertSeat.builder()
+                .concertSeatId(1L)
+                .concertOptionId(1L)
+                .seatNumber(1)
+                .grade(ConcertSeat.Grade.VIP)
+                .price(ConcertSeat.Grade.VIP.getPrice())
+                .status(ConcertSeat.Status.AVAILABLE)
+                .build();
+        reservation = Reservation.builder()
+                .reservationId(1L)
+                .concertSeatId(1L)
+                .userId(1L)
+                .reservationAt(LocalDateTime.now())
+                .price(50000)
+                .status(Reservation.Status.RESERVED)
+                .build();
     }
 
     @Test

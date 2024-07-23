@@ -88,7 +88,10 @@ public class PaymentIntegrationTest {
         reservationId = reservation.getReservationId();
 
         // 초기 150000 포인트 적재
-        UserPoint userPoint = UserPoint.create(userId, 150000);
+        UserPoint userPoint = UserPoint.builder()
+                .userId(userId)
+                .point(150000)
+                .build();
         saveduserPoint = userPointRepository.save(userPoint);
     }
 

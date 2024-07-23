@@ -48,8 +48,8 @@ public class ConcertControllerUnitTest {
         // Given
         Long concertId = 1L;
         List<ConcertOption> concertOptions = Arrays.asList(
-                ConcertOption.create(1L, concertId, LocalDateTime.now().plusDays(15), 50),
-                ConcertOption.create(2L, concertId, LocalDateTime.now().plusDays(13), 50)
+                new ConcertOption(1L, concertId, LocalDateTime.now().plusDays(15), 50),
+                new ConcertOption(2L, concertId, LocalDateTime.now().plusDays(13), 50)
         );
 
         ConcertResult.GetAvailableDatesResult result = ConcertResult.GetAvailableDatesResult.from(concertOptions);
@@ -70,12 +70,26 @@ public class ConcertControllerUnitTest {
     void getAvailableSeatsTest_좌석_예약_컨트롤러_테스트_예상_리턴_확인() throws Exception {
         // Given
         Long concertOptionId = 1L;
-        List<ConcertSeat> concertSeat = Arrays.asList(
-                ConcertSeat.create(1L, concertOptionId, 1, ConcertSeat.Grade.VIP, ConcertSeat.Status.AVAILABLE),
-                ConcertSeat.create(2L, concertOptionId, 2, ConcertSeat.Grade.REGULAR, ConcertSeat.Status.AVAILABLE)
+        List<ConcertSeat> seats = Arrays.asList(
+                ConcertSeat.builder()
+                        .concertSeatId(1L)
+                        .concertOptionId(concertOptionId)
+                        .seatNumber(1)
+                        .grade(ConcertSeat.Grade.VIP)
+                        .price(ConcertSeat.Grade.VIP.getPrice())
+                        .status(ConcertSeat.Status.AVAILABLE)
+                        .build(),
+                ConcertSeat.builder()
+                        .concertSeatId(2L)
+                        .concertOptionId(concertOptionId)
+                        .seatNumber(2)
+                        .grade(ConcertSeat.Grade.REGULAR)
+                        .price(ConcertSeat.Grade.REGULAR.getPrice())
+                        .status(ConcertSeat.Status.AVAILABLE)
+                        .build()
         );
 
-        ConcertResult.GetAvailableSeatsResult result = ConcertResult.GetAvailableSeatsResult.from(concertSeat);
+        ConcertResult.GetAvailableSeatsResult result = ConcertResult.GetAvailableSeatsResult.from(seats);
         ConcertResponse.GetAvailableSeatsResponse response = ConcertResponse.GetAvailableSeatsResponse.from(result);
 
         given(concertFacade.getAvailableSeats(concertOptionId)).willReturn(result);

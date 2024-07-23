@@ -19,13 +19,6 @@ public class UserPoint {
     private Long userId;           // 유저ID
     private int point;             // 포인트
 
-    public static UserPoint create(Long userId, int point) {
-        return UserPoint.builder()
-                .userId(userId)
-                .point(point)
-                .build();
-    }
-
     public static UserPoint create(Long userId) {
         return UserPoint.builder()
                 .userId(userId)

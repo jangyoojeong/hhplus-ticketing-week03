@@ -23,18 +23,6 @@ public class Reservation {
     private int price;                   // 예약가격
     private Status status;               // 예약상태 (예약됨[RESERVED]/점유[OCCUPIED]/만료[EXPIRED])
 
-    public static Reservation create(Long reservationId, Long concertSeatId, Long userId, int price) {
-        return Reservation.builder()
-                .reservationId(reservationId)
-                .concertSeatId(concertSeatId)
-                .userId(userId)
-                .reservationAt(LocalDateTime.now())
-                .price(price)
-                .status(Status.RESERVED)
-                .build();
-    }
-
-
     public static Reservation create(Long concertSeatId, Long userId, int price) {
         return Reservation.builder()
                 .concertSeatId(concertSeatId)

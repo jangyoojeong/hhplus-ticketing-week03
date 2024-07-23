@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -46,12 +47,71 @@ class QueueTest {
     }
 
     @Test
+    @DisplayName("🟢 대기열_순번_계산_테스트_마지막_활성화_토큰이_있는_경우")
+    void getQueuePositionTest_대기열_순번_계산_테스트_마지막_활성화_토큰이_있는_경우() {
+
+        // Given
+        Long queueId = 1L;
+        Long userId = 1L;
+        Queue queue = Queue.builder()
+                .queueId(2L)
+                .userId(userId)
+                .token(UUID.randomUUID())
+                .status(Queue.Status.WAITING)
+                .createAt(LocalDateTime.now())
+                .build();
+        Queue lastActiveQueue = Queue.builder()
+                .queueId(queueId)
+                .userId(userId)
+                .token(UUID.randomUUID())
+                .status(Queue.Status.ACTIVE)
+                .enteredAt(LocalDateTime.now())
+                .createAt(LocalDateTime.now())
+                .build();
+
+        // When
+        Long position = queue.getQueuePosition(Optional.of(lastActiveQueue));
+
+        // Then
+        assertThat(position).isEqualTo(queue.getQueueId() - lastActiveQueue.getQueueId());
+    }
+
+    @Test
+    @DisplayName("🟢 대기열_순번_계산_테스트_마지막_활성화_토큰이_없는_경우")
+    void getQueuePositionTest_대기열_순번_계산_테스트_마지막_활성화_토큰이_없는_경우() {
+
+        // Given
+        Long queueId = 1L;
+        Long userId = 1L;
+        Queue queue = Queue.builder()
+                .queueId(queueId)
+                .userId(userId)
+                .token(UUID.randomUUID())
+                .status(Queue.Status.WAITING)
+                .createAt(LocalDateTime.now())
+                .build();
+
+        // When
+        Long position = queue.getQueuePosition(Optional.empty());
+
+        // Then
+        assertThat(position).isEqualTo(0L);
+    }
+
+    @Test
     @DisplayName("🟢 토큰_만료_상태변경_테스트_만료_상태의_토큰으로_변경된다")
     void setExpiredTest_토큰_만료_상태변경_테스트_만료_상태의_토큰으로_변경된다() {
         // Given
         Long queueId = 1L;
         Long userId = 1L;
-        Queue queue = Queue.create(queueId, userId, Queue.Status.ACTIVE, LocalDateTime.now(), LocalDateTime.now());
+        Queue queue = Queue.builder()
+                .queueId(queueId)
+                .userId(userId)
+                .token(UUID.randomUUID())
+                .status(Queue.Status.ACTIVE)
+                .enteredAt(LocalDateTime.now())
+                .createAt(LocalDateTime.now())
+                .build();
 
         // When
         Queue returnToken = queue.setExpired();
@@ -71,7 +131,14 @@ class QueueTest {
         // Given
         Long queueId = 1L;
         Long userId = 1L;
-        Queue queue = Queue.create(queueId, userId, Queue.Status.WAITING, LocalDateTime.now(), LocalDateTime.now());
+        Queue queue = Queue.builder()
+                .queueId(queueId)
+                .userId(userId)
+                .token(UUID.randomUUID())
+                .status(Queue.Status.WAITING)
+                .enteredAt(LocalDateTime.now())
+                .createAt(LocalDateTime.now())
+                .build();
 
         // When
         Queue returnToken = queue.setActive();
@@ -84,46 +151,20 @@ class QueueTest {
     }
 
     @Test
-    @DisplayName("🟢 대기열_순번_계산_테스트_마지막_활성화_토큰이_있는_경우")
-    void getQueuePositionTest_대기열_순번_계산_테스트_마지막_활성화_토큰이_있는_경우() {
-
-        // Given
-        Long queueId = 1L;
-        Long userId = 1L;
-        Queue queue = Queue.create(2L, userId, Queue.Status.WAITING, LocalDateTime.now(), LocalDateTime.now());
-        Queue lastActiveQueue = Queue.create(queueId, userId, Queue.Status.ACTIVE, LocalDateTime.now(), LocalDateTime.now());
-
-        // When
-        Long position = queue.getQueuePosition(Optional.of(lastActiveQueue));
-
-        // Then
-        assertThat(position).isEqualTo(queue.getQueueId() - lastActiveQueue.getQueueId());
-    }
-
-    @Test
-    @DisplayName("🟢 대기열_순번_계산_테스트_마지막_활성화_토큰이_없는_경우")
-    void getQueuePositionTest_대기열_순번_계산_테스트_마지막_활성화_토큰이_없는_경우() {
-
-        // Given
-        Long queueId = 1L;
-        Long userId = 1L;
-        Queue queue = Queue.create(queueId, userId,  Queue.Status.WAITING, LocalDateTime.now(), LocalDateTime.now());
-
-        // When
-        Long position = queue.getQueuePosition(Optional.empty());
-
-        // Then
-        assertThat(position).isEqualTo(0L);
-    }
-
-    @Test
     @DisplayName("🔴 토큰_유효성_테스트_토큰이_유효하지_않을_경우_INVALID_TOKEN_에러반환")
     void validateActiveStatusTest_토큰_유효성_테스트_토큰이_유효하지_않을_경우_INVALID_TOKEN_에러반환() {
 
         // Given
         Long queueId = 1L;
         Long userId = 1L;
-        Queue queue = Queue.create(queueId, userId, Queue.Status.EXPIRED, LocalDateTime.now(), LocalDateTime.now());
+        Queue queue = Queue.builder()
+                .queueId(queueId)
+                .userId(userId)
+                .token(UUID.randomUUID())
+                .status(Queue.Status.EXPIRED)
+                .enteredAt(LocalDateTime.now())
+                .createAt(LocalDateTime.now())
+                .build();
 
         // When & Then
         assertThatThrownBy(queue::validateActiveStatus)

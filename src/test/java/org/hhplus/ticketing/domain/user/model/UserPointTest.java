@@ -11,20 +11,8 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 class UserPointTest {
 
     @Test
-    @DisplayName("🟢 유저포인트_객체_생성_테스트_유저ID와_포인트로_객체가_생성된다")
-    void createPointTest_유저포인트_객체_생성_테스트_유저ID와_포인트로_객체가_생성된다() {
-        Long userId = 1L;
-        int point = 100;
-
-        UserPoint userPoint = UserPoint.create(userId, point);
-
-        assertThat(userPoint.getUserId()).isEqualTo(userId);
-        assertThat(userPoint.getPoint()).isEqualTo(point);
-    }
-
-    @Test
     @DisplayName("🟢 디폴트_유저포인트_객체_생성_테스트_포인트가_0인_객체가_생성된다")
-    void creatTest_디폴트_유저포인트_객체_생성_테스트_포인트가_0인_객체가_생성된다() {
+    void createTest_디폴트_유저포인트_객체_생성_테스트_포인트가_0인_객체가_생성된다() {
         Long userId = 1L;
 
         UserPoint userPoint = UserPoint.create(userId);
@@ -40,7 +28,10 @@ class UserPointTest {
         int initialPoint = 100;
         int chargeAmount = 50;
 
-        UserPoint userPoint = UserPoint.create(userId, initialPoint);
+        UserPoint userPoint = UserPoint.builder()
+                .userId(userId)
+                .point(initialPoint)
+                .build();
         userPoint.chargePoint(chargeAmount);
 
         assertThat(userPoint.getPoint()).isEqualTo(initialPoint + chargeAmount);
@@ -53,7 +44,10 @@ class UserPointTest {
         int initialPoint = 50;
         int chargeAmount = 0;
 
-        UserPoint userPoint = UserPoint.create(userId, initialPoint);
+        UserPoint userPoint = UserPoint.builder()
+                .userId(userId)
+                .point(initialPoint)
+                .build();
 
         assertThatThrownBy(() -> userPoint.usePoint(chargeAmount))
                 .isInstanceOf(CustomException.class)
@@ -67,20 +61,26 @@ class UserPointTest {
         int initialPoint = 100;
         int useAmount = 50;
 
-        UserPoint userPoint = UserPoint.create(userId, initialPoint);
+        UserPoint userPoint = UserPoint.builder()
+                .userId(userId)
+                .point(initialPoint)
+                .build();
         userPoint.usePoint(useAmount);
 
         assertThat(userPoint.getPoint()).isEqualTo(initialPoint - useAmount);
     }
 
     @Test
-    @DisplayName("🔴 포인트_사용_테스트_포인트가_부족하면_INVALID_AMOUNT_VALUE_예외반환")
-    void usePointTest_포인트_사용_예외_테스트_포인트가_부족하여_예외가_발생한다() {
+    @DisplayName("🔴 포인트_사용_테스트_포인트가_부족하면_INSUFFICIENT_POINTS_예외반환")
+    void usePointTest_포인트_사용_테스트_포인트가_부족하면_INSUFFICIENT_POINTS_예외반환() {
         Long userId = 1L;
         int initialPoint = 50;
         int useAmount = 100;
 
-        UserPoint userPoint = UserPoint.create(userId, initialPoint);
+        UserPoint userPoint = UserPoint.builder()
+                .userId(userId)
+                .point(initialPoint)
+                .build();
 
         assertThatThrownBy(() -> userPoint.usePoint(useAmount))
                 .isInstanceOf(CustomException.class)
@@ -94,7 +94,10 @@ class UserPointTest {
         int initialPoint = 50;
         int useAmount = 0;
 
-        UserPoint userPoint = UserPoint.create(userId, initialPoint);
+        UserPoint userPoint = UserPoint.builder()
+                .userId(userId)
+                .point(initialPoint)
+                .build();
 
         assertThatThrownBy(() -> userPoint.usePoint(useAmount))
                 .isInstanceOf(CustomException.class)
