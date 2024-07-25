@@ -15,7 +15,7 @@
 
 - [Swagger](https://github.com/user-attachments/assets/8f1d7967-02e6-469f-b6c9-e80250777dc6)
 
-- [동시성 분석 자료](https://tide-stoplight-55c.notion.site/9b80d52f4a4d48f79d0fbd4d7bda573e?pvs=4)
+- [동시성 분석 자료](https://www.notion.so/9b80d52f4a4d48f79d0fbd4d7bda573e)
 
 ---
 
