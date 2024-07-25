@@ -153,7 +153,7 @@ class QueueTest {
 
     @Test
     @DisplayName("🔴 토큰_유효성_테스트_토큰이_유효하지_않을_경우_INVALID_TOKEN_에러반환")
-    void validateActiveStatusTest_토큰_유효성_테스트_토큰이_유효하지_않을_경우_INVALID_TOKEN_에러반환() {
+    void validateStatusTest_토큰_유효성_테스트_토큰이_유효하지_않을_경우_INVALID_TOKEN_에러반환() {
 
         // Given
         Long queueId = 1L;
@@ -168,7 +168,7 @@ class QueueTest {
                 .build();
 
         // When & Then
-        assertThatThrownBy(queue::validateActiveStatus)
+        assertThatThrownBy(queue::validateStatus)
                 .isInstanceOf(CustomException.class)
                 .extracting("errorCode")
                 .isEqualTo(ErrorCode.INVALID_TOKEN);

@@ -52,7 +52,7 @@ public class Queue {
         return this;
     }
 
-    public void validateActiveStatus() {
+    public void validateStatus() {
         if (this.status != Status.ACTIVE) {
             throw new CustomException(ErrorCode.INVALID_TOKEN);
         }

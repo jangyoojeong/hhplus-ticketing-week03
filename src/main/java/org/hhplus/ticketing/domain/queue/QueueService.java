@@ -67,9 +67,10 @@ public class QueueService {
      * @param token 검증할 토큰
      * @throws CustomException 유효하지 않은 토큰인 경우
      */
+    @Transactional(readOnly = true)
     public void validateToken (UUID token) {
         Queue queue = getQueue(token);
-        queue.validateActiveStatus();
+        queue.validateStatus();
     }
 
     /**
