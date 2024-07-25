@@ -1,13 +1,15 @@
 package org.hhplus.ticketing.utils;
 
+import lombok.Getter;
 import org.hhplus.ticketing.domain.concert.ConcertRepository;
 import org.hhplus.ticketing.domain.concert.model.Concert;
 import org.hhplus.ticketing.domain.concert.model.ConcertOption;
 import org.hhplus.ticketing.domain.concert.model.ConcertSeat;
 import org.hhplus.ticketing.domain.user.UserInfoRepository;
+import org.hhplus.ticketing.domain.user.UserPointRepository;
 import org.hhplus.ticketing.domain.user.model.UserInfo;
+import org.hhplus.ticketing.domain.user.model.UserPoint;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -15,41 +17,47 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Getter
 @Component
-@Transactional(rollbackFor = {Exception.class})
 public class TestDataInitializer {
 
     private final UserInfoRepository userInfoRepository;
+    private final UserPointRepository userPointRepository;
     private final ConcertRepository concertRepository;
 
-    public TestDataInitializer(UserInfoRepository userInfoRepository, ConcertRepository concertRepository) {
+    public TestDataInitializer(UserInfoRepository userInfoRepository, UserPointRepository userPointRepository, ConcertRepository concertRepository) {
         this.userInfoRepository = userInfoRepository;
+        this.userPointRepository = userPointRepository;
         this.concertRepository = concertRepository;
     }
 
-    private List<UserInfo> savedusers;
+    private List<UserInfo> savedUsers;
     private Concert savedConcert;
     private List<ConcertOption> savedConcertOptions;
-    private List<ConcertSeat> savedconcertSeats;
+    private List<ConcertSeat> savedConcertSeats;
 
     public void initializeTestData() {
-
         // User Dummy 데이터 생성
-        List<UserInfo> users = new ArrayList<>();
+        savedUsers = new ArrayList<>();
         for (int i = 1; i <= 5; i++) {
-            users.add(UserInfo.builder()
-                .userName("사용자" + i)
-                .build());
+            savedUsers.add(UserInfo.builder()
+                    .userName("사용자" + i)
+                    .build());
         }
 
-        savedusers = users.stream()
-                .map(userInfoRepository::save)
+        // UserInfo 데이터를 저장하고, 동시에 UserPoint 데이터도 저장
+        savedUsers = savedUsers.stream()
+                .map(userInfo -> {
+                    UserInfo savedUserInfo = userInfoRepository.save(userInfo);
+                    UserPoint userPoint = UserPoint.builder().userId(savedUserInfo.getUserId()).point(0).build();
+                    userPointRepository.save(userPoint);
+                    return savedUserInfo;
+                })
                 .collect(Collectors.toList());
 
         // Concert Dummy 데이터 생성
-        Concert saveConcert = Concert.create("콘서트1");
-
-        savedConcert = concertRepository.saveConcert(saveConcert);
+        Concert concert = Concert.create("콘서트1");
+        savedConcert = concertRepository.saveConcert(concert);
 
         // ConcertOption Dummy 데이터 생성
         List<ConcertOption> concertOptions = Arrays.asList(
@@ -87,24 +95,9 @@ public class TestDataInitializer {
             }
         }
 
-        savedconcertSeats = concertSeats.stream()
+        savedConcertSeats = concertSeats.stream()
                 .map(concertRepository::saveSeat)
                 .collect(Collectors.toList());
     }
 
-    public List<UserInfo> getSavedusers() {
-        return savedusers;
-    }
-
-    public Concert getSavedConcert() {
-        return savedConcert;
-    }
-
-    public List<ConcertOption> getSavedConcertOptions() {
-        return savedConcertOptions;
-    }
-
-    public List<ConcertSeat> getSavedconcertSeats() {
-        return savedconcertSeats;
-    }
 }
