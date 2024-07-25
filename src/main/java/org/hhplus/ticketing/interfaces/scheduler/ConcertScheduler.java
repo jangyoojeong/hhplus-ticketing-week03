@@ -1,7 +1,7 @@
 package org.hhplus.ticketing.interfaces.scheduler;
 
 import lombok.RequiredArgsConstructor;
-import org.hhplus.ticketing.application.concert.facade.ConcertFacade;
+import org.hhplus.ticketing.application.concert.ConcertFacade;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 

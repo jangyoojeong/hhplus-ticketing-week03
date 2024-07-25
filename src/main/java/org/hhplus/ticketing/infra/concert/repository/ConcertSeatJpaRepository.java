@@ -17,5 +17,4 @@ public interface ConcertSeatJpaRepository extends JpaRepository<ConcertSeatEntit
 
     @Query("SELECT cs FROM ConcertSeatEntity cs WHERE cs.concertOptionId = :concertOptionId AND cs.status = 'AVAILABLE'")
     List<ConcertSeatEntity> findByConcertOptionId(@Param("concertOptionId") Long concertOptionId);
-
 }

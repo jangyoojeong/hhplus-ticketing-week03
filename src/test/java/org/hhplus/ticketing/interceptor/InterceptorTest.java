@@ -7,6 +7,7 @@ import org.hhplus.ticketing.domain.queue.model.Queue;
 import org.hhplus.ticketing.interfaces.controller.concert.dto.response.ConcertResponse;
 import org.hhplus.ticketing.interfaces.controller.user.dto.UserResponse;
 import org.hhplus.ticketing.support.exception.ErrorResponseEntity;
+import org.hhplus.ticketing.utils.TestDataInitializer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -37,6 +38,8 @@ class InterceptorTest {
     private QueueRepository queueRepository;
     @Autowired
     private TestRestTemplate restTemplate;
+    @Autowired
+    TestDataInitializer testDataInitializer;
 
     private Long userId;
     private Long concertId;
@@ -47,6 +50,9 @@ class InterceptorTest {
 
     @BeforeEach
     public void setup() {
+
+        testDataInitializer.initializeTestData();
+
         userId = 1L;
         concertId = 1L;
     }

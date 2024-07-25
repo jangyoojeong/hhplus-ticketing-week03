@@ -1,6 +1,6 @@
 package org.hhplus.ticketing.integration;
 
-import org.hhplus.ticketing.application.concert.facade.ConcertFacade;
+import org.hhplus.ticketing.application.concert.ConcertFacade;
 import org.hhplus.ticketing.domain.common.exception.CustomException;
 import org.hhplus.ticketing.domain.common.exception.ErrorCode;
 import org.hhplus.ticketing.domain.concert.ConcertRepository;
@@ -60,10 +60,10 @@ public class ConcertIntegrationTest {
         testDataInitializer.initializeTestData();
 
         // initializer 로 적재된 초기 데이터 세팅
-        savedusers = testDataInitializer.getSavedusers();
+        savedusers = testDataInitializer.getSavedUsers();
         savedConcert = testDataInitializer.getSavedConcert();
         savedConcertOptions = testDataInitializer.getSavedConcertOptions();
-        savedconcertSeats = testDataInitializer.getSavedconcertSeats();
+        savedconcertSeats = testDataInitializer.getSavedConcertSeats();
 
         userId = savedusers.get(0).getUserId();
         concertId = savedConcert.getConcertId();

@@ -14,14 +14,8 @@ public class UserPointRepositoryImpl implements UserPointRepository {
 
     private final UserPointJpaRepository repository;
 
-    /**
-     * 사용자 포인트 정보를 조회합니다
-     *
-     * @param userId 포인트 조회할 사용자 ID
-     * @return domain 조회된 포인트 정보
-     */
     @Override
-    public Optional<UserPoint> findByUserId(Long userId) {
+    public Optional<UserPoint> getUserPoint(Long userId) {
         return repository.findByUserId(userId).map(UserPointEntity::toDomain);
     }
 

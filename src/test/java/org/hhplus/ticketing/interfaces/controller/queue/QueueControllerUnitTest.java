@@ -1,6 +1,6 @@
 package org.hhplus.ticketing.interfaces.controller.queue;
 
-import org.hhplus.ticketing.application.queue.facade.QueueFacade;
+import org.hhplus.ticketing.application.queue.QueueFacade;
 import org.hhplus.ticketing.domain.queue.model.Queue;
 import org.hhplus.ticketing.domain.queue.model.QueueCommand;
 import org.hhplus.ticketing.domain.queue.model.QueueResult;

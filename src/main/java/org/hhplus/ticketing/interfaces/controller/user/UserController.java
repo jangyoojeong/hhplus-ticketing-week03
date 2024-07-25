@@ -4,11 +4,9 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.hhplus.ticketing.application.user.facade.UserFacade;
+import org.hhplus.ticketing.application.user.UserFacade;
 import org.hhplus.ticketing.interfaces.controller.user.dto.UserRequest;
 import org.hhplus.ticketing.interfaces.controller.user.dto.UserResponse;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -43,7 +41,7 @@ public class UserController {
     @GetMapping("/{userId}/points")
     @Operation(summary = "잔액 조회 API", description = "사용자의 잔액을 조회합니다.")
     public ResponseEntity<UserResponse.UserPointResponse> getUserPoint (@PathVariable Long userId) {
-        UserResponse.UserPointResponse response = UserResponse.UserPointResponse.from(userFacade.getPoint(userId));
+        UserResponse.UserPointResponse response = UserResponse.UserPointResponse.from(userFacade.getPointResult(userId));
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 }

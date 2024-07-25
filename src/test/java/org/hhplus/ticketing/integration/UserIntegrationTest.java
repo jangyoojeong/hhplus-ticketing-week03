@@ -1,12 +1,10 @@
 package org.hhplus.ticketing.integration;
 
-import org.hhplus.ticketing.application.user.facade.UserFacade;
+import org.hhplus.ticketing.application.user.UserFacade;
 import org.hhplus.ticketing.domain.common.exception.CustomException;
 import org.hhplus.ticketing.domain.common.exception.ErrorCode;
-import org.hhplus.ticketing.domain.user.UserPointRepository;
 import org.hhplus.ticketing.domain.user.model.UserCommand;
 import org.hhplus.ticketing.domain.user.model.UserInfo;
-import org.hhplus.ticketing.domain.user.model.UserPoint;
 import org.hhplus.ticketing.domain.user.model.UserResult;
 import org.hhplus.ticketing.utils.TestDataInitializer;
 import org.junit.jupiter.api.BeforeEach;
@@ -21,7 +19,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SpringBootTest
 @ActiveProfiles("test")
@@ -31,8 +29,6 @@ class UserIntegrationTest {
 
     @Autowired
     private UserFacade userFacade;
-    @Autowired
-    private UserPointRepository userPointRepository;
     @Autowired
     TestDataInitializer testDataInitializer;
 
@@ -47,7 +43,7 @@ class UserIntegrationTest {
         testDataInitializer.initializeTestData();
 
         // initializer 로 적재된 초기 데이터 세팅
-        savedusers = testDataInitializer.getSavedusers();
+        savedusers = testDataInitializer.getSavedUsers();
 
         userId1 = savedusers.get(0).getUserId();
         userId2 = savedusers.get(1).getUserId();
@@ -55,21 +51,11 @@ class UserIntegrationTest {
     }
 
     @Test
-    @DisplayName("🟢 잔액_충전_통합_테스트_유저1_5000포인트_충전시_6000포인트가_리턴된다")
+    @DisplayName("🟢 잔액_충전_통합_테스트_유저1_5000포인트_충전시_5000포인트가_리턴된다")
     void chargePointTest_잔액_충전_통합_테스트_유저1_5000포인트_충전시_5000포인트가_리턴된다() {
 
         // Given
         int addPoint = 5000;
-        int oldPoint = 1000;
-        int finalPoint = oldPoint + addPoint;
-
-        // 초기 1000 포인트 적재
-        UserPoint userPoint = UserPoint.builder()
-                .userId(userId1)
-                .point(oldPoint)
-                .build();
-
-        userPointRepository.save(userPoint);
 
         // 잔액 충전 요청 command 객체 생성
         UserCommand.ChargePointCommand chargePointCommand = UserCommand.ChargePointCommand.builder()
@@ -78,7 +64,7 @@ class UserIntegrationTest {
                 .build();
 
         // 예상 반환 result 객체 생성
-        UserResult.ChargePointResult expectedResult = new UserResult.ChargePointResult(userId1, finalPoint);
+        UserResult.ChargePointResult expectedResult = new UserResult.ChargePointResult(userId1, addPoint);
 
         // When
         UserResult.ChargePointResult actualResult = userFacade.chargePoint(chargePointCommand);
@@ -160,19 +146,14 @@ class UserIntegrationTest {
         // Given
         int oldPoint = 1000;
 
-        // 초기 1000 포인트 적재
-        UserPoint userPoint = UserPoint.builder()
-                .userId(userId1)
-                .point(oldPoint)
-                .build();
-
-        userPointRepository.save(userPoint);
+        // 초기 포인트 충전
+        userFacade.chargePoint(new UserCommand.ChargePointCommand(userId1, oldPoint));
 
         // 예상 반환 result 객체 생성
         UserResult.UserPointResult expectedResult = new UserResult.UserPointResult(userId1, oldPoint);
 
         // When
-        UserResult.UserPointResult actualResult = userFacade.getPoint(userId1);
+        UserResult.UserPointResult actualResult = userFacade.getPointResult(userId1);
 
         // Then
         assertNotNull(actualResult);

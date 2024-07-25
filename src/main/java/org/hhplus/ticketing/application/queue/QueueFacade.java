@@ -1,4 +1,4 @@
-package org.hhplus.ticketing.application.queue.facade;
+package org.hhplus.ticketing.application.queue;
 
 import lombok.RequiredArgsConstructor;
 import org.hhplus.ticketing.domain.queue.QueueService;

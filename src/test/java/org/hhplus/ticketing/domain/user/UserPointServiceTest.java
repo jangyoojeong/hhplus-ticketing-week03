@@ -52,7 +52,7 @@ class UserPointServiceTest {
         int addAmount = 20000;
         UserCommand.ChargePointCommand command = new UserCommand.ChargePointCommand(userId, addAmount);
 
-        given(userPointRepository.findByUserId(anyLong())).willReturn(Optional.ofNullable(userPoint));
+        given(userPointRepository.getUserPoint(anyLong())).willReturn(Optional.ofNullable(userPoint));
         given(userPointRepository.save(any(UserPoint.class))).willAnswer(invocation -> {
             UserPoint savedDomain = invocation.getArgument(0);
             savedDomain.setPoint(savedDomain.getPoint() + addAmount);
@@ -76,7 +76,7 @@ class UserPointServiceTest {
         int useAmount = 20000;
         UserCommand.UsePointCommand command = new UserCommand.UsePointCommand(userId, useAmount);
 
-        given(userPointRepository.findByUserId(anyLong())).willReturn(Optional.ofNullable(userPoint));
+        given(userPointRepository.getUserPoint(anyLong())).willReturn(Optional.ofNullable(userPoint));
         given(userPointRepository.save(any(UserPoint.class))).willAnswer(invocation -> {
             UserPoint savedDomain = invocation.getArgument(0);
             savedDomain.setPoint(savedDomain.getPoint() - useAmount);
@@ -100,7 +100,7 @@ class UserPointServiceTest {
         int useAmount = 200000;
         UserCommand.UsePointCommand command = new UserCommand.UsePointCommand(userId, useAmount);
 
-        given(userPointRepository.findByUserId(anyLong())).willReturn(Optional.ofNullable(userPoint));
+        given(userPointRepository.getUserPoint(anyLong())).willReturn(Optional.ofNullable(userPoint));
 
         // When & Then
         assertThatThrownBy(() -> userPointService.usePoint(command))
@@ -113,10 +113,10 @@ class UserPointServiceTest {
     @DisplayName("🟢 잔액_조회_테스트_1L유저_잔액_조회_시_50000포인트를_반환한다")
     void getUserPointTest_잔액_조회_테스트_1L유저_잔액_조회_시_50000포인트를_반환한다() {
         // Given
-        given(userPointRepository.findByUserId(anyLong())).willReturn(Optional.ofNullable(userPoint));
+        given(userPointRepository.getUserPoint(anyLong())).willReturn(Optional.ofNullable(userPoint));
 
         // When
-        UserResult.UserPointResult result = userPointService.getPoint(userId);
+        UserResult.UserPointResult result = userPointService.getPointResult(userId);
 
         // Then
         assertNotNull(result);

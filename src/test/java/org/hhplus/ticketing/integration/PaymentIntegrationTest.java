@@ -1,6 +1,6 @@
 package org.hhplus.ticketing.integration;
 
-import org.hhplus.ticketing.application.payment.facade.PaymentFacade;
+import org.hhplus.ticketing.application.payment.PaymentFacade;
 import org.hhplus.ticketing.domain.common.exception.CustomException;
 import org.hhplus.ticketing.domain.common.exception.ErrorCode;
 import org.hhplus.ticketing.domain.concert.ConcertRepository;
@@ -12,7 +12,8 @@ import org.hhplus.ticketing.domain.payment.model.PaymentCommand;
 import org.hhplus.ticketing.domain.payment.model.PaymentResult;
 import org.hhplus.ticketing.domain.queue.QueueRepository;
 import org.hhplus.ticketing.domain.queue.model.Queue;
-import org.hhplus.ticketing.domain.user.UserPointRepository;
+import org.hhplus.ticketing.domain.user.UserPointService;
+import org.hhplus.ticketing.domain.user.model.UserCommand;
 import org.hhplus.ticketing.domain.user.model.UserInfo;
 import org.hhplus.ticketing.domain.user.model.UserPoint;
 import org.hhplus.ticketing.utils.TestDataInitializer;
@@ -41,9 +42,9 @@ public class PaymentIntegrationTest {
     @Autowired
     private PaymentFacade paymentFacade;
     @Autowired
-    private ConcertRepository concertRepository;
+    private UserPointService userPointService;
     @Autowired
-    private UserPointRepository userPointRepository;
+    private ConcertRepository concertRepository;
     @Autowired
     private QueueRepository queueRepository;
     @Autowired
@@ -54,7 +55,7 @@ public class PaymentIntegrationTest {
     private List<UserInfo> savedusers;
     private List<ConcertSeat> savedconcertSeats;
 
-    private UserPoint saveduserPoint;
+    private UserPoint savedUserPoint;
 
     private UUID token;
     private Long userId;
@@ -67,8 +68,8 @@ public class PaymentIntegrationTest {
         testDataInitializer.initializeTestData();
 
         // initializer 로 적재된 초기 데이터 세팅
-        savedusers = testDataInitializer.getSavedusers();
-        savedconcertSeats = testDataInitializer.getSavedconcertSeats();
+        savedusers = testDataInitializer.getSavedUsers();
+        savedconcertSeats = testDataInitializer.getSavedConcertSeats();
 
         userId = savedusers.get(0).getUserId();
         concertSeatId = savedconcertSeats.get(0).getConcertSeatId();
@@ -94,12 +95,13 @@ public class PaymentIntegrationTest {
         Reservation reservation = concertRepository.saveReservation(Reservation.create(concertSeatId, userId, price));
         reservationId = reservation.getReservationId();
 
-        // 초기 150000 포인트 적재
-        UserPoint userPoint = UserPoint.builder()
+        // 초기 150000 포인트 충전
+        int oldPoint = 150000;
+        savedUserPoint = UserPoint.builder()
                 .userId(userId)
-                .point(150000)
+                .point(oldPoint)
                 .build();
-        saveduserPoint = userPointRepository.save(userPoint);
+        userPointService.chargePoint(new UserCommand.ChargePointCommand(savedUserPoint.getUserId(), savedUserPoint.getPoint()));
     }
 
     @Test
@@ -114,7 +116,7 @@ public class PaymentIntegrationTest {
 
         // Then
         assertNotNull(actualResult);
-        assertEquals(saveduserPoint.getPoint() - price, actualResult.getPoint());
+        assertEquals(savedUserPoint.getPoint() - price, actualResult.getPoint());
     }
 
     @Test
@@ -189,8 +191,8 @@ public class PaymentIntegrationTest {
     void requestPaymentTest_결제_요청_통합_테스트_결제금액에_비해_포인트가_부족할경우_INSUFFICIENT_POINTS_예외반환() {
 
         // Given
-        saveduserPoint.usePoint(100000);
-        userPointRepository.save(saveduserPoint);
+        int amount = 100000;
+        userPointService.usePoint(new UserCommand.UsePointCommand(savedUserPoint.getUserId(), amount));
 
         PaymentCommand.PaymentProcessingCommand command = new PaymentCommand.PaymentProcessingCommand(userId, reservationId, price);
 

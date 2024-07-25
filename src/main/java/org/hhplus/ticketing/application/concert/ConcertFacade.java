@@ -1,15 +1,19 @@
-package org.hhplus.ticketing.application.concert.facade;
+package org.hhplus.ticketing.application.concert;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.hhplus.ticketing.domain.common.exception.CustomException;
+import org.hhplus.ticketing.domain.common.exception.ErrorCode;
 import org.hhplus.ticketing.domain.concert.ConcertService;
 import org.hhplus.ticketing.domain.concert.model.ConcertCommand;
 import org.hhplus.ticketing.domain.concert.model.ConcertResult;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 /**
  * 콘서트 관련 비즈니스 로직을 캡슐화하는 파사드 클래스입니다.
  */
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class ConcertFacade {
@@ -37,20 +41,23 @@ public class ConcertFacade {
     }
 
     /**
-     * 특정 콘서트 옵션의 좌석을 예약합니다.
+     * 특정 콘서트 옵션의 좌석을 예약합니다. (낙관적락)
      *
      * @param command 좌석 예약 요청 command 객체
      * @return 좌석 예약 정보를 포함한 result 객체
      */
     public ConcertResult.ReserveSeatResult reserveSeat(ConcertCommand.ReserveSeatCommand command) {
-        return concertService.reserveSeat(command);
+        try {
+            return concertService.reserveSeat(command);
+        } catch (ObjectOptimisticLockingFailureException e) {
+            throw new CustomException(ErrorCode.CONFLICTING_RESERVATION, e);
+        }
     }
 
     /**
      * 2분 주기로 좌석 임시예약이 만료된 것을 처리합니다.
      * 1. 좌석 (예약됨 > 사용가능)
      */
-    @Transactional(rollbackFor = {Exception.class})
     public void releaseReservations() {
         concertService.releaseReservations();
     }

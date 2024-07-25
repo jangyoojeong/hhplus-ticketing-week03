@@ -1,6 +1,6 @@
 package org.hhplus.ticketing.integration;
 
-import org.hhplus.ticketing.application.queue.facade.QueueFacade;
+import org.hhplus.ticketing.application.queue.QueueFacade;
 import org.hhplus.ticketing.domain.common.exception.CustomException;
 import org.hhplus.ticketing.domain.common.exception.ErrorCode;
 import org.hhplus.ticketing.domain.queue.QueueRepository;
@@ -50,7 +50,7 @@ public class QueueIntegrationTest {
         testDataInitializer.initializeTestData();
 
         // initializer 로 적재된 초기 데이터 세팅
-        savedusers = testDataInitializer.getSavedusers();
+        savedusers = testDataInitializer.getSavedUsers();
 
         userId = savedusers.get(0).getUserId();
         nonExistentUserId = 99L;

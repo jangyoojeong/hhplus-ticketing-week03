@@ -11,17 +11,6 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 class UserPointTest {
 
     @Test
-    @DisplayName("🟢 디폴트_유저포인트_객체_생성_테스트_포인트가_0인_객체가_생성된다")
-    void createTest_디폴트_유저포인트_객체_생성_테스트_포인트가_0인_객체가_생성된다() {
-        Long userId = 1L;
-
-        UserPoint userPoint = UserPoint.create(userId);
-
-        assertThat(userPoint.getUserId()).isEqualTo(userId);
-        assertThat(userPoint.getPoint()).isEqualTo(0);
-    }
-
-    @Test
     @DisplayName("🟢 포인트_충전_테스트_100포인트에_50포인트_충전시_150포인트가_리턴된다")
     void chargePointTest_포인트_충전_테스트_100포인트에_50포인트_충전시_150포인트가_리턴된다() {
         Long userId = 1L;

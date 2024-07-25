@@ -1,6 +1,6 @@
 package org.hhplus.ticketing.interfaces.controller.concert;
 
-import org.hhplus.ticketing.application.concert.facade.ConcertFacade;
+import org.hhplus.ticketing.application.concert.ConcertFacade;
 import org.hhplus.ticketing.domain.concert.model.ConcertCommand;
 import org.hhplus.ticketing.domain.concert.model.ConcertOption;
 import org.hhplus.ticketing.domain.concert.model.ConcertResult;
