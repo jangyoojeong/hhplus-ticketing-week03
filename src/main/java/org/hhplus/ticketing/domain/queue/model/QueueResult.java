@@ -1,6 +1,9 @@
 package org.hhplus.ticketing.domain.queue.model;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.UUID;
 
@@ -15,7 +18,7 @@ public class QueueResult {
         private Long userId;                    // 유저ID
         private UUID token;                     // 토큰
 
-        public static IssueTokenResult from(QueueDomain domain) {
+        public static IssueTokenResult from(Queue domain) {
             return IssueTokenResult.builder()
                     .userId(domain.getUserId())
                     .token(domain.getToken())
@@ -31,12 +34,14 @@ public class QueueResult {
     public static class QueueStatusResult {
         private Long userId;                    // 유저ID
         private UUID token;                     // 토큰
-        private Long queuePosition;             // 대기순서
+        private Long position;                  // 대기순서
+        private Queue.Status status;             // 토큰상태
 
-        public static QueueStatusResult from(QueueDomain domain) {
+        public static QueueStatusResult from(Queue domain) {
             return QueueStatusResult.builder()
                     .userId(domain.getUserId())
                     .token(domain.getToken())
+                    .status(domain.getStatus())
                     .build();
         }
     }
@@ -46,11 +51,11 @@ public class QueueResult {
     @NoArgsConstructor
     @AllArgsConstructor
     @Builder
-    public static class expireTokenResult {
+    public static class ExpireTokenResult {
         private Long userId;                    // 유저ID
 
-        public static expireTokenResult from(QueueDomain domain) {
-            return expireTokenResult.builder()
+        public static ExpireTokenResult from(Queue domain) {
+            return ExpireTokenResult.builder()
                     .userId(domain.getUserId())
                     .build();
         }

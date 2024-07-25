@@ -3,12 +3,9 @@ package org.hhplus.ticketing.interfaces.controller.payment;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import org.hhplus.ticketing.annotation.CheckToken;
-import org.hhplus.ticketing.application.payment.facade.PaymentFacade;
+import org.hhplus.ticketing.application.payment.PaymentFacade;
 import org.hhplus.ticketing.interfaces.controller.payment.dto.request.PaymentRequest;
 import org.hhplus.ticketing.interfaces.controller.payment.dto.response.PaymentResponse;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -24,8 +21,6 @@ import java.util.UUID;
 @Tag(name = "Payment API", description = "결제 관련 API")
 public class PaymentController {
 
-    private static final Logger log = LoggerFactory.getLogger(PaymentController.class);
-
     private final PaymentFacade paymentFacade;
 
     private static final String AUTHORIZATION_HEADER = "Authorization";
@@ -38,7 +33,6 @@ public class PaymentController {
      * @param request 결제요청 객체
      * @return 결제요청 응답 객체
      */
-    @CheckToken
     @PostMapping("/")
     @Operation(summary = "결제 API", description = "예약한 좌석의 결제를 처리합니다.")
     public ResponseEntity<PaymentResponse.PaymentProcessingResponse> requestPayment (@RequestHeader(value = AUTHORIZATION_HEADER, required = true) String authorizationHeader, @RequestBody PaymentRequest.PaymentProcessingRequest request) {

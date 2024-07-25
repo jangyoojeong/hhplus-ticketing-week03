@@ -16,7 +16,7 @@ public class UserResult {
         private Long userId;           // 유저ID (키값)
         private String userName;       // 유저 이름
 
-        public static UserInfoResult from(UserInfoDomain domain) {
+        public static UserInfoResult from(UserInfo domain) {
             return UserInfoResult.builder()
                     .userId(domain.getUserId())
                     .userName(domain.getUserName())
@@ -29,20 +29,20 @@ public class UserResult {
     @NoArgsConstructor
     @AllArgsConstructor
     @Builder
-    public static class AddPointResult {
+    public static class ChargePointResult {
 
         private Long userId;                    // userId
         private int point;                      // 충전 후 포인트 잔액
 
-        public static AddPointResult from(UserPointDomain domain) {
-            return AddPointResult.builder()
+        public static ChargePointResult from(UserPoint domain) {
+            return ChargePointResult.builder()
                     .userId(domain.getUserId())
                     .point(domain.getPoint())
                     .build();
         }
     }
 
-    // 사용자 잔액 차감 result
+    // 사용자 차감 후 잔액 result
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
@@ -52,7 +52,7 @@ public class UserResult {
         private Long userId;                    // userId
         private int point;                      // 차감 후 포인트 잔액
 
-        public static UsePointResult from(UserPointDomain domain) {
+        public static UsePointResult from(UserPoint domain) {
             return UsePointResult.builder()
                     .userId(domain.getUserId())
                     .point(domain.getPoint())
@@ -60,7 +60,7 @@ public class UserResult {
         }
     }
 
-    // 사용자 잔액 조회 result
+    // 사용자 잔액 result
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
@@ -68,9 +68,9 @@ public class UserResult {
     public static class UserPointResult {
 
         private Long userId;                    // userId
-        private int point;                      // 포인트 잔액
+        private int point;                      // 차감 후 포인트 잔액
 
-        public static UserPointResult from(UserPointDomain domain) {
+        public static UserPointResult from(UserPoint domain) {
             return UserPointResult.builder()
                     .userId(domain.getUserId())
                     .point(domain.getPoint())

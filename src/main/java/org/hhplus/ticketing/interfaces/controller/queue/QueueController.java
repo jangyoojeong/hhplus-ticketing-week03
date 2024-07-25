@@ -3,12 +3,10 @@ package org.hhplus.ticketing.interfaces.controller.queue;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import org.hhplus.ticketing.application.queue.facade.QueueFacade;
+import org.hhplus.ticketing.application.queue.QueueFacade;
 import org.hhplus.ticketing.domain.queue.model.QueueResult;
 import org.hhplus.ticketing.interfaces.controller.queue.dto.request.QueueRequest;
 import org.hhplus.ticketing.interfaces.controller.queue.dto.response.QueueResponse;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,8 +22,6 @@ import java.util.UUID;
 @RequestMapping("/api/queues")
 @Tag(name = "Queue API", description = "대기열 관련 API")
 public class QueueController {
-
-    private static final Logger log = LoggerFactory.getLogger(QueueController.class);
 
     private final QueueFacade queueFacade;
 

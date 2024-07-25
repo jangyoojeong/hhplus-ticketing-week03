@@ -4,9 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hhplus.ticketing.domain.queue.model.Queue;
 import org.hhplus.ticketing.domain.queue.model.QueueResult;
-
-import java.util.UUID;
 
 public class QueueResponse {
 
@@ -34,12 +33,14 @@ public class QueueResponse {
     public static class QueueStatusResponse {
 
         private Long userId;                    // 유저ID
-        private Long queuePosition;             // 대기순서
+        private Long position;                  // 대기순서
+        private Queue.Status status;             // 토큰상태
 
         public static QueueStatusResponse from(QueueResult.QueueStatusResult result) {
             return QueueStatusResponse.builder()
                     .userId(result.getUserId())
-                    .queuePosition(result.getQueuePosition())
+                    .position(result.getPosition())
+                    .status(result.getStatus())
                     .build();
         }
     }
