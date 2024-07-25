@@ -21,11 +21,13 @@ public enum ErrorCode {
     /* 404 NOT_FOUND : Resource 를 찾을 수 없음 */
     TOKEN_NOT_FOUND(HttpStatus.NOT_FOUND, "토큰 정보가 존재하지 않습니다."),
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "유저가 존재하지 않습니다."),
+    USER_POINT_NOT_FOUND(HttpStatus.NOT_FOUND, "유저 포인트정보가 존재하지 않습니다."),
     //CONCERT_NOT_FOUND(NOT_FOUND, "콘서트 정보를 찾을 수 없습니다."),
     SEAT_NOT_FOUND_OR_ALREADY_RESERVED(HttpStatus.NOT_FOUND, "좌석 정보를 찾을 수 없거나 이미 선점된 좌석입니다."),
     RESERVATION_NOT_FOUND(HttpStatus.NOT_FOUND, "예약 정보를 찾을 수 없거나 이미 만료된 예약입니다."),
 
     /* 409 CONFLICT : Resource 의 현재 상태와 충돌. 보통 중복된 데이터 존재 */
+    DUPLICATE_REQUEST(HttpStatus.CONFLICT, "동일한 요청이 이미 처리 중입니다. 잠시 후 다시 시도해 주세요."),
     CONFLICTING_RESERVATION(HttpStatus.CONFLICT, "이미 선점된 좌석입니다.");
 
     /* 500 INTERNAL_SERVER_ERROR : 서버 오류 */

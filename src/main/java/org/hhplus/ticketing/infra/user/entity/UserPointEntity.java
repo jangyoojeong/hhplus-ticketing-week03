@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 @Entity
-@Table(name = "user_point", uniqueConstraints = @UniqueConstraint(columnNames = "user_id"))
+@Table(name = "user_point")
 public class UserPointEntity {
 
     @Id
@@ -34,6 +34,10 @@ public class UserPointEntity {
     @Column(nullable = false)
     private LocalDateTime updatedAt;        // 수정일자
 
+    @Version
+    @Column(name = "version")
+    private Long version;                   // 낙관적 락 버전 필드
+
     @PrePersist
     private void prePersist() {
         createdAt = LocalDateTime.now();
@@ -50,6 +54,7 @@ public class UserPointEntity {
                 .userPointId(domain.getUserPointId())
                 .userId(domain.getUserId())
                 .point(domain.getPoint())
+                .version(domain.getVersion())
                 .build();
     }
 
@@ -58,6 +63,7 @@ public class UserPointEntity {
                 .userPointId(this.getUserPointId())
                 .userId(this.getUserId())
                 .point(this.getPoint())
+                .version(this.getVersion())
                 .build();
     }
 }
