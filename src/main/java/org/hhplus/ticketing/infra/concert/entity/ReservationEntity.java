@@ -44,6 +44,10 @@ public class ReservationEntity {
     @Column(nullable = false)
     private LocalDateTime updatedAt;                // 수정일자
 
+    @Version
+    @Column(name = "version")
+    private Long version;                           // 낙관적 락 버전 필드
+
     @PrePersist
     private void prePersist() {
         createdAt = LocalDateTime.now();
@@ -63,6 +67,7 @@ public class ReservationEntity {
                 .reservationAt(domain.getReservationAt())
                 .price(domain.getPrice())
                 .status(domain.getStatus())
+                .version(domain.getVersion())
                 .build();
     }
 
@@ -74,6 +79,7 @@ public class ReservationEntity {
                 .reservationAt(this.getReservationAt())
                 .price(this.getPrice())
                 .status(this.getStatus())
+                .version(this.getVersion())
                 .build();
     }
 }

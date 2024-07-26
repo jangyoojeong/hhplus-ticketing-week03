@@ -22,6 +22,7 @@ public class Reservation {
     private LocalDateTime reservationAt; // 예약시간
     private int price;                   // 예약가격
     private Status status;               // 예약상태 (예약됨[RESERVED]/점유[OCCUPIED]/만료[EXPIRED])
+    private Long version;                // 낙관적 락 버전 필드
 
     public static Reservation create(Long concertSeatId, Long userId, int price) {
         return Reservation.builder()

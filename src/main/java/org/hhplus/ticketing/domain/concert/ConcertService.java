@@ -9,7 +9,6 @@ import org.hhplus.ticketing.domain.concert.model.ConcertResult;
 import org.hhplus.ticketing.domain.concert.model.ConcertSeat;
 import org.hhplus.ticketing.domain.concert.model.Reservation;
 import org.hhplus.ticketing.domain.concert.model.constants.ConcertConstants;
-import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -59,20 +58,15 @@ public class ConcertService {
     @Transactional(rollbackFor = {Exception.class})
     public ConcertResult.ReserveSeatResult reserveSeat(ConcertCommand.ReserveSeatCommand command) {
 
-        try {
-            // 1. 좌석 정보 조회 (해당 좌석이 예약 가능한지) > 낙관적락
-            // 리턴 결과 없을 시 > "좌석 정보를 찾을 수 없거나 이미 선점된 좌석입니다." 예외 리턴
-            ConcertSeat seat = concertRepository.getAvailableSeat(command.getConcertSeatId()).orElseThrow(()
-                    -> new CustomException(ErrorCode.SEAT_NOT_FOUND_OR_ALREADY_RESERVED));
-            seat.setReserved();
-            concertRepository.saveSeat(seat);
+        // 1. 좌석 정보 조회 (해당 좌석이 예약 가능한지) > 낙관적락
+        // 리턴 결과 없을 시 > "좌석 정보를 찾을 수 없거나 이미 선점된 좌석입니다." 예외 리턴
+        ConcertSeat seat = concertRepository.getAvailableSeat(command.getConcertSeatId()).orElseThrow(()
+                -> new CustomException(ErrorCode.SEAT_NOT_FOUND_OR_ALREADY_RESERVED));
+        seat.setReserved();
+        concertRepository.saveSeat(seat);
 
-            Reservation reservation = Reservation.create(command.getConcertSeatId(), command.getUserId(), seat.getPrice());
-            return ConcertResult.ReserveSeatResult.from(concertRepository.saveReservation(reservation));
-        } catch (OptimisticLockingFailureException e) {
-            log.error("이미 선점된 좌석입니다. 좌석 ID: {}", command.getConcertSeatId(), e);
-            throw new CustomException(ErrorCode.CONFLICTING_RESERVATION, e);
-        }
+        Reservation reservation = Reservation.create(command.getConcertSeatId(), command.getUserId(), seat.getPrice());
+        return ConcertResult.ReserveSeatResult.from(concertRepository.saveReservation(reservation));
     }
 
     /**
@@ -82,7 +76,6 @@ public class ConcertService {
      * @return 만료되지 않은 예약 객체
      * @throws CustomException 예약이 존재하지 않거나 만료된 경우
      */
-    @Transactional(readOnly = true)
     public Reservation getReservation(Long reservationId) {
         return concertRepository.getActiveReservation(reservationId).orElseThrow(()
                 -> new CustomException(ErrorCode.RESERVATION_NOT_FOUND));

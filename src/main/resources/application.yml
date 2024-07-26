@@ -26,3 +26,33 @@ spring:
         dialect: org.hibernate.dialect.H2Dialect
         format_sql: true      # 쿼리 로그 포맷 (정렬)
         show_sql: true        # 쿼리 로그 출력
+
+  # Redis 설정
+  redis:
+    host: localhost
+    port: 6379
+
+logging:
+  level:
+    org:
+      hibernate:
+        SQL: OFF
+        type:
+          descriptor:
+            sql:
+              BasicBinder: OFF
+    springframework:
+      jdbc:
+        core:
+          JdbcTemplate: OFF
+          StatementCreatorUtils: OFF
+      orm:
+        jpa: OFF
+      transaction: OFF
+      data:
+        jpa:
+          repository:
+            query: OFF
+          support:
+            SimpleJpaRepository: OFF
+      orm.jpa.vendor.HibernateJpaDialect: OFF
