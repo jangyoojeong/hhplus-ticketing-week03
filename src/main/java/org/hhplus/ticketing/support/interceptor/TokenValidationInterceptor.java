@@ -3,7 +3,7 @@ package org.hhplus.ticketing.support.interceptor;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.hhplus.ticketing.application.queue.facade.QueueFacade;
+import org.hhplus.ticketing.application.queue.QueueFacade;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ResponseStatusException;

@@ -18,4 +18,6 @@ public interface ReservationJpaRepository extends JpaRepository<ReservationEntit
     List<ReservationEntity> findReservedBefore(@Param("time") LocalDateTime time);
 
     List<ReservationEntity> findByUserId(Long userId);
+
+    List<ReservationEntity> findByConcertSeatId(Long concertSeatId);
 }

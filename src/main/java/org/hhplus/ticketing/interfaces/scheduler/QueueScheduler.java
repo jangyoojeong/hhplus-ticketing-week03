@@ -1,7 +1,7 @@
 package org.hhplus.ticketing.interfaces.scheduler;
 
 import lombok.RequiredArgsConstructor;
-import org.hhplus.ticketing.application.queue.facade.QueueFacade;
+import org.hhplus.ticketing.application.queue.QueueFacade;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 

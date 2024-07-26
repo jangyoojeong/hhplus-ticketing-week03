@@ -3,7 +3,7 @@ package org.hhplus.ticketing.interfaces.controller.concert;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import org.hhplus.ticketing.application.concert.facade.ConcertFacade;
+import org.hhplus.ticketing.application.concert.ConcertFacade;
 import org.hhplus.ticketing.interfaces.controller.concert.dto.request.ConcertRequest;
 import org.hhplus.ticketing.interfaces.controller.concert.dto.response.ConcertResponse;
 import org.springframework.http.HttpStatus;

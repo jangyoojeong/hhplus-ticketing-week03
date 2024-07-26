@@ -3,7 +3,7 @@ package org.hhplus.ticketing.interfaces.controller.payment;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import org.hhplus.ticketing.application.payment.facade.PaymentFacade;
+import org.hhplus.ticketing.application.payment.PaymentFacade;
 import org.hhplus.ticketing.interfaces.controller.payment.dto.request.PaymentRequest;
 import org.hhplus.ticketing.interfaces.controller.payment.dto.response.PaymentResponse;
 import org.springframework.http.HttpStatus;

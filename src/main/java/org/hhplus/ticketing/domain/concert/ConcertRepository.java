@@ -133,6 +133,14 @@ public interface ConcertRepository {
     List<Reservation> findByUserId(Long userId);
 
     /**
+     * 특정 좌석의 예약 정보를 조회합니다.
+     *
+     * @param concertSeatId 예약 정보를 조회할 좌석 ID
+     * @return 조회된 예약 정보 리스트
+     */
+    List<Reservation> findByConcertSeatId(Long concertSeatId);
+
+    /**
      * 예약정보를 조회합니다.
      *
      * @param reservationId 조회할 예약ID

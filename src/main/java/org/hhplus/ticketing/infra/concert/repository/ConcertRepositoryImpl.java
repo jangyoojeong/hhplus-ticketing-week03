@@ -125,6 +125,13 @@ public class ConcertRepositoryImpl implements ConcertRepository {
     }
 
     @Override
+    public List<Reservation> findByConcertSeatId(Long concertSeatId) {
+        return reservationJpaRepository.findByConcertSeatId(concertSeatId).stream()
+                .map(ReservationEntity::toDomain)
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public Optional<Reservation> findReservationById(Long reservationId) {
         return reservationJpaRepository.findById(reservationId).map(ReservationEntity::toDomain);
     }

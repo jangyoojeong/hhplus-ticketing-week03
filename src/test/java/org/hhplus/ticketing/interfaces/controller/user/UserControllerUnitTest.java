@@ -1,6 +1,6 @@
 package org.hhplus.ticketing.interfaces.controller.user;
 
-import org.hhplus.ticketing.application.user.facade.UserFacade;
+import org.hhplus.ticketing.application.user.UserFacade;
 import org.hhplus.ticketing.domain.user.model.UserCommand;
 import org.hhplus.ticketing.domain.user.model.UserResult;
 import org.hhplus.ticketing.interfaces.controller.user.dto.UserRequest;
@@ -62,7 +62,7 @@ public class UserControllerUnitTest {
         UserResult.UserPointResult result = new UserResult.UserPointResult(userId, 50000);
         UserResponse.UserPointResponse response = UserResponse.UserPointResponse.from(result);
 
-        given(userFacade.getPoint(userId)).willReturn(result);
+        given(userFacade.getPointResult(userId)).willReturn(result);
 
         // When
         ResponseEntity<UserResponse.UserPointResponse> responseEntity = userController.getUserPoint(userId);

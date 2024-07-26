@@ -1,6 +1,6 @@
 package org.hhplus.ticketing.interfaces.controller.payment;
 
-import org.hhplus.ticketing.application.payment.facade.PaymentFacade;
+import org.hhplus.ticketing.application.payment.PaymentFacade;
 import org.hhplus.ticketing.domain.payment.model.PaymentCommand;
 import org.hhplus.ticketing.domain.payment.model.PaymentResult;
 import org.hhplus.ticketing.interfaces.controller.payment.dto.request.PaymentRequest;

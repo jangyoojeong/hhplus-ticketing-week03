@@ -6,6 +6,7 @@ import org.hhplus.ticketing.domain.payment.model.Payment;
 import org.hhplus.ticketing.infra.payment.entity.PaymentEntity;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -22,5 +23,10 @@ public class PaymentRepositoryImpl implements PaymentRepository {
     @Override
     public Optional<Payment> findById(Long paymentId) {
         return paymentJpaRepository.findById(paymentId).map(PaymentEntity::toDomain);
+    }
+
+    @Override
+    public List<Payment> findByReservationId(Long reservationId) {
+        return PaymentEntity.toDomainList(paymentJpaRepository.findByReservationId(reservationId));
     }
 }

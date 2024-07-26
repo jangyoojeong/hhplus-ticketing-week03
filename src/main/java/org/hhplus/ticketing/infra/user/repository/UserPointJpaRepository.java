@@ -14,4 +14,5 @@ public interface UserPointJpaRepository extends JpaRepository<UserPointEntity, L
      * @return userId에 해당하는 포인트 {@link Optional} 객체. 만일 해당하는 사용자가 없으면 비어있는 Optional을 반환합니다.
      */
     Optional<UserPointEntity> findByUserId(Long userId);
+
 }

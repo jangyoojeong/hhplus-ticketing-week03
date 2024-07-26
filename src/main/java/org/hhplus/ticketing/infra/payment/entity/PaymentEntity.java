@@ -8,6 +8,8 @@ import lombok.NoArgsConstructor;
 import org.hhplus.ticketing.domain.payment.model.Payment;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Data
 @NoArgsConstructor
@@ -70,6 +72,12 @@ public class PaymentEntity {
                 .paymentAt(this.getPaymentAt())
                 .status(this.getStatus())
                 .build();
+    }
+
+    public static List<Payment> toDomainList(List<PaymentEntity> entityList) {
+        return entityList.stream()
+                .map(PaymentEntity::toDomain)
+                .collect(Collectors.toList());
     }
 
 }
