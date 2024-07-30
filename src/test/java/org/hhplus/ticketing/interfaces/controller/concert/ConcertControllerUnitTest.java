@@ -1,10 +1,7 @@
 package org.hhplus.ticketing.interfaces.controller.concert;
 
 import org.hhplus.ticketing.application.concert.ConcertFacade;
-import org.hhplus.ticketing.domain.concert.model.ConcertCommand;
-import org.hhplus.ticketing.domain.concert.model.ConcertOption;
-import org.hhplus.ticketing.domain.concert.model.ConcertResult;
-import org.hhplus.ticketing.domain.concert.model.ConcertSeat;
+import org.hhplus.ticketing.domain.concert.model.*;
 import org.hhplus.ticketing.interfaces.controller.concert.dto.request.ConcertRequest;
 import org.hhplus.ticketing.interfaces.controller.concert.dto.response.ConcertResponse;
 import org.junit.jupiter.api.BeforeEach;
@@ -13,12 +10,16 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
@@ -39,6 +40,38 @@ public class ConcertControllerUnitTest {
     void setUp() {
         MockitoAnnotations.openMocks(this);
         userId = 1L;
+    }
+
+    @Test
+    @DisplayName("🟢 콘서트_목록_조회_컨트롤러_테스트_예상_리턴_확인")
+    void getConcertListTest_콘서트_목록_조회_컨트롤러_테스트_예상_리턴_확인() {
+
+        // Given
+        List<Concert> concertList = Arrays.asList(
+                new Concert(1L, "콘서트1")
+        );
+
+        Page<Concert> concerts = new PageImpl<>(concertList, PageRequest.of(0, 20), concertList.size());
+
+        List<ConcertResult.GetConcertListResult> result = concerts.stream()
+                .map(ConcertResult.GetConcertListResult::from)
+                .collect(Collectors.toList());
+
+        Page<ConcertResult.GetConcertListResult> resultPage = new PageImpl<>(result, PageRequest.of(0, 20), result.size());
+
+        List<ConcertResponse.GetConcertListResponse> response = resultPage.stream()
+                .map(ConcertResponse.GetConcertListResponse::from)
+                .collect(Collectors.toList());
+        Page<ConcertResponse.GetConcertListResponse> responsePage = new PageImpl<>(response, PageRequest.of(0, 20), response.size());
+
+        given(concertFacade.getConcertList(PageRequest.of(0, 20))).willReturn(resultPage);
+
+        // When
+        ResponseEntity<Page<ConcertResponse.GetConcertListResponse>> responseEntity = concertController.getConcertList(PageRequest.of(0, 20));
+
+        // Then
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+        assertEquals(responseEntity.getBody(), responsePage);
     }
 
     @Test

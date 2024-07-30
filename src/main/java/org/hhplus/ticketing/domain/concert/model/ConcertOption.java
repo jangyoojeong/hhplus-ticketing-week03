@@ -16,6 +16,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 public class ConcertOption {
+
     private Long concertOptionId;       // 콘서트옵션ID (키값)
     private Long concertId;             // 콘서트ID
     private LocalDateTime concertAt;    // 콘서트 시간
@@ -26,6 +27,14 @@ public class ConcertOption {
                 .concertId(concertId)
                 .concertAt(concertAt)
                 .capacity(capacity)
+                .build();
+    }
+
+    public static ConcertOption from(ConcertCommand.SaveConcertOptionCommand command) {
+        return ConcertOption.builder()
+                .concertId(command.getConcertId())
+                .concertAt(command.getConcertAt())
+                .capacity(command.getCapacity())
                 .build();
     }
 }

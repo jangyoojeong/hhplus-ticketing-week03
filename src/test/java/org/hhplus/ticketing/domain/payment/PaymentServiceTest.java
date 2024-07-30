@@ -47,18 +47,18 @@ class PaymentServiceTest {
 
     @Test
     @DisplayName("🟢 좌석_결제_요청_정상적으로_실행된다")
-    void requestPayment_좌석_결제_요청_정상적으로_실행된다() {
+    void createPayment_History_좌석_결제_요청_정상적으로_실행된다() {
 
         // Given
-        PaymentCommand.PaymentProcessingCommand command = new PaymentCommand.PaymentProcessingCommand(1L, 1L, price);
+        PaymentCommand.RequestPaymentCommand command = new PaymentCommand.RequestPaymentCommand(1L, 1L, price);
         given(paymentRepository.save(any(Payment.class))).willReturn(paymentDomain);
 
         // When
-        PaymentResult.PaymentProcessingResult result = paymentService.requestPayment(command);
+        PaymentResult.RequestPaymentResult result = paymentService.createPayment(command);
 
         // Then
         assertNotNull(result);
-        assertEquals(PaymentResult.PaymentProcessingResult.from(paymentDomain), result);
+        assertEquals(PaymentResult.RequestPaymentResult.from(paymentDomain), result);
         verify(paymentRepository, times(1)).save(any(Payment.class));
     }
 }

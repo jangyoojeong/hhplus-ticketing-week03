@@ -35,14 +35,14 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 public class UserConcurrentTest {
 
+    Logger log = LoggerFactory.getLogger(UserConcurrentTest.class);
+
     @Autowired
     private UserFacade userFacade;
     @Autowired
     private UserPointRepository userPointRepository;
     @Autowired
     TestDataInitializer testDataInitializer;
-
-    Logger log = LoggerFactory.getLogger(UserConcurrentTest.class);
 
     private List<UserInfo> savedUsers;
 
@@ -59,8 +59,8 @@ public class UserConcurrentTest {
     }
 
     @Test
-    @DisplayName("🔴 잔액_충전_통합_테스트_포인트_충전을_따닥_클릭시_하나를_제외하고_실패해야한다")
-    void concurrentChargePointTest_잔액_충전_통합_테스트_포인트_충전을_따닥_클릭시_하나를_제외하고_실패해야한다()  {
+    @DisplayName("🔴 잔액_충전_동시성_테스트_포인트_충전을_따닥_클릭시_하나를_제외하고_실패해야한다")
+    void concurrentChargePointTest_잔액_충전_동시성_테스트_포인트_충전을_따닥_클릭시_하나를_제외하고_실패해야한다()  {
 
         // Given
         int addPoint = 5000;
@@ -71,7 +71,7 @@ public class UserConcurrentTest {
                 .amount(addPoint)
                 .build();
 
-        // 2개의 스레드를 통해 동시에 요청 시도
+        // 10개의 스레드를 통해 동시에 요청 시도
         int numberOfThreads = 10;
         ExecutorService executorService = Executors.newFixedThreadPool(numberOfThreads);
         List<CompletableFuture<Exception>> futures = new ArrayList<>();
@@ -81,7 +81,7 @@ public class UserConcurrentTest {
         log.info("테스트 시작 시간 : {}", testStart);
 
         // When
-        // 각 스레드에서 좌석 예약 시도
+        // 각 스레드에서 요청 시도
         for (int i = 0; i < numberOfThreads; i++) {
             futures.add(CompletableFuture.supplyAsync(() -> {
                 String currentThreadNm = Thread.currentThread().getName();

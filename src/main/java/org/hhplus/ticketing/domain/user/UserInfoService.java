@@ -23,7 +23,7 @@ public class UserInfoService {
      */
     @Transactional(readOnly = true)
     public UserResult.UserInfoResult validateUser (Long userId) {
-        return UserResult.UserInfoResult.from(userInfoRepository.findById(userId).orElseThrow(()
+        return UserResult.UserInfoResult.from(userInfoRepository.getUser(userId).orElseThrow(()
                 -> new CustomException(ErrorCode.USER_NOT_FOUND)));
     }
 }

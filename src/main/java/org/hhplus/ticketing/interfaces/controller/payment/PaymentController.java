@@ -2,6 +2,7 @@ package org.hhplus.ticketing.interfaces.controller.payment;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.hhplus.ticketing.application.payment.PaymentFacade;
 import org.hhplus.ticketing.interfaces.controller.payment.dto.request.PaymentRequest;
@@ -35,9 +36,8 @@ public class PaymentController {
      */
     @PostMapping("/")
     @Operation(summary = "결제 API", description = "예약한 좌석의 결제를 처리합니다.")
-    public ResponseEntity<PaymentResponse.PaymentProcessingResponse> requestPayment (@RequestHeader(value = AUTHORIZATION_HEADER, required = true) String authorizationHeader, @RequestBody PaymentRequest.PaymentProcessingRequest request) {
+    public ResponseEntity<PaymentResponse.PaymentProcessingResponse> requestPayment (@RequestHeader(value = AUTHORIZATION_HEADER, required = true) String authorizationHeader, @Valid @RequestBody PaymentRequest.PaymentProcessingRequest request) {
         String token = authorizationHeader.replace(BEARER_PREFIX, "");
-        PaymentResponse.PaymentProcessingResponse response = PaymentResponse.PaymentProcessingResponse.from(paymentFacade.requestPayment(UUID.fromString(token), request.toCommand()));
-        return ResponseEntity.status(HttpStatus.OK).body(response);
+        return ResponseEntity.status(HttpStatus.OK).body(PaymentResponse.PaymentProcessingResponse.from(paymentFacade.requestPayment(UUID.fromString(token), request.toCommand())));
     }
 }

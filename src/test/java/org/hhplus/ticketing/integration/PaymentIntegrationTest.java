@@ -109,10 +109,10 @@ public class PaymentIntegrationTest {
     void requestPaymentTest_결제_요청_통합_테스트_결제가_성공하고_기존_50000포인트에서_30000포인트가_차감된_20000포인트가_리턴된다() {
 
         // Given
-        PaymentCommand.PaymentProcessingCommand command = new PaymentCommand.PaymentProcessingCommand(userId, reservationId, price);
+        PaymentCommand.RequestPaymentCommand command = new PaymentCommand.RequestPaymentCommand(userId, reservationId, price);
 
         // When
-        PaymentResult.PaymentProcessingResult actualResult = paymentFacade.requestPayment(token, command);
+        PaymentResult.RequestPaymentResult actualResult = paymentFacade.requestPayment(token, command);
 
         // Then
         assertNotNull(actualResult);
@@ -124,10 +124,10 @@ public class PaymentIntegrationTest {
     void requestPaymentTest_결제_요청_통합_테스트_결제가_성공하고_결제정보가_적재된다() {
 
         // Given
-        PaymentCommand.PaymentProcessingCommand command = new PaymentCommand.PaymentProcessingCommand(userId, reservationId, price);
+        PaymentCommand.RequestPaymentCommand command = new PaymentCommand.RequestPaymentCommand(userId, reservationId, price);
 
         // When
-        PaymentResult.PaymentProcessingResult actualResult = paymentFacade.requestPayment(token, command);
+        PaymentResult.RequestPaymentResult actualResult = paymentFacade.requestPayment(token, command);
 
         // Then
         Optional<Payment> paymentDomain = paymentRepository.findById(actualResult.getPaymentId());
@@ -140,10 +140,10 @@ public class PaymentIntegrationTest {
     void requestPaymentTest_결제_요청_통합_테스트_결제가_성공하고_좌석_소유권이_배정된다() {
 
         // Given
-        PaymentCommand.PaymentProcessingCommand command = new PaymentCommand.PaymentProcessingCommand(userId, reservationId, price);
+        PaymentCommand.RequestPaymentCommand command = new PaymentCommand.RequestPaymentCommand(userId, reservationId, price);
 
         // When
-        PaymentResult.PaymentProcessingResult actualResult = paymentFacade.requestPayment(token, command);
+        PaymentResult.RequestPaymentResult actualResult = paymentFacade.requestPayment(token, command);
 
         // Then
         Optional<Reservation> reservation = concertRepository.findReservationById(reservationId);
@@ -158,10 +158,10 @@ public class PaymentIntegrationTest {
     void requestPaymentTest_결제_요청_통합_테스트_결제가_성공하고_대기열_토큰이_만료된다() {
 
         // Given
-        PaymentCommand.PaymentProcessingCommand command = new PaymentCommand.PaymentProcessingCommand(userId, reservationId, price);
+        PaymentCommand.RequestPaymentCommand command = new PaymentCommand.RequestPaymentCommand(userId, reservationId, price);
 
         // When
-        PaymentResult.PaymentProcessingResult actualResult = paymentFacade.requestPayment(token, command);
+        PaymentResult.RequestPaymentResult actualResult = paymentFacade.requestPayment(token, command);
 
         // Then
         Optional<Queue> queue = queueRepository.findByToken(token);
@@ -177,7 +177,7 @@ public class PaymentIntegrationTest {
         // Given
         Long nonExistentReservationId = 99L;    // 존재하지 않는 예약코드
 
-        PaymentCommand.PaymentProcessingCommand command = new PaymentCommand.PaymentProcessingCommand(userId, nonExistentReservationId, price);
+        PaymentCommand.RequestPaymentCommand command = new PaymentCommand.RequestPaymentCommand(userId, nonExistentReservationId, price);
 
         // When & Then
         assertThatThrownBy(() -> paymentFacade.requestPayment(token, command))
@@ -194,7 +194,7 @@ public class PaymentIntegrationTest {
         int amount = 100000;
         userPointService.usePoint(new UserCommand.UsePointCommand(savedUserPoint.getUserId(), amount));
 
-        PaymentCommand.PaymentProcessingCommand command = new PaymentCommand.PaymentProcessingCommand(userId, reservationId, price);
+        PaymentCommand.RequestPaymentCommand command = new PaymentCommand.RequestPaymentCommand(userId, reservationId, price);
 
         // When & Then
         assertThatThrownBy(() -> paymentFacade.requestPayment(token, command))
@@ -210,7 +210,7 @@ public class PaymentIntegrationTest {
         // Given
         UUID nonExistentToken = UUID.randomUUID();
 
-        PaymentCommand.PaymentProcessingCommand command = new PaymentCommand.PaymentProcessingCommand(userId, reservationId, price);
+        PaymentCommand.RequestPaymentCommand command = new PaymentCommand.RequestPaymentCommand(userId, reservationId, price);
 
         // When & Then
         assertThatThrownBy(() -> paymentFacade.requestPayment(nonExistentToken, command))

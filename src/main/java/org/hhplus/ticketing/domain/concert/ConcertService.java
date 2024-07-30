@@ -4,11 +4,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.hhplus.ticketing.domain.common.exception.CustomException;
 import org.hhplus.ticketing.domain.common.exception.ErrorCode;
-import org.hhplus.ticketing.domain.concert.model.ConcertCommand;
-import org.hhplus.ticketing.domain.concert.model.ConcertResult;
-import org.hhplus.ticketing.domain.concert.model.ConcertSeat;
-import org.hhplus.ticketing.domain.concert.model.Reservation;
+import org.hhplus.ticketing.domain.concert.model.*;
 import org.hhplus.ticketing.domain.concert.model.constants.ConcertConstants;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,6 +24,40 @@ import java.util.stream.Collectors;
 public class ConcertService {
 
     private final ConcertRepository concertRepository;
+
+    /**
+     * 콘서트를 저장합니다.
+     *
+     * @param command 콘서트 저장 요청 command 객체
+     * @return 저장된 콘서트 정보를 포함한 result 객체
+     */
+    @Transactional
+    public ConcertResult.SaveConcertResult saveConcert(ConcertCommand.SaveConcertCommand command) {
+        return ConcertResult.SaveConcertResult.from(concertRepository.saveConcert(Concert.create(command.getConcertName())));
+    }
+
+    /**
+     * 콘서트 목록을 조회합니다.
+     *
+     * @param pageable 페이징 정보
+     * @return 페이징 처리된 콘서트 목록 응답 객체
+     */
+    @Transactional(readOnly = true)
+    public Page<ConcertResult.GetConcertListResult> getConcertList(Pageable pageable) {
+        return concertRepository.getConcertList(pageable)
+                .map(ConcertResult.GetConcertListResult::from);
+    }
+
+    /**
+     * 콘서트를 저장합니다.
+     *
+     * @param command 콘서트 저장 요청 command 객체
+     * @return 저장된 콘서트 정보를 포함한 result 객체
+     */
+    @Transactional
+    public ConcertResult.SaveConcertOptionResult saveConcertOption(ConcertCommand.SaveConcertOptionCommand command) {
+        return ConcertResult.SaveConcertOptionResult.from(concertRepository.saveConcertOption(ConcertOption.from(command)));
+    }
 
     /**
      * 특정 콘서트에 대해 예약 가능한 날짜를 조회합니다.
@@ -55,11 +88,10 @@ public class ConcertService {
      * @return 좌석 예약 정보를 포함한 result 객체
      * @throws CustomException 예약 가능한 좌석이 없거나 이미 선점된 경우 발생
      */
-    @Transactional(rollbackFor = {Exception.class})
+    @Transactional
     public ConcertResult.ReserveSeatResult reserveSeat(ConcertCommand.ReserveSeatCommand command) {
 
-        // 1. 좌석 정보 조회 (해당 좌석이 예약 가능한지) > 낙관적락
-        // 리턴 결과 없을 시 > "좌석 정보를 찾을 수 없거나 이미 선점된 좌석입니다." 예외 리턴
+        // 1. 좌석 정보 조회 (해당 좌석이 예약 가능한지)
         ConcertSeat seat = concertRepository.getAvailableSeat(command.getConcertSeatId()).orElseThrow(()
                 -> new CustomException(ErrorCode.SEAT_NOT_FOUND_OR_ALREADY_RESERVED));
         seat.setReserved();
@@ -88,7 +120,7 @@ public class ConcertService {
      * @return 좌석 소유권 배정 정보를 포함한 result 객체
      * @throws CustomException 예약 또는 좌석 정보가 유효하지 않은 경우 발생
      */
-    @Transactional(rollbackFor = {Exception.class})
+    @Transactional
     public ConcertResult.AssignSeatResult assignSeat(Long reservationId) {
 
         Reservation reservation = getReservation(reservationId);
@@ -99,6 +131,8 @@ public class ConcertService {
                 -> new CustomException(ErrorCode.INVALID_SEAT_SELECTION));
         seat.setOccupied();
 
+
+
         return ConcertResult.AssignSeatResult.from(concertRepository.saveSeat(seat));
     }
 
@@ -108,15 +142,15 @@ public class ConcertService {
      * 1. 예약한지 5분이 경과한 예약건을 만료시킵니다.
      * 2. 만료된 예약건에 대한 좌석을 사용가능상태로 되돌립니다.
      */
-    @Transactional(rollbackFor = {Exception.class})
+    @Transactional
     public void releaseReservations() {
         LocalDateTime expirationTime = LocalDateTime.now().minusMinutes(ConcertConstants.RESERVATION_EXPIRATION_MINUTES);
         List<Reservation> expiredReservations = concertRepository.getExpiredReservations(expirationTime);
-        if (!expiredReservations.isEmpty()) {
-            expiredReservations.forEach(Reservation::setExpired);
-            concertRepository.saveAllReservation(expiredReservations);
-            log.info("총 {}개의 예약이 만료되었습니다.", expiredReservations.size());
-        }
+        if (expiredReservations.isEmpty()) return;
+
+        expiredReservations.forEach(Reservation::setExpired);
+        concertRepository.saveAllReservation(expiredReservations);
+        log.info("총 {}개의 예약이 만료되었습니다.", expiredReservations.size());
 
         releaseSeats(expiredReservations);
     }

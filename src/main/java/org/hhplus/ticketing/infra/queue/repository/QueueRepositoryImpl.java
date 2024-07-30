@@ -62,28 +62,27 @@ public class QueueRepositoryImpl implements QueueRepository {
         return repository.findFirstByStatusOrderByEnteredAtDesc(status).map(QueueEntity::toDomain);
     }
 
+
     /**
      * 만료 대상 토큰을 조회힙니다
      *
-     * @param status 조회할 토큰의 상태를 나타내는 {@link Queue.Status}
      * @param time 특정 시간 이전에 들어온 토큰을 필터링하기 위한 {@link LocalDateTime}
      * @return 주어진 상태와 특정 시간 이전에 들어온 {@link Queue} 객체 리스트
      */
     @Override
-    public List<Queue> getExpiredTokens(Queue.Status status, LocalDateTime time) {
-        return QueueEntity.toDomainList(repository.findActiveTokensEnteredBefore(status, time));
+    public List<Queue> getExpiredTokens(LocalDateTime time) {
+        return QueueEntity.toDomainList(repository.findActiveEnteredBeforeTime(time));
     }
 
     /**
      * 활성화 대상 토큰을 조회합니다
      *
-     * @param status 조회할 큐의 상태를 나타내는 {@link String}
      * @param pageable 결과의 크기와 페이징 정보를 제공하는 {@link Pageable}
      * @return 주어진 상태와 페이징 조건을 만족하는 큐 엔티티의 리스트
      */
     @Override
-    public List<Queue> getActivatableTokens(Queue.Status status, Pageable pageable) {
-        return QueueEntity.toDomainList(repository.findByStatusOrderByCreatedAtAsc(status, pageable));
+    public List<Queue> getActivatableTokens(Pageable pageable) {
+        return QueueEntity.toDomainList(repository.findByWaitingOrderByCreatedAtAsc(pageable));
     }
 
     /**

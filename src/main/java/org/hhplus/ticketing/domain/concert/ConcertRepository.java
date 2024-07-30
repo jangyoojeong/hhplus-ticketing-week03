@@ -4,6 +4,8 @@ import org.hhplus.ticketing.domain.concert.model.Concert;
 import org.hhplus.ticketing.domain.concert.model.ConcertOption;
 import org.hhplus.ticketing.domain.concert.model.ConcertSeat;
 import org.hhplus.ticketing.domain.concert.model.Reservation;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -12,6 +14,14 @@ import java.util.Optional;
 public interface ConcertRepository {
 
     // ****************** ConcertDomain 관련 메서드 ******************
+
+    /**
+     * 콘서트 목록을 조회합니다.
+     *
+     * @return domain 저장된 콘서트 정보
+     */
+    Page<Concert> getConcertList(Pageable pageable);
+
 
     /**
      * 콘서트 정보를 저장합니다.

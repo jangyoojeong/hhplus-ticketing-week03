@@ -1,6 +1,7 @@
 package org.hhplus.ticketing.concurrent;
 
 import org.hhplus.ticketing.application.payment.PaymentFacade;
+import org.hhplus.ticketing.application.user.UserFacade;
 import org.hhplus.ticketing.domain.concert.ConcertRepository;
 import org.hhplus.ticketing.domain.concert.model.ConcertSeat;
 import org.hhplus.ticketing.domain.concert.model.Reservation;
@@ -47,8 +48,12 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 public class PaymentConcurrentTest {
 
+    Logger log = LoggerFactory.getLogger(PaymentConcurrentTest.class);
+
     @Autowired
     private PaymentFacade paymentFacade;
+    @Autowired
+    private UserFacade userFacade;
     @Autowired
     private UserPointService userPointService;
     @Autowired
@@ -62,11 +67,8 @@ public class PaymentConcurrentTest {
     @Autowired
     TestDataInitializer testDataInitializer;
 
-    Logger log = LoggerFactory.getLogger(PaymentConcurrentTest.class);
-
     private List<UserInfo> savedusers;
     private List<ConcertSeat> savedconcertSeats;
-
     private UserPoint savedUserPoint;
 
     private UUID token;
@@ -117,12 +119,11 @@ public class PaymentConcurrentTest {
     }
 
     @Test
-    @DisplayName("🔴 결제_요청_통합_테스트_결제_요청을_따닥_클릭시_하나를_제외하고_실패해야한다")
-    void concurrentRequestPaymentTest_결제_요청_통합_테스트_결제_요청을_따닥_클릭시_하나를_제외하고_실패해야한다()  {
-
+    @DisplayName("🔴 결제_요청_동시성_테스트_결제_요청을_따닥_클릭시_하나를_제외하고_실패해야한다")
+    void concurrentRequestPaymentTest_결제_요청_동시성_테스트_결제_요청을_따닥_클릭시_하나를_제외하고_실패해야한다22()  {
         // Given
         // 결제 요청 command 객체 생성
-        PaymentCommand.PaymentProcessingCommand command = new PaymentCommand.PaymentProcessingCommand(userId, reservationId, price);
+        PaymentCommand.RequestPaymentCommand command = new PaymentCommand.RequestPaymentCommand(userId, reservationId, price);
 
         // 10개의 스레드를 통해 동시에 요청 시도
         int numberOfThreads = 10;
@@ -178,6 +179,7 @@ public class PaymentConcurrentTest {
         int numberOfExceptions = exceptions.size();
         assertTrue(numberOfExceptions == numberOfThreads - 1, "예외 발생 스레드 개수 불일치");
     }
+
 }
 
 

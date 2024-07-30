@@ -42,20 +42,28 @@ public class Queue {
     }
 
     public Queue setExpired() {
+        if (this.status != Status.ACTIVE) throw new CustomException(ErrorCode.INVALID_STATE);
+        //LocalDateTime expirationTime = LocalDateTime.now().minusMinutes(QueueConstants.TOKEN_EXPIRATION_MINUTES);
+        //if (!this.enteredAt.isBefore(expirationTime)) throw new CustomException(ErrorCode.INVALID_STATE);
+
         this.status = Status.EXPIRED;
         return this;
     }
 
     public Queue setActive() {
+        if (this.status != Status.WAITING) throw new CustomException(ErrorCode.INVALID_STATE);
+
         this.status = Status.ACTIVE;
         this.enteredAt = LocalDateTime.now();
         return this;
     }
 
     public void validateStatus() {
-        if (this.status != Status.ACTIVE) {
-            throw new CustomException(ErrorCode.INVALID_TOKEN);
-        }
+        if (this.status != Status.ACTIVE) throw new CustomException(ErrorCode.INVALID_TOKEN);
+    }
+
+    public static int getAvailableSlots(Long activeCount) {
+        return (int) (QueueConstants.MAX_ACTIVE_USERS - activeCount);
     }
 
     public enum Status {

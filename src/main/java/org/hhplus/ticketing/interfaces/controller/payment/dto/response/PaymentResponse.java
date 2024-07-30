@@ -20,7 +20,7 @@ public class PaymentResponse {
         private Long userId;                    // 사용자ID
         private int point;                      // 포인트 (결제 후 포인트)
 
-        public static PaymentResponse.PaymentProcessingResponse from(PaymentResult.PaymentProcessingResult result) {
+        public static PaymentResponse.PaymentProcessingResponse from(PaymentResult.RequestPaymentResult result) {
             return PaymentProcessingResponse.builder()
                     .paymentId(result.getPaymentId())
                     .userId(result.getUserId())

@@ -4,6 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hhplus.ticketing.domain.common.exception.CustomException;
+import org.hhplus.ticketing.domain.common.exception.ErrorCode;
+import org.hhplus.ticketing.domain.concert.model.constants.ConcertConstants;
 
 import java.time.LocalDateTime;
 
@@ -35,11 +38,17 @@ public class Reservation {
     }
 
     public Reservation setExpired() {
+        if (this.status != Status.RESERVED) throw new CustomException(ErrorCode.INVALID_STATE);
+        LocalDateTime expirationTime = LocalDateTime.now().minusMinutes(ConcertConstants.RESERVATION_EXPIRATION_MINUTES);
+        if (!this.reservationAt.isBefore(expirationTime)) throw new CustomException(ErrorCode.INVALID_STATE);
+
         this.status = Status.EXPIRED;
         return this;
     }
 
     public Reservation setOccupied() {
+        if (this.status != Status.RESERVED) throw new CustomException(ErrorCode.INVALID_STATE);
+
         this.status = Status.OCCUPIED;
         return this;
     }

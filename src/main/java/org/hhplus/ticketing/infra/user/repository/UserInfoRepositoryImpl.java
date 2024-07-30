@@ -21,7 +21,7 @@ public class UserInfoRepositoryImpl implements UserInfoRepository {
      * @return userId에 해당하는 사용자를 포함하는 {@link UserInfo} 객체. 사용자가 존재하지 않을 경우 {@link IllegalArgumentException}을 발생시킵니다.
      */
     @Override
-    public Optional<UserInfo> findById(Long userId) {
+    public Optional<UserInfo> getUser(Long userId) {
         return repository.findById(userId).map(UserInfoEntity::toDomain);
     }
 

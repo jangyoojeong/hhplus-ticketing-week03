@@ -180,86 +180,85 @@ public class QueueServiceTest {
     }
 
     @Test
-    @DisplayName("🟢 대기열_상태_업데이트_테스트_만료대상_토큰_없으면_바로_종료된다")
-    void refreshQueueTest_대기열_상태_업데이트_테스트_만료대상_토큰_없으면_바로_종료된다() {
+    @DisplayName("🟢 대기열_만료_테스트_만료대상_토큰_없으면_바로_종료된다")
+    void expireTest_대기열_만료_테스트_만료대상_토큰_없으면_바로_종료된다() {
 
         // Given
-        given(queueRepository.getExpiredTokens(any(), any())).willReturn(Collections.emptyList());
+        given(queueRepository.getExpiredTokens(any())).willReturn(Collections.emptyList());
 
         // When
-        queueService.refreshQueue();
+        queueService.expire();
 
         // Then
-        verify(queueRepository, times(1)).getExpiredTokens(any(), any());
+        verify(queueRepository, times(1)).getExpiredTokens(any());
         verify(queueRepository, never()).saveAll(anyList());
     }
 
     @Test
-    @DisplayName("🟢 대기열_상태_업데이트_테스트_만료대상_토큰_있으면_저장로직이_정상적으로_실행된다")
-    void refreshQueueTest_대기열_상태_업데이트_테스트_만료대상_토큰_있으면_저장로직이_정상적으로_실행된다() {
+    @DisplayName("🟢 대기열_만료_테스트_만료대상_토큰_있으면_저장로직이_정상적으로_실행된다")
+    void expireTest_대기열_만료_테스트_만료대상_토큰_있으면_저장로직이_정상적으로_실행된다() {
 
         // Given
         Queue queue = mock(Queue.class);
         List<Queue> expiredQueues = List.of(queue);
-        given(queueRepository.getExpiredTokens(any(), any())).willReturn(expiredQueues);
+        given(queueRepository.getExpiredTokens(any())).willReturn(expiredQueues);
         given(queueRepository.saveAll(anyList())).willReturn(expiredQueues);
 
         // When
-        queueService.refreshQueue();
+        queueService.expire();
 
         // Then
-        verify(queueRepository, times(1)).getExpiredTokens(any(), any());
+        verify(queueRepository, times(1)).getExpiredTokens(any());
         verify(queueRepository, times(1)).saveAll(anyList());
     }
 
     @Test
-    @DisplayName("🟢 대기열_상태_업데이트_테스트_활성화_가능한_슬롯이_없으면_바로_종료된다")
-    void refreshQueueTest_대기열_상태_업데이트_테스트_활성화_가능한_슬롯이_없으면_바로_종료된다() {
+    @DisplayName("🟢 대기열_활성화_테스트_활성화_가능한_슬롯이_없으면_바로_종료된다")
+    void activateTest_대기열_활성화_테스트_활성화_가능한_슬롯이_없으면_바로_종료된다() {
 
         // Given
         Long maxActiveUsers = (long) QueueConstants.MAX_ACTIVE_USERS;
         given(queueRepository.countByStatus(any())).willReturn(maxActiveUsers);
 
         // When
-        queueService.refreshQueue();
+        queueService.activate();
 
         // Then
         verify(queueRepository, times(1)).countByStatus(any());
-        verify(queueRepository, never()).getActivatableTokens(any(), any(Pageable.class));
+        verify(queueRepository, never()).getActivatableTokens(any(Pageable.class));
     }
     @Test
-    @DisplayName("🟢 대기열_상태_업데이트_테스트_활성화_가능한_슬롯이_있지만_대기중인_토큰이_없으면_바로_종료된다")
-    void refreshQueueTest_대기열_상태_업데이트_테스트_활성화_가능한_슬롯이_있지만_대기중인_토큰이_없으면_바로_종료된다() {
+    @DisplayName("🟢 대기열_활성화_테스트_활성화_가능한_슬롯이_있지만_대기중인_토큰이_없으면_바로_종료된다")
+    void activateTest_대기열_활성화_테스트_활성화_가능한_슬롯이_있지만_대기중인_토큰이_없으면_바로_종료된다() {
 
         // Given
-        given(queueRepository.getActivatableTokens(any(), any(Pageable.class))).willReturn(Collections.emptyList());
+        given(queueRepository.getActivatableTokens(any(Pageable.class))).willReturn(Collections.emptyList());
 
         // When
-        queueService.refreshQueue();
+        queueService.activate();
 
         // Then
         verify(queueRepository, times(1)).countByStatus(any());
-        verify(queueRepository, times(1)).getActivatableTokens(any(), any(Pageable.class));
+        verify(queueRepository, times(1)).getActivatableTokens(any(Pageable.class));
         verify(queueRepository, never()).saveAll(anyList());
     }
 
     @Test
-    @DisplayName("🟢 대기열_상태_업데이트_테스트_활성화_가능한_슬롯이_있고_대기중인_토큰이_있으면_정상적으로_활성화된다")
-    void refreshQueueTest_대기열_상태_업데이트_테스트_활성화_가능한_슬롯이_있고_대기중인_토큰이_있으면_정상적으로_활성화된다() {
+    @DisplayName("🟢 대기열_활성화_테스트_테스트_활성화_가능한_슬롯이_있고_대기중인_토큰이_있으면_정상적으로_활성화된다")
+    void activateTest_대기열_활성화_테스트_테스트_활성화_가능한_슬롯이_있고_대기중인_토큰이_있으면_정상적으로_활성화된다() {
 
         // Given
         Queue queue = mock(Queue.class);
         List<Queue> queuesToActivate = List.of(queue);
-        given(queueRepository.getActivatableTokens(any(), any(Pageable.class))).willReturn(queuesToActivate);
+        given(queueRepository.getActivatableTokens(any(Pageable.class))).willReturn(queuesToActivate);
         given(queueRepository.saveAll(anyList())).willReturn(queuesToActivate);
 
         // When
-        queueService.refreshQueue();
+        queueService.activate();
 
         // Then
         verify(queueRepository, times(1)).countByStatus(any());
-        verify(queueRepository, times(1)).getActivatableTokens(any(), any(Pageable.class));
+        verify(queueRepository, times(1)).getActivatableTokens(any(Pageable.class));
         verify(queueRepository, times(1)).saveAll(anyList());
     }
-
 }

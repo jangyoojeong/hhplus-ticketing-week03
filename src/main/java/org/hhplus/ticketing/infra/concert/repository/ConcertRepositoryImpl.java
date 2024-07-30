@@ -10,6 +10,8 @@ import org.hhplus.ticketing.infra.concert.entity.ConcertEntity;
 import org.hhplus.ticketing.infra.concert.entity.ConcertOptionEntity;
 import org.hhplus.ticketing.infra.concert.entity.ConcertSeatEntity;
 import org.hhplus.ticketing.infra.concert.entity.ReservationEntity;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
@@ -25,6 +27,12 @@ public class ConcertRepositoryImpl implements ConcertRepository {
     private final ConcertOptionJpaRepository concertOptionJpaRepository;
     private final ConcertSeatJpaRepository concertSeatJpaRepository;
     private final ReservationJpaRepository reservationJpaRepository;
+
+    @Override
+    public Page<Concert> getConcertList(Pageable pageable) {
+        return concertJpaRepository.findAll(pageable)
+                .map(ConcertEntity::toDomain);
+    }
 
     @Override
     public Optional<ConcertSeat> getAvailableSeat(Long concertSeatId) {

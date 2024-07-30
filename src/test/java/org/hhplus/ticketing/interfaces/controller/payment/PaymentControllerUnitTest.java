@@ -47,10 +47,10 @@ public class PaymentControllerUnitTest {
         int point = 2000;
 
         PaymentRequest.PaymentProcessingRequest request = new PaymentRequest.PaymentProcessingRequest(userId, reservationId);
-        PaymentResult.PaymentProcessingResult result = new PaymentResult.PaymentProcessingResult(1L, userId, point);
+        PaymentResult.RequestPaymentResult result = new PaymentResult.RequestPaymentResult(1L, userId, point);
         PaymentResponse.PaymentProcessingResponse response = PaymentResponse.PaymentProcessingResponse.from(result);
 
-        given(paymentFacade.requestPayment(eq(token), any(PaymentCommand.PaymentProcessingCommand.class))).willReturn(result);
+        given(paymentFacade.requestPayment(eq(token), any(PaymentCommand.RequestPaymentCommand.class))).willReturn(result);
 
         // When
         ResponseEntity<PaymentResponse.PaymentProcessingResponse> responseEntity = paymentController.requestPayment("Bearer " + token.toString(), request);

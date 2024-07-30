@@ -2,6 +2,7 @@ package org.hhplus.ticketing.interfaces.controller.queue;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.hhplus.ticketing.application.queue.QueueFacade;
 import org.hhplus.ticketing.domain.queue.model.QueueResult;
@@ -37,7 +38,7 @@ public class QueueController {
      */
     @PostMapping("/token")
     @Operation(summary = "토큰 발급 API", description = "콘서트 대기열에 입장할 때 사용하는 토큰을 발급합니다.")
-    public ResponseEntity<QueueResponse.IssueTokenResponse> issueToken (@RequestBody QueueRequest.IssueTokenRequest request) {
+    public ResponseEntity<QueueResponse.IssueTokenResponse> issueToken (@Valid @RequestBody QueueRequest.IssueTokenRequest request) {
         QueueResult.IssueTokenResult queueResult = queueFacade.issueToken(request.toCommand());
         QueueResponse.IssueTokenResponse response = QueueResponse.IssueTokenResponse.from(queueResult);
 
@@ -58,7 +59,6 @@ public class QueueController {
     @Operation(summary = "대기열 조회 API", description = "사용자의 대기열 상태(대기순번 등)를 조회합니다.")
     public ResponseEntity<QueueResponse.QueueStatusResponse> getQueueStatus (@RequestHeader(value = AUTHORIZATION_HEADER, required = true) String authorizationHeader) {
         String token = authorizationHeader.replace(BEARER_PREFIX, "");
-        QueueResponse.QueueStatusResponse response = QueueResponse.QueueStatusResponse.from(queueFacade.getQueueStatus(UUID.fromString(token)));
-        return ResponseEntity.status(HttpStatus.OK).body(response);
+        return ResponseEntity.status(HttpStatus.OK).body(QueueResponse.QueueStatusResponse.from(queueFacade.getQueueStatus(UUID.fromString(token))));
     }
 }

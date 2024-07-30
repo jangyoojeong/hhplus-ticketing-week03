@@ -35,7 +35,7 @@ public class QueueService {
      * @param command 토큰 발급 요청 command 객체
      * @return 발급된 토큰과 대기열 정보를 포함한 result 객체
      */
-    @Transactional(rollbackFor = {Exception.class})
+    @Transactional
     public QueueResult.IssueTokenResult issueToken(QueueCommand.IssueTokenCommand command) {
         Long activeCount = queueRepository.countByStatus(Queue.Status.ACTIVE);
         Queue queue = Queue.create(activeCount, command.getUserId());
@@ -53,11 +53,8 @@ public class QueueService {
     public QueueResult.QueueStatusResult getQueueStatus(UUID token) {
         Queue queue = getQueue(token);
         Long position = queue.getStatus() != Queue.Status.WAITING ? 0L : queue.getQueuePosition(getLastActiveQueue());
-        return QueueResult.QueueStatusResult.builder()
-                .userId(queue.getUserId())
-                .token(queue.getToken())
+        return QueueResult.QueueStatusResult.from(queue).toBuilder()
                 .position(position)
-                .status(queue.getStatus())
                 .build();
     }
 
@@ -69,8 +66,7 @@ public class QueueService {
      */
     @Transactional(readOnly = true)
     public void validateToken (UUID token) {
-        Queue queue = getQueue(token);
-        queue.validateStatus();
+        getQueue(token).validateStatus();
     }
 
     /**
@@ -101,51 +97,39 @@ public class QueueService {
      * @return 만료된 토큰정보 result 객체
      * @throws CustomException 토큰 정보가 존재하지 않는 경우
      */
-    @Transactional(rollbackFor = {Exception.class})
+    @Transactional
     public QueueResult.ExpireTokenResult expireToken(UUID token) {
-        Queue queue = getQueue(token);
-        queue.setExpired();
-        return QueueResult.ExpireTokenResult.from(queueRepository.save(queue));
-    }
-
-    /**
-     * 대기열 상태를 업데이트합니다. (스케줄러 2분 주기 작업)
-     */
-    @Transactional(rollbackFor = {Exception.class})
-    public void refreshQueue() {
-        expire();
-        activate();
+        return QueueResult.ExpireTokenResult.from(queueRepository.save(getQueue(token).setExpired()));
     }
 
     /**
      * 토큰을 만료 상태로 변경합니다.
      */
-    private void expire() {
+    public void expire() {
         LocalDateTime expirationTime = LocalDateTime.now().minusMinutes(QueueConstants.TOKEN_EXPIRATION_MINUTES);
-        List<Queue> expiredTokens = queueRepository.getExpiredTokens(Queue.Status.ACTIVE, expirationTime);
-        if (!expiredTokens.isEmpty()) {
-            expiredTokens.forEach(Queue::setExpired);
-            queueRepository.saveAll(expiredTokens);
-            log.info("총 {}개의 토큰이 만료되었습니다.", expiredTokens.size());
-        }
+        List<Queue> expiredTokens = queueRepository.getExpiredTokens(expirationTime);
+        if(expiredTokens.isEmpty()) return;
+
+        expiredTokens.forEach(Queue::setExpired);
+        queueRepository.saveAll(expiredTokens);
+        log.info("총 {}개의 토큰이 만료되었습니다.", expiredTokens.size());
     }
 
     /**
      * 대기 중인 토큰을 활성화 상태로 변경합니다.
      * 최대 활성화 가능한 사용자 수 - 현재 활성화된 토큰 수
      */
-    private void activate() {
+    public void activate() {
         Long activeCount  = queueRepository.countByStatus(Queue.Status.ACTIVE);
-        int slotsAvailable = (int) (QueueConstants.MAX_ACTIVE_USERS - activeCount);
+        int slotsAvailable = Queue.getAvailableSlots(activeCount);
+        if (slotsAvailable == 0) return;
 
-        if (slotsAvailable > 0) {
-            Pageable pageable = PageRequest.of(0, slotsAvailable);
-            List<Queue> activeQueues = queueRepository.getActivatableTokens(Queue.Status.WAITING, pageable);
-            if (!activeQueues.isEmpty()) {
-                activeQueues.forEach(Queue::setActive);
-                queueRepository.saveAll(activeQueues);
-                log.info("총 {}개의 대기 중인 토큰이 활성화되었습니다.", activeQueues.size());
-            }
-        }
+        Pageable pageable = PageRequest.of(0, slotsAvailable);
+        List<Queue> activeQueues = queueRepository.getActivatableTokens(pageable);
+        if (activeQueues.isEmpty()) return;
+
+        activeQueues.forEach(Queue::setActive);
+        queueRepository.saveAll(activeQueues);
+        log.info("총 {}개의 대기 중인 토큰이 활성화되었습니다.", activeQueues.size());
     }
 }

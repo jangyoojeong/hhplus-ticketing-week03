@@ -22,8 +22,8 @@ public class PaymentRequest {
         @NotNull(message = "예약 ID는 비어 있을 수 없습니다.")
         private Long reservationId;             // 예약ID
 
-        public PaymentCommand.PaymentProcessingCommand toCommand() {
-            return PaymentCommand.PaymentProcessingCommand.builder()
+        public PaymentCommand.RequestPaymentCommand toCommand() {
+            return PaymentCommand.RequestPaymentCommand.builder()
                     .userId(this.getUserId())
                     .reservationId(this.getReservationId())
                     .build();

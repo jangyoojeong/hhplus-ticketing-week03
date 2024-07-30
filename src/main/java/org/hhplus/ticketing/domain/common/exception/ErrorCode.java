@@ -13,6 +13,7 @@ public enum ErrorCode {
     INVALID_SEAT_SELECTION(HttpStatus.BAD_REQUEST, "유효하지 않은 좌석 선택입니다."),
     INVALID_AMOUNT_VALUE(HttpStatus.BAD_REQUEST, "유효하지 않은 액수입니다."),
     INVALID_TOKEN(HttpStatus.BAD_REQUEST, "유효하지 않은 토큰입니다."),
+    INVALID_STATE(HttpStatus.BAD_REQUEST, "유효하지 않은 상태입니다."),
     INVALID_STATUS(HttpStatus.BAD_REQUEST, "토큰 상태가 유효하지 않습니다."),
 
     /* 403 FORBIDDEN : 접근 권한 없음 */
@@ -24,11 +25,11 @@ public enum ErrorCode {
     USER_POINT_NOT_FOUND(HttpStatus.NOT_FOUND, "유저 포인트정보가 존재하지 않습니다."),
     //CONCERT_NOT_FOUND(NOT_FOUND, "콘서트 정보를 찾을 수 없습니다."),
     SEAT_NOT_FOUND_OR_ALREADY_RESERVED(HttpStatus.NOT_FOUND, "좌석 정보를 찾을 수 없거나 이미 선점된 좌석입니다."),
-    RESERVATION_NOT_FOUND(HttpStatus.NOT_FOUND, "예약 정보를 찾을 수 없거나 이미 만료된 예약입니다."),
+    RESERVATION_NOT_FOUND(HttpStatus.NOT_FOUND, "예약 정보를 찾을 수 없거나 이미 만료된 예약입니다.");
 
     /* 409 CONFLICT : Resource 의 현재 상태와 충돌. 보통 중복된 데이터 존재 */
-    DUPLICATE_REQUEST(HttpStatus.CONFLICT, "동일한 요청이 이미 처리 중입니다. 잠시 후 다시 시도해 주세요."),
-    CONFLICTING_RESERVATION(HttpStatus.CONFLICT, "이미 선점된 좌석입니다.");
+    //DUPLICATE_REQUEST(HttpStatus.CONFLICT, "동일한 요청이 이미 처리 중입니다. 잠시 후 다시 시도해 주세요."),
+    //CONFLICTING_RESERVATION(HttpStatus.CONFLICT, "이미 선점된 좌석입니다.");
 
     /* 500 INTERNAL_SERVER_ERROR : 서버 오류 */
 

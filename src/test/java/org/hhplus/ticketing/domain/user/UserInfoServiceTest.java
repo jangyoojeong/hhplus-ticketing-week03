@@ -44,7 +44,7 @@ class UserInfoServiceTest {
     void validateUserTest_1L_유저_정보를_성공적으로_조회() {
 
         // Given
-        given(userInfoRepository.findById(anyLong())).willReturn(Optional.of(userInfoDomain));
+        given(userInfoRepository.getUser(anyLong())).willReturn(Optional.of(userInfoDomain));
 
         // When
         UserResult.UserInfoResult result = userInfoService.validateUser(userInfoDomain.getUserId());
@@ -59,7 +59,7 @@ class UserInfoServiceTest {
     void validateUserTest_1L_유저_정보가_없을_때_예외_발생() {
 
         // Given
-        given(userInfoRepository.findById(anyLong())).willReturn(Optional.empty());
+        given(userInfoRepository.getUser(anyLong())).willReturn(Optional.empty());
 
         // When & Then
         assertThatThrownBy(() -> userInfoService.validateUser(userInfoDomain.getUserId()))

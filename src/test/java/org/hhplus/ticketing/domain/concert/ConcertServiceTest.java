@@ -170,6 +170,8 @@ public class ConcertServiceTest {
         Long reservationId = 1L;
         Long concertSeatId = 1L;
 
+        seat.setReserved();
+
         given(concertRepository.getActiveReservation(anyLong())).willReturn(Optional.of(reservation));
         given(concertRepository.saveReservation(any(Reservation.class))).willReturn(reservation);
         given(concertRepository.findSeatById(anyLong())).willReturn(Optional.of(seat));

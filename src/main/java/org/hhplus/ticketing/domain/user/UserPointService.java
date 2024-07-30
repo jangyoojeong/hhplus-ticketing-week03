@@ -20,16 +20,23 @@ public class UserPointService {
     private final UserPointHistoryRepository userPointHistoryRepository;
 
     /**
-     * 사용자의 잔액을 조회합니다.
+     * 사용자의 포인트 잔액을 조회합니다.
      *
-     * @param userId 잔액을 조회할 사용자의 ID
-     * @return 잔액 result 객체
+     * @param userId 포인트 잔액을 조회할 사용자의 ID
+     * @return 사용자의 포인트 잔액
+     * @throws CustomException 사용자 포인트를 찾을 수 없는 경우
      */
     private UserPoint getPoint (Long userId) {
         return userPointRepository.getUserPoint(userId).orElseThrow(()
                 -> new CustomException(ErrorCode.USER_POINT_NOT_FOUND));
     }
 
+    /**
+     * 사용자의 포인트 잔액을 결과 객체로 조회합니다.
+     *
+     * @param userId 포인트 잔액을 조회할 사용자의 ID
+     * @return 사용자의 포인트 잔액 결과 객체
+     */
     public UserResult.UserPointResult getPointResult (Long userId) {
         return UserResult.UserPointResult.from(getPoint(userId));
     }
@@ -40,7 +47,7 @@ public class UserPointService {
      * @param command 잔액 충전 요청 객체
      * @return 충전된 잔액 정보를 포함한 응답 객체
      */
-    @Transactional(rollbackFor = {Exception.class})
+    @Transactional
     public UserResult.ChargePointResult chargePoint (UserCommand.ChargePointCommand command) {
         UserPoint userPoint = getPoint(command.getUserId());
         userPoint.chargePoint(command.getAmount());
@@ -55,7 +62,7 @@ public class UserPointService {
      * @param command 잔액 차감 요청 객체
      * @return 차감된 잔액 정보를 포함한 응답 객체
      */
-    @Transactional(rollbackFor = {Exception.class})
+    @Transactional
     public UserResult.UsePointResult usePoint (UserCommand.UsePointCommand command) {
         UserPoint userPoint = getPoint(command.getUserId());
         userPoint.usePoint(command.getAmount());

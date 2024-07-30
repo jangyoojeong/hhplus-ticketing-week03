@@ -1,13 +1,10 @@
 package org.hhplus.ticketing.application.user;
 
 import lombok.RequiredArgsConstructor;
-import org.hhplus.ticketing.domain.common.exception.CustomException;
-import org.hhplus.ticketing.domain.common.exception.ErrorCode;
 import org.hhplus.ticketing.domain.user.UserInfoService;
 import org.hhplus.ticketing.domain.user.UserPointService;
 import org.hhplus.ticketing.domain.user.model.UserCommand;
 import org.hhplus.ticketing.domain.user.model.UserResult;
-import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Component;
 
 /**
@@ -39,11 +36,8 @@ public class UserFacade {
     public UserResult.ChargePointResult chargePoint(UserCommand.ChargePointCommand command) {
         // 1. 유저 정보 확인 (유저 정보 없을 시 예외 리턴)
         UserResult.UserInfoResult validateUser = userInfoService.validateUser(command.getUserId());
-        try {
-            // 2. 잔액 충전 및 리턴
-            return userPointService.chargePoint(command);
-        } catch (ObjectOptimisticLockingFailureException e) {
-            throw new CustomException(ErrorCode.DUPLICATE_REQUEST, e);
-        }
+
+        // 2. 잔액 충전 및 리턴
+        return userPointService.chargePoint(command);
     }
 }

@@ -48,11 +48,11 @@ public class ConcertConcurrentTest {
     }
 
     @Test
-    @DisplayName("🔴 좌석_예약_테스트_여러_스레드에서_동시에_좌석_예약시_하나를_제외하고_전부_실패해야한다")
-    void concurrentReserveSeatTest_좌석_예약_테스트_여러_스레드에서_동시에_좌석_예약시_하나를_제외하고_전부_실패해야한다22()  {
+    @DisplayName("🔴 좌석_예약_동시성_테스트_여러_스레드에서_동시에_좌석_예약시_하나를_제외하고_전부_실패해야한다")
+    void concurrentReserveSeatTest_좌석_예약_동시성_테스트_여러_스레드에서_동시에_좌석_예약시_하나를_제외하고_전부_실패해야한다()  {
 
         // Given
-        Long userId = 50L;
+        Long userId = 1L;
         Long concertSeatId1 = 1L;
 
         // 좌석 예약 요청 command 객체 생성
@@ -68,7 +68,7 @@ public class ConcertConcurrentTest {
         log.info("테스트 시작 시간 : {}", testStart);
 
         // When
-        // 각 스레드에서 좌석 예약 시도
+        // 각 스레드에서 요청 시도
         for (int i = 0; i < numberOfThreads; i++) {
             futures.add(CompletableFuture.supplyAsync(() -> {
                 String currentThreadNm = Thread.currentThread().getName();

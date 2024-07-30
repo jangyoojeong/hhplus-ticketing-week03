@@ -30,7 +30,7 @@ public class QueueResult {
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
-    @Builder
+    @Builder(toBuilder = true)
     public static class QueueStatusResult {
         private Long userId;                    // 유저ID
         private UUID token;                     // 토큰

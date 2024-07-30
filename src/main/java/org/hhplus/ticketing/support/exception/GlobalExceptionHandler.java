@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.hhplus.ticketing.domain.common.exception.CustomException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingRequestHeaderException;
@@ -33,6 +34,14 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponseEntity> handleCustomException(CustomException ex) {
         log.info("Custom exception: {}, 코드: {}, 메시지: {}", ex.getClass().getSimpleName(), ex.getErrorCode(), ex.getMessage());
         return ErrorResponseEntity.from(ex.getErrorCode());
+    }
+
+    // 낙관적락 예외 처리
+    @ExceptionHandler(ObjectOptimisticLockingFailureException.class)
+    public ResponseEntity<ErrorResponseEntity> handleObjectOptimisticLockingFailureException(ObjectOptimisticLockingFailureException ex) {
+        HttpStatus status = HttpStatus.OK;
+        log.error("Unhandled exception: {}", ex.getMessage(), ex);
+        return ErrorResponseEntity.from(ex, status);
     }
 
     @ExceptionHandler(ResponseStatusException.class)

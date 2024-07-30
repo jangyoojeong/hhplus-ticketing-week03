@@ -30,7 +30,7 @@ class ReservationTest {
         Long reservationId = 1L;
         Long concertSeatId = 1L;
         Long userId = 1L;
-        LocalDateTime reservationAt = LocalDateTime.now();
+        LocalDateTime reservationAt = LocalDateTime.now().minusMinutes(7);
 
         Reservation reservation = Reservation.builder()
                 .reservationId(reservationId)

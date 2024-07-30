@@ -12,11 +12,15 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
@@ -98,6 +102,30 @@ public class ConcertIntegrationTest {
         ConcertSeat concertSeat2 = savedconcertSeats.get(2);
         concertSeat2.setReserved();
         concertRepository.saveSeat(concertSeat2);
+    }
+
+    @Test
+    @DisplayName("🟢 콘서트_목록_조회_테스트_적재된_1건의_데이터가_리턴된다")
+    void getConcertListTest_콘서트_목록_조회_테스트_적재된_1건의_데이터가_리턴된다() {
+
+        // Given
+        List<Concert> concertList = Arrays.asList(
+                new Concert(1L, "콘서트1")
+        );
+
+        Page<Concert> concerts = new PageImpl<>(concertList, PageRequest.of(0, 20), concertList.size());
+
+        List<ConcertResult.GetConcertListResult> result = concerts.stream()
+                .map(ConcertResult.GetConcertListResult::from)
+                .collect(Collectors.toList());
+        Page<ConcertResult.GetConcertListResult> expectedResult = new PageImpl<>(result, PageRequest.of(0, 20), result.size());
+
+        // When
+        Page<ConcertResult.GetConcertListResult> actualResult = concertFacade.getConcertList(PageRequest.of(0, 20));
+
+        // Then
+        assertNotNull(actualResult);
+        assertThat(actualResult.getContent()).isEqualTo(expectedResult.getContent());
     }
 
     @Test

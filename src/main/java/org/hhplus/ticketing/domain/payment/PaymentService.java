@@ -2,8 +2,8 @@ package org.hhplus.ticketing.domain.payment;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.hhplus.ticketing.domain.payment.model.PaymentCommand;
 import org.hhplus.ticketing.domain.payment.model.Payment;
+import org.hhplus.ticketing.domain.payment.model.PaymentCommand;
 import org.hhplus.ticketing.domain.payment.model.PaymentResult;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,8 +24,8 @@ public class PaymentService {
      * @param command 결제 요청 command 객체
      * @return 결제 result 객체
      */
-    @Transactional(rollbackFor = {Exception.class})
-    public PaymentResult.PaymentProcessingResult requestPayment(PaymentCommand.PaymentProcessingCommand command) {
-        return PaymentResult.PaymentProcessingResult.from(paymentRepository.save(Payment.from(command)));
+    @Transactional
+    public PaymentResult.RequestPaymentResult createPayment(PaymentCommand.RequestPaymentCommand command) {
+        return PaymentResult.RequestPaymentResult.from(paymentRepository.save(Payment.from(command)));
     }
 }

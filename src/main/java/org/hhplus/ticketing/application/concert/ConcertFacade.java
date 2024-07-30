@@ -2,12 +2,11 @@ package org.hhplus.ticketing.application.concert;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.hhplus.ticketing.domain.common.exception.CustomException;
-import org.hhplus.ticketing.domain.common.exception.ErrorCode;
 import org.hhplus.ticketing.domain.concert.ConcertService;
 import org.hhplus.ticketing.domain.concert.model.ConcertCommand;
 import org.hhplus.ticketing.domain.concert.model.ConcertResult;
-import org.springframework.orm.ObjectOptimisticLockingFailureException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
 /**
@@ -19,6 +18,35 @@ import org.springframework.stereotype.Component;
 public class ConcertFacade {
 
     private final ConcertService concertService;
+
+    /**
+     * 콘서트를 저장합니다.
+     *
+     * @param command 콘서트 저장 요청 command 객체
+     * @return 저장된 콘서트 정보를 포함한 result 객체
+     */
+    public ConcertResult.SaveConcertResult saveConcert(ConcertCommand.SaveConcertCommand command) {
+        return concertService.saveConcert(command);
+    }
+
+    /**
+     * 콘서트 목록을 조회합니다.
+     *
+     * @return 콘서트 목록 응답 객체
+     */
+    public Page<ConcertResult.GetConcertListResult> getConcertList(Pageable pageable) {
+        return concertService.getConcertList(pageable);
+    }
+
+    /**
+     * 콘서트 옵션을 저장합니다.
+     *
+     * @param command 콘서트 옵션 저장 요청 command 객체
+     * @return 저장된 콘서트 정보를 포함한 result 객체
+     */
+    public ConcertResult.SaveConcertOptionResult saveConcertOption(ConcertCommand.SaveConcertOptionCommand command) {
+        return concertService.saveConcertOption(command);
+    }
 
     /**
      * 특정 콘서트에 대해 예약 가능한 날짜를 조회합니다.
@@ -47,11 +75,7 @@ public class ConcertFacade {
      * @return 좌석 예약 정보를 포함한 result 객체
      */
     public ConcertResult.ReserveSeatResult reserveSeat(ConcertCommand.ReserveSeatCommand command) {
-        try {
-            return concertService.reserveSeat(command);
-        } catch (ObjectOptimisticLockingFailureException e) {
-            throw new CustomException(ErrorCode.CONFLICTING_RESERVATION, e);
-        }
+        return concertService.reserveSeat(command);
     }
 
     /**

@@ -37,7 +37,6 @@ public interface QueueRepository {
     /**
      * 가장 최근에 활성화된 대기열 정보를 반환합니다.
      *
-     * @param status 조회할 대기열 객체의 상태
      * @return 주어진 상태를 가진 첫 번째 대기열 객체의 도메인 객체
      */
     Optional<Queue> getLastActiveQueue(Queue.Status status);
@@ -45,19 +44,17 @@ public interface QueueRepository {
     /**
      * 만료 대상 토큰을 조회힙니다
      *
-     * @param status 토큰의 상태를 나타내는 {@link Queue.Status}
      * @param time 특정 시간 이전에 들어온 토큰을 필터링하기 위한 {@link LocalDateTime}
      * @return 주어진 상태와 특정 시간 이전에 들어온 토큰의 목록
      */
-    List<Queue> getExpiredTokens(Queue.Status status, LocalDateTime time);
+    List<Queue> getExpiredTokens(LocalDateTime time);
 
     /**
      * 활성화 대상 토큰을 조회힙니다
      *
-     * @param status 토큰의 상태를 나타내는 {@link Queue.Status}
      * @return 주어진 상태와 특정 시간 이전에 들어온 토큰의 목록
      */
-    List<Queue> getActivatableTokens(Queue.Status status, Pageable pageable);
+    List<Queue> getActivatableTokens(Pageable pageable);
 
     
     /**

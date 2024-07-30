@@ -1,6 +1,8 @@
 package org.hhplus.ticketing.domain.concert.model;
 
 import lombok.*;
+import org.hhplus.ticketing.domain.common.exception.CustomException;
+import org.hhplus.ticketing.domain.common.exception.ErrorCode;
 
 /**
  * 도메인 객체: ConcertSeat
@@ -30,16 +32,22 @@ public class ConcertSeat {
     }
 
     public ConcertSeat setAvailable() {
+        if (this.status != Status.RESERVED) throw new CustomException(ErrorCode.INVALID_STATE);
+
         this.status = Status.AVAILABLE;
         return this;
     }
 
     public ConcertSeat setReserved() {
+        if (this.status != Status.AVAILABLE) throw new CustomException(ErrorCode.INVALID_STATE);
+
         this.status = Status.RESERVED;
         return this;
     }
 
     public ConcertSeat setOccupied() {
+        if (this.status != Status.RESERVED) throw new CustomException(ErrorCode.INVALID_STATE);
+
         this.status = Status.OCCUPIED;
         return this;
     }
