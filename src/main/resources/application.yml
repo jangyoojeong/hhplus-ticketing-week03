@@ -2,11 +2,13 @@ server:
   port: 8080 # 내장 톰캣 포트번호
 
 spring:
+  profiles:
+    active: default
+
   # H2 Database 설정
   datasource:
     driver-class-name: org.h2.Driver
-    url: 'jdbc:h2:mem:test'   # H2 DB 연결 주소 (In-Memory Mode)
-    #url: 'jdbc:h2:~/test'    # H2 DB 연결 주소 (Embedded Mode)
+    url: 'jdbc:h2:~/realdb'    # H2 DB 연결 주소 (Embedded Mode)
     username: sa              # H2 DB 접속 ID (사용자 지정)
     password:                 # H2 DB 접속 PW (사용자 지정)
 
@@ -16,16 +18,27 @@ spring:
       enabled: true           # H2 Console 사용 여부
       path: /h2-console       # H2 Console 접속 주소
 
+  # page 설정
+  data:
+    web:
+      pageable:
+        default-page-size: 20
+        max-page-size: 2000
+
   # JPA 설정
   jpa:
     database-platform: org.hibernate.dialect.H2Dialect
     hibernate:
-      ddl-auto: create        # DB 초기화 전략 (none, create, create-drop, update, validate)
+      ddl-auto: none        # DB 초기화 전략 (none, create, create-drop, update, validate)
     properties:
       hibernate:
         dialect: org.hibernate.dialect.H2Dialect
         format_sql: true      # 쿼리 로그 포맷 (정렬)
         show_sql: true        # 쿼리 로그 출력
+
+  # Cache 설정
+  cache:
+    type: redis
 
   # Redis 설정
   redis:
