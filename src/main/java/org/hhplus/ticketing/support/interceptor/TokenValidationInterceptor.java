@@ -29,16 +29,15 @@ public class TokenValidationInterceptor implements HandlerInterceptor {
         }
 
         String tokenHeader = authorizationHeader.replace(BEARER_PREFIX, "");
-        UUID token;
 
         try {
-            token = UUID.fromString(tokenHeader);
+            UUID.fromString(tokenHeader);
         } catch (IllegalArgumentException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "잘못된 토큰 형식입니다.");
         }
 
         // 토큰 검증
-        queueFacade.validateToken(token);
+        queueFacade.validateToken(tokenHeader);
 
         return true;
     }

@@ -8,8 +8,7 @@ import org.hhplus.ticketing.domain.common.exception.CustomException;
 import org.hhplus.ticketing.domain.common.exception.ErrorCode;
 import org.hhplus.ticketing.domain.queue.model.constants.QueueConstants;
 
-import java.time.LocalDateTime;
-import java.util.Optional;
+import java.time.Duration;
 import java.util.UUID;
 
 @Data
@@ -18,57 +17,31 @@ import java.util.UUID;
 @Builder
 public class Queue {
 
-    private Long queueId;                        // 대기열ID (키값)
-    private Long userId;                         // 유저ID
-    private UUID token;                          // 발급된 토큰
-    private Status status;                       // 토큰상태 (ACTIVE/WAITING/EXPIRED)
-    private LocalDateTime enteredAt;             // 입장시간
-    private LocalDateTime createAt;              // 생성시간
+    private String token;                          // 발급된 토큰
+    private long score;                            // 토큰 발급 시각
 
-    public static Queue create(Long activeCount, Long userId) {
+    public static Queue create() {
         return Queue.builder()
-                .userId(userId)
-                .token(UUID.randomUUID())
-                .createAt(LocalDateTime.now())
-                .status(activeCount < QueueConstants.MAX_ACTIVE_USERS ? Status.ACTIVE : Status.WAITING)
-                .enteredAt(activeCount < QueueConstants.MAX_ACTIVE_USERS ? LocalDateTime.now() : null)
+                .token(UUID.randomUUID().toString())
+                .score(System.currentTimeMillis())
                 .build();
     }
 
-    public Long getQueuePosition(Optional<Queue> lastActiveQueue) {
-        return lastActiveQueue
-                .map(queue -> this.queueId - queue.getQueueId())
-                .orElse(0L);
+    public static Long getPosition(Long position) {
+        if (position == null) throw new CustomException(ErrorCode.INVALID_STATE);
+        return position + 1;
     }
 
-    public Queue setExpired() {
-        if (this.status != Status.ACTIVE) throw new CustomException(ErrorCode.INVALID_STATE);
-        //LocalDateTime expirationTime = LocalDateTime.now().minusMinutes(QueueConstants.TOKEN_EXPIRATION_MINUTES);
-        //if (!this.enteredAt.isBefore(expirationTime)) throw new CustomException(ErrorCode.INVALID_STATE);
+    public static String getRemainingWaitTime(Long position) {
+        if (position <= 0) throw new CustomException(ErrorCode.INVALID_STATE);
 
-        this.status = Status.EXPIRED;
-        return this;
-    }
+        long peopleAhead = position - 1;
 
-    public Queue setActive() {
-        if (this.status != Status.WAITING) throw new CustomException(ErrorCode.INVALID_STATE);
+        // (앞에 대기중인 유저의 수 / 한 사이클에서 처리할 수 있는 유저의 수) * 한 사이클의 시간
+        long totalSeconds = Math.max((peopleAhead / QueueConstants.MAX_ACTIVE_TOKENS) * 10, 10);
 
-        this.status = Status.ACTIVE;
-        this.enteredAt = LocalDateTime.now();
-        return this;
-    }
+        Duration duration = Duration.ofSeconds(totalSeconds);
 
-    public void validateStatus() {
-        if (this.status != Status.ACTIVE) throw new CustomException(ErrorCode.INVALID_TOKEN);
-    }
-
-    public static int getAvailableSlots(Long activeCount) {
-        return (int) (QueueConstants.MAX_ACTIVE_USERS - activeCount);
-    }
-
-    public enum Status {
-        ACTIVE,     // 활성화
-        WAITING,    // 대기중
-        EXPIRED     // 만료
+        return String.format("%02d분 %02d초", duration.toMinutes(), duration.getSeconds() % 60);
     }
 }

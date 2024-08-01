@@ -23,12 +23,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.time.Duration;
 import java.time.Instant;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -66,12 +66,14 @@ public class PaymentConcurrentTest {
     private PaymentRepository paymentRepository;
     @Autowired
     TestDataInitializer testDataInitializer;
+    @Autowired
+    private RedisTemplate<String, String> redisTemplate;
 
     private List<UserInfo> savedusers;
     private List<ConcertSeat> savedconcertSeats;
     private UserPoint savedUserPoint;
 
-    private UUID token;
+    private String token;
     private Long userId;
     private Long concertSeatId;
     private Long reservationId;
@@ -79,6 +81,9 @@ public class PaymentConcurrentTest {
 
     @BeforeEach
     void setUp() {
+        // 모든 키 삭제
+        redisTemplate.getConnectionFactory().getConnection().flushDb();
+
         testDataInitializer.initializeTestData();
 
         // initializer 로 적재된 초기 데이터 세팅
@@ -90,15 +95,8 @@ public class PaymentConcurrentTest {
         price = savedconcertSeats.get(0).getPrice();
 
         // 초기 활성화 토큰 적재
-        Queue queue = Queue.builder()
-                .userId(userId)
-                .token(UUID.randomUUID())
-                .status(Queue.Status.ACTIVE)
-                .enteredAt(LocalDateTime.now())
-                .createAt(LocalDateTime.now())
-                .build();
-        Queue savedQueue = queueRepository.save(queue);
-        token = savedQueue.getToken();
+        token = UUID.randomUUID().toString();
+        queueRepository.addActive(new Queue(token, System.currentTimeMillis()));
 
         // 적재된 좌석 중 하나 예약상태로 저장
         ConcertSeat seat = savedconcertSeats.get(0);

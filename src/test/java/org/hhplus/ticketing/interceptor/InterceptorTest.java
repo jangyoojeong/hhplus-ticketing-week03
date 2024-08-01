@@ -16,12 +16,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.test.web.server.LocalServerPort;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.*;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import java.time.LocalDateTime;
 import java.util.UUID;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -40,8 +40,9 @@ class InterceptorTest {
     private TestRestTemplate restTemplate;
     @Autowired
     TestDataInitializer testDataInitializer;
+    @Autowired
+    private RedisTemplate<String, String> redisTemplate;
 
-    private Long userId;
     private Long concertId;
 
     private String getBaseUrl() {
@@ -50,10 +51,11 @@ class InterceptorTest {
 
     @BeforeEach
     public void setup() {
+        // 모든 키 삭제
+        redisTemplate.getConnectionFactory().getConnection().flushDb();
 
         testDataInitializer.initializeTestData();
 
-        userId = 1L;
         concertId = 1L;
     }
 
@@ -62,17 +64,12 @@ class InterceptorTest {
     void validateTokenTest_인터셉터_토큰_검증_테스트_ACTIVE_토큰은_200상태코드를_응답한다() {
 
         // Given
-        Queue savedQueue = queueRepository.save(Queue.builder()
-                .userId(userId)
-                .token(UUID.randomUUID())
-                .status(Queue.Status.ACTIVE)
-                .enteredAt(LocalDateTime.now())
-                .createAt(LocalDateTime.now())
-                .build());
+        String token = UUID.randomUUID().toString();
+        queueRepository.addActive(new Queue(token, System.currentTimeMillis()));
 
         // HTTP 헤더에 인증 토큰 추가
         HttpHeaders headers = new HttpHeaders();
-        headers.set("Authorization", "Bearer " + savedQueue.getToken());
+        headers.set("Authorization", "Bearer " + token);
 
         // HTTP 엔티티 생성
         HttpEntity<String> entity = new HttpEntity<>(headers);
@@ -92,16 +89,12 @@ class InterceptorTest {
     @DisplayName("🔴 인터셉터_토큰_검증_테스트_WAITING_토큰은_INVALID_TOKEN_코드를_응답한다")
     void validateTokenTest_인터셉터_토큰_검증_테스트_WAITING_토큰은_INVALID_TOKEN_코드를_응답한다() {
         // Given
-        Queue savedQueue = queueRepository.save(Queue.builder()
-                .userId(userId)
-                .token(UUID.randomUUID())
-                .status(Queue.Status.WAITING)
-                .createAt(LocalDateTime.now())
-                .build());
+        String token = UUID.randomUUID().toString();
+        queueRepository.addWaiting(new Queue(token, System.currentTimeMillis()));
 
         // HTTP 헤더에 인증 토큰 추가
         HttpHeaders headers = new HttpHeaders();
-        headers.set("Authorization", "Bearer " + savedQueue.getToken());
+        headers.set("Authorization", "Bearer " + token);
 
         // HTTP 엔티티 생성
         HttpEntity<String> entity = new HttpEntity<>(headers);
@@ -116,31 +109,6 @@ class InterceptorTest {
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
         assertThat(response.getBody()).isNotNull();
         assertThat(response.getBody().getCode()).isEqualTo(ErrorCode.INVALID_TOKEN.name());
-    }
-
-    @Test
-    @DisplayName("🔴 인터셉터_토큰_검증_테스트_토큰이_존재하지_않을_경우_TOKEN_NOT_FOUND_코드를_응답한다")
-    void validateTokenTest_인터셉터_토큰_검증_테스트_토큰이_존재하지_않을_경우_TOKEN_NOT_FOUND_코드를_응답한다() {
-        // Given
-        UUID invalidToken = UUID.randomUUID();
-
-        // HTTP 헤더에 인증 토큰 추가
-        HttpHeaders headers = new HttpHeaders();
-        headers.set("Authorization", "Bearer " + invalidToken);
-
-        // HTTP 엔티티 생성
-        HttpEntity<String> entity = new HttpEntity<>(headers);
-
-        // When
-        // API 요청을 발송
-        ResponseEntity<ErrorResponseEntity> response = restTemplate.exchange(
-                getBaseUrl() + "/api/concerts/" + concertId + "/available-dates",
-                HttpMethod.GET, entity, ErrorResponseEntity.class);
-
-        // Then
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
-        assertThat(response.getBody()).isNotNull();
-        assertThat(response.getBody().getCode()).isEqualTo(ErrorCode.TOKEN_NOT_FOUND.name());
     }
 
     @Test

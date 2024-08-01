@@ -2,175 +2,68 @@ package org.hhplus.ticketing.domain.queue.model;
 
 import org.hhplus.ticketing.domain.common.exception.CustomException;
 import org.hhplus.ticketing.domain.common.exception.ErrorCode;
-import org.hhplus.ticketing.domain.queue.model.constants.QueueConstants;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.time.LocalDateTime;
-import java.util.Optional;
-import java.util.UUID;
-
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class QueueTest {
 
     @Test
-    @DisplayName("🟢 활성화_토큰_객체_생성_테스트_활성화_상태의_토큰_객체가_생성된다")
-    void createActiveTest_활성화_토큰_객체_생성_테스트_활성화_상태의_토큰_객체가_생성된다() {
-        // Given
-        Long userId = 1L;
+    @DisplayName("🟢 토큰_객체_생성_테스트_토큰_객체가_생성된다")
+    void createTest_토큰_객체_생성_테스트_토큰_객체가_생성된다() {
 
         // When
-        Queue queue = Queue.create(0L, userId);
+        Queue queue = Queue.create();
 
         // Then
-        assertThat(queue.getUserId()).isEqualTo(userId);
-        assertThat(queue.getStatus()).isEqualTo(Queue.Status.ACTIVE);
-        assertThat(queue.getEnteredAt()).isNotNull();
-        assertThat(queue.getCreateAt()).isNotNull();
+        assertThat(queue.getToken()).isNotNull();
+        assertThat(queue.getScore()).isNotNull();
     }
 
     @Test
-    @DisplayName("🟢 대기_토큰_객체_생성_테스트_대기_상태의_토큰_객체가_생성된다")
-    void createWaitingTest_대기_토큰_객체_생성_테스트_대기_상태의_토큰_객체가_생성된다() {
-        // Given
-        Long userId = 1L;
+    @DisplayName("🟢 순위계산_테스트_입력된_숫자에_1을_더한순위가_리턴된다")
+    void getPositionTest_순위계산_테스트_입력된_숫자에_1을_더한순위가_리턴된다() {
 
         // When
-        Queue queue = Queue.create((long) QueueConstants.MAX_ACTIVE_USERS, userId);
+        Long position = Queue.getPosition(0L);
 
         // Then
-        assertThat(queue.getUserId()).isEqualTo(userId);
-        assertThat(queue.getStatus()).isEqualTo(Queue.Status.WAITING);
-        assertThat(queue.getCreateAt()).isNotNull();
-        assertThat(queue.getEnteredAt()).isNull();
+        assertThat(position).isEqualTo(0L + 1);
     }
 
     @Test
-    @DisplayName("🟢 대기열_순번_계산_테스트_마지막_활성화_토큰이_있는_경우")
-    void getQueuePositionTest_대기열_순번_계산_테스트_마지막_활성화_토큰이_있는_경우() {
-
-        // Given
-        Long queueId = 1L;
-        Long userId = 1L;
-        Queue queue = Queue.builder()
-                .queueId(2L)
-                .userId(userId)
-                .token(UUID.randomUUID())
-                .status(Queue.Status.WAITING)
-                .createAt(LocalDateTime.now())
-                .build();
-        Queue lastActiveQueue = Queue.builder()
-                .queueId(queueId)
-                .userId(userId)
-                .token(UUID.randomUUID())
-                .status(Queue.Status.ACTIVE)
-                .enteredAt(LocalDateTime.now())
-                .createAt(LocalDateTime.now())
-                .build();
-
-        // When
-        Long position = queue.getQueuePosition(Optional.of(lastActiveQueue));
-
-        // Then
-        assertThat(position).isEqualTo(queue.getQueueId() - lastActiveQueue.getQueueId());
-    }
-
-    @Test
-    @DisplayName("🟢 대기열_순번_계산_테스트_마지막_활성화_토큰이_없는_경우")
-    void getQueuePositionTest_대기열_순번_계산_테스트_마지막_활성화_토큰이_없는_경우() {
-
-        // Given
-        Long queueId = 1L;
-        Long userId = 1L;
-        Queue queue = Queue.builder()
-                .queueId(queueId)
-                .userId(userId)
-                .token(UUID.randomUUID())
-                .status(Queue.Status.WAITING)
-                .createAt(LocalDateTime.now())
-                .build();
-
-        // When
-        Long position = queue.getQueuePosition(Optional.empty());
-
-        // Then
-        assertThat(position).isEqualTo(0L);
-    }
-
-    @Test
-    @DisplayName("🟢 토큰_만료_상태변경_테스트_만료_상태의_토큰으로_변경된다")
-    void setExpiredTest_토큰_만료_상태변경_테스트_만료_상태의_토큰으로_변경된다() {
-        // Given
-        Long queueId = 1L;
-        Long userId = 1L;
-        Queue queue = Queue.builder()
-                .queueId(queueId)
-                .userId(userId)
-                .token(UUID.randomUUID())
-                .status(Queue.Status.ACTIVE)
-                .enteredAt(LocalDateTime.now())
-                .createAt(LocalDateTime.now())
-                .build();
-
-        // When
-        Queue returnToken = queue.setExpired();
-
-        // Then
-        assertThat(returnToken.getQueueId()).isEqualTo(queue.getQueueId());
-        assertThat(returnToken.getUserId()).isEqualTo(queue.getUserId());
-        assertThat(returnToken.getToken()).isEqualTo(queue.getToken());
-        assertThat(returnToken.getStatus()).isEqualTo(Queue.Status.EXPIRED);
-        assertThat(returnToken.getEnteredAt()).isEqualTo(queue.getEnteredAt());
-        assertThat(returnToken.getCreateAt()).isEqualTo(queue.getCreateAt());
-    }
-
-    @Test
-    @DisplayName("🟢 토큰_활성화_상태변경_테스트_활성화_상태의_토큰으로_변경된다")
-    void setActiveTest_토큰_활성화_상태변경_테스트_활성화_상태의_토큰으로_변경된다() {
-        // Given
-        Long queueId = 1L;
-        Long userId = 1L;
-        Queue queue = Queue.builder()
-                .queueId(queueId)
-                .userId(userId)
-                .token(UUID.randomUUID())
-                .status(Queue.Status.WAITING)
-                .enteredAt(LocalDateTime.now())
-                .createAt(LocalDateTime.now())
-                .build();
-
-        // When
-        Queue returnToken = queue.setActive();
-
-        // Then
-        assertThat(returnToken.getQueueId()).isEqualTo(queueId);
-        assertThat(returnToken.getUserId()).isEqualTo(userId);
-        assertThat(returnToken.getStatus()).isEqualTo(Queue.Status.ACTIVE);
-        assertThat(returnToken.getEnteredAt()).isNotNull();
-    }
-
-    @Test
-    @DisplayName("🔴 토큰_유효성_테스트_토큰이_유효하지_않을_경우_INVALID_TOKEN_에러반환")
-    void validateStatusTest_토큰_유효성_테스트_토큰이_유효하지_않을_경우_INVALID_TOKEN_에러반환() {
-
-        // Given
-        Long queueId = 1L;
-        Long userId = 1L;
-        Queue queue = Queue.builder()
-                .queueId(queueId)
-                .userId(userId)
-                .token(UUID.randomUUID())
-                .status(Queue.Status.EXPIRED)
-                .enteredAt(LocalDateTime.now())
-                .createAt(LocalDateTime.now())
-                .build();
+    @DisplayName("🔴 순위계산_테스트_null이_입력되면_INVALID_STATE_예외반환")
+    void getPositionTest_순위계산_테스트_null이_입력되면_INVALID_STATE_예외반환() {
 
         // When & Then
-        assertThatThrownBy(queue::validateStatus)
+        assertThatThrownBy(() -> Queue.getPosition(null))
                 .isInstanceOf(CustomException.class)
                 .extracting("errorCode")
-                .isEqualTo(ErrorCode.INVALID_TOKEN);
+                .isEqualTo(ErrorCode.INVALID_STATE);
+    }
+
+    @Test
+    @DisplayName("🟢 잔여시간계산_테스트_순위_1L_넣으면_한_사이클의_시간_리턴_확인")
+    void getRemainingWaitTimeTest_잔여시간계산_테스트_순위_1L_넣으면_한_사이클의_시간_리턴_확인() {
+
+        // When
+        String waitTime = Queue.getRemainingWaitTime(1L);
+
+        // Then
+        assertEquals("00분 10초", waitTime);
+    }
+
+    @Test
+    @DisplayName("🔴 잔여시간계산_테스트_0이_입력되면_INVALID_STATE_예외반환")
+    void getRemainingWaitTimeTest_잔여시간계산_테스트_0이_입력되면_INVALID_STATE_예외반환() {
+
+        // When & Then
+        assertThatThrownBy(() -> Queue.getRemainingWaitTime(0L))
+                .isInstanceOf(CustomException.class)
+                .extracting("errorCode")
+                .isEqualTo(ErrorCode.INVALID_STATE);
     }
 }

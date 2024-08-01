@@ -22,10 +22,10 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -51,13 +51,15 @@ public class PaymentIntegrationTest {
     private PaymentRepository paymentRepository;
     @Autowired
     TestDataInitializer testDataInitializer;
+    @Autowired
+    private RedisTemplate<String, String> redisTemplate;
 
     private List<UserInfo> savedusers;
     private List<ConcertSeat> savedconcertSeats;
 
     private UserPoint savedUserPoint;
 
-    private UUID token;
+    private String token;
     private Long userId;
     private Long concertSeatId;
     private Long reservationId;
@@ -65,6 +67,9 @@ public class PaymentIntegrationTest {
 
     @BeforeEach
     void setUp() {
+        // 모든 키 삭제
+        redisTemplate.getConnectionFactory().getConnection().flushDb();
+
         testDataInitializer.initializeTestData();
 
         // initializer 로 적재된 초기 데이터 세팅
@@ -76,15 +81,8 @@ public class PaymentIntegrationTest {
         price = savedconcertSeats.get(0).getPrice();
 
         // 초기 활성화 토큰 적재
-        Queue queue = Queue.builder()
-                .userId(userId)
-                .token(UUID.randomUUID())
-                .status(Queue.Status.ACTIVE)
-                .enteredAt(LocalDateTime.now())
-                .createAt(LocalDateTime.now())
-                .build();
-        Queue savedQueue = queueRepository.save(queue);
-        token = savedQueue.getToken();
+        token = UUID.randomUUID().toString();
+        queueRepository.addActive(new Queue(token, System.currentTimeMillis()));
 
         // 적재된 좌석 중 하나 예약상태로 저장
         ConcertSeat seat = savedconcertSeats.get(0);
@@ -164,10 +162,8 @@ public class PaymentIntegrationTest {
         PaymentResult.RequestPaymentResult actualResult = paymentFacade.requestPayment(token, command);
 
         // Then
-        Optional<Queue> queue = queueRepository.findByToken(token);
-
         assertNotNull(actualResult);
-        assertEquals(Queue.Status.EXPIRED, queue.get().getStatus());
+        assertFalse(queueRepository.isValid(token));
     }
 
     @Test
@@ -204,11 +200,11 @@ public class PaymentIntegrationTest {
     }
 
     @Test
-    @DisplayName("🔴 결제_요청_통합_테스트_대기열_토큰_정보가_없을_시_TOKEN_NOT_FOUND_예외반환")
-    public void requestPaymentTest_결제_요청_통합_테스트_대기열_토근_정보가_없을_시_TOKEN_NOT_FOUND_예외반환() {
+    @DisplayName("🔴 결제_요청_통합_테스트_대기열_토큰_정보가_없을_시_INVALID_TOKEN_예외반환")
+    public void requestPaymentTest_결제_요청_통합_테스트_대기열_토근_정보가_없을_시_INVALID_TOKEN_예외반환() {
 
         // Given
-        UUID nonExistentToken = UUID.randomUUID();
+        String nonExistentToken = UUID.randomUUID().toString();
 
         PaymentCommand.RequestPaymentCommand command = new PaymentCommand.RequestPaymentCommand(userId, reservationId, price);
 
@@ -216,7 +212,7 @@ public class PaymentIntegrationTest {
         assertThatThrownBy(() -> paymentFacade.requestPayment(nonExistentToken, command))
                 .isInstanceOf(CustomException.class)
                 .extracting("errorCode")
-                .isEqualTo(ErrorCode.TOKEN_NOT_FOUND);
+                .isEqualTo(ErrorCode.INVALID_TOKEN);
     }
 
 }

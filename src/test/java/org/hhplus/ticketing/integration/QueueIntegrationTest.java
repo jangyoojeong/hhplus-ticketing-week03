@@ -15,15 +15,15 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 
-import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -39,6 +39,8 @@ public class QueueIntegrationTest {
     private QueueRepository queueRepository;
     @Autowired
     TestDataInitializer testDataInitializer;
+    @Autowired
+    private RedisTemplate<String, String> redisTemplate;
 
     private List<UserInfo> savedusers;
 
@@ -47,6 +49,9 @@ public class QueueIntegrationTest {
 
     @BeforeEach
     void setUp() {
+        // 모든 키 삭제
+        redisTemplate.getConnectionFactory().getConnection().flushDb();
+
         testDataInitializer.initializeTestData();
 
         // initializer 로 적재된 초기 데이터 세팅
@@ -57,47 +62,24 @@ public class QueueIntegrationTest {
     }
 
     @Test
-    @DisplayName("🟢 토큰_발급_통합_테스트_토큰_슬롯_남아있을_경우_ACTIVE_상태로_발급된다")
-    void issueTokenTest_토큰_발급_통합_테스트_토큰_슬롯_남아있을_경우_ACTIVE_상태로_발급된다() {
+    @DisplayName("🟢 토큰_발급_통합_테스트_바로_입장_가능할경우_ACTIVE_토큰이_발급되고_대기순번_0L을_리턴한다")
+    void issueTokenTest_토큰_발급_통합_테스트_바로_입장_가능할경우_ACTIVE_토큰이_발급되고_대기순번_0L을_리턴한다() {
         // Given
-        QueueCommand.IssueTokenCommand command = new QueueCommand.IssueTokenCommand(userId);
+        QueueCommand.IssueToken command = new QueueCommand.IssueToken(userId);
 
         // When
-        QueueResult.IssueTokenResult actualTokenResult = queueFacade.issueToken(command);
+        QueueResult.IssueToken actualResult = queueFacade.issueToken(command);
 
         // Then
-        Optional<Queue> queue = queueRepository.findByToken(actualTokenResult.getToken());
-        assertNotNull(actualTokenResult);
-        assertEquals(Queue.Status.ACTIVE, queue.get().getStatus());
-    }
-
-    @Test
-    @DisplayName("🟢 토큰_발급_통합_테스트_토큰_슬롯_한도_초과시_WAITING_상태로_발급된다")
-    void issueTokenTest_토큰_발급_통합_테스트_토큰_슬롯_한도_초과시_WAITING_상태로_발급된다() {
-        // Given
-        // 모든 활성화 슬롯 채우기
-        int maxActiveUsers = QueueConstants.MAX_ACTIVE_USERS;
-        for (int i = 0; i < maxActiveUsers; i++) {
-            Queue activeQueue = Queue.create((long) i, (long) i);
-            queueRepository.save(activeQueue);
-        }
-
-        QueueCommand.IssueTokenCommand command = new QueueCommand.IssueTokenCommand(userId);
-
-        // When
-        QueueResult.IssueTokenResult actualTokenResult = queueFacade.issueToken(command);
-
-        // Then
-        Optional<Queue> queue = queueRepository.findByToken(actualTokenResult.getToken());
-        assertNotNull(actualTokenResult);
-        assertEquals(Queue.Status.WAITING, queue.get().getStatus());
+        assertNotNull(actualResult);
+        assertEquals(0L, actualResult.getPosition());
     }
 
     @Test
     @DisplayName("🔴 토큰_발급_통합_테스트_유저정보가_없을_시_USER_NOT_FOUND_예외반환")
     void issueTokenTest_토큰_발급_통합_테스트_유저정보가_없을_시_예외_발생() {
         // Given
-        QueueCommand.IssueTokenCommand command = new QueueCommand.IssueTokenCommand(nonExistentUserId);
+        QueueCommand.IssueToken command = new QueueCommand.IssueToken(nonExistentUserId);
 
         // When & Then
         assertThatThrownBy(() -> queueFacade.issueToken(command))
@@ -107,171 +89,95 @@ public class QueueIntegrationTest {
     }
 
     @Test
-    @DisplayName("🟢 대기열_상태_조회_통합_테스트_첫번째_발급된_대기열_토큰의_대기순서는_0을_리턴한다")
-    void getQueueStatusTest_대기열_상태_조회_통합_테스트_첫번째_발급된_대기열_토큰의_대기순서는_0을_리턴한다() {
+    @DisplayName("🟢 대기열_상태_조회_통합_테스트_첫번째_발급된_활성화_토큰_상태는_INVALID_STATE_예외반환")
+    void getQueueStatusTest_대기열_상태_조회_통합_테스트_첫번째_발급된_활성화_토큰_상태는_INVALID_STATE_예외반환() {
         // Given
-        QueueCommand.IssueTokenCommand command = new QueueCommand.IssueTokenCommand(userId);
-        QueueResult.IssueTokenResult tokenResult = queueFacade.issueToken(command);
-        UUID issuedToken = tokenResult.getToken();
-
-        // When
-        QueueResult.QueueStatusResult actualStatusResult = queueFacade.getQueueStatus(issuedToken);
-
-        // Then
-        assertNotNull(actualStatusResult);
-        assertEquals(0, actualStatusResult.getPosition());
-    }
-
-    @Test
-    @DisplayName("🟢 대기열_상태_조회_통합_테스트_30번째_발급된_대기열_토큰의_대기순서는_10을_리턴한다")
-    void getQueueStatusTest_대기열_상태_조회_통합_테스트_30번째_발급된_대기열_토큰의_대기순서는_10을_리턴한다() {
-        // Given
-        // 모든 활성화 슬롯 채우기
-        int maxActiveUsers = QueueConstants.MAX_ACTIVE_USERS;
-        for (int i = 0; i < maxActiveUsers; i++) {
-            Queue activeQueue = Queue.create((long) i, (long) i);
-            queueRepository.save(activeQueue);
-        }
-
-        // 대기열 채우기 (9명)
-        for (int i = 0; i < 9; i++) {
-            Queue watingQueue = Queue.create((long) maxActiveUsers, (long) i);
-            queueRepository.save(watingQueue);
-        }
-
-        // 10번째 대기열 토큰 발급
-        QueueCommand.IssueTokenCommand command = new QueueCommand.IssueTokenCommand(userId);
-        QueueResult.IssueTokenResult tokenResult = queueFacade.issueToken(command);
-        UUID issuedToken = tokenResult.getToken();
-
-        // When
-        QueueResult.QueueStatusResult actualStatusResult = queueFacade.getQueueStatus(issuedToken);
-
-        // Then
-        assertNotNull(actualStatusResult);
-        assertEquals(10, actualStatusResult.getPosition());
-    }
-
-    @Test
-    @DisplayName("🔴 대기열_토큰_검증_테스트_WAITING_토큰_INVALID_TOKEN_예외반환")
-    void validateTokenTest_대기열_토큰_검증_테스트_유효하지_않은_토큰_INVALID_TOKEN_예외반환() {
-        // Given
-        Queue queue = Queue.builder()
-                .userId(userId)
-                .status(Queue.Status.WAITING)
-                .build();
-
-        Queue savedQueue = queueRepository.save(queue);
+        QueueResult.IssueToken tokenResult = queueFacade.issueToken(new QueueCommand.IssueToken(userId));
+        String issuedToken = tokenResult.getToken();
 
         // When & Then
-        assertThatThrownBy(() -> queueFacade.validateToken(savedQueue.getToken()))
+        assertThatThrownBy(() -> queueFacade.getQueueStatus(issuedToken))
+                .isInstanceOf(CustomException.class)
+                .extracting("errorCode")
+                .isEqualTo(ErrorCode.INVALID_STATE);
+    }
+
+    @Test
+    @DisplayName("🟢 대기열_상태_조회_통합_테스트_20번째_발급된_대기열_토큰의_대기순서는_20을_리턴한다")
+    void getQueueStatusTest_대기열_상태_조회_통합_테스트_20번째_발급된_대기열_토큰의_대기순서는_20을_리턴한다() {
+        // Given
+        // 모든 활성화 슬롯 채우기
+        for (int i = 0; i < 19; i++) {
+            String token = UUID.randomUUID().toString();
+            queueRepository.addWaiting(new Queue(token, System.currentTimeMillis()));
+        }
+
+        // 20번째 대기열 토큰 발급
+        String issuedToken = UUID.randomUUID().toString();
+        queueRepository.addWaiting(new Queue(issuedToken, System.currentTimeMillis()));
+
+        // When
+        QueueResult.QueueStatus actualStatusResult = queueFacade.getQueueStatus(issuedToken);
+
+        // Then
+        assertNotNull(actualStatusResult);
+        assertEquals(20, actualStatusResult.getPosition());
+    }
+
+    @Test
+    @DisplayName("🔴 대기열_상태_조회_통합_테스트_토큰_정보를_찾을_수_없으면_INVALID_STATE_예외반환")
+    void getQueueStatusTest_대기열_상태_조회_통합_테스트_토큰_정보를_찾을_수_없으면_INVALID_STATE_예외반환() {
+        // Given
+        String token = UUID.randomUUID().toString();
+
+        // When & Then
+        assertThatThrownBy(() -> queueFacade.getQueueStatus(token))
+                .isInstanceOf(CustomException.class)
+                .extracting("errorCode")
+                .isEqualTo(ErrorCode.INVALID_STATE);
+    }
+
+    @Test
+    @DisplayName("🔴 토큰_검증_테스트_유효하지_않은_토큰일경우_INVALID_TOKEN_예외반환")
+    void validateTokenTest_토큰_검증_테스트_유효하지_않은_토큰일경우_INVALID_TOKEN_예외반환() {
+        // Given
+        String token = UUID.randomUUID().toString();
+        queueRepository.addWaiting(new Queue(token, System.currentTimeMillis()));
+
+        // When & Then
+        assertThatThrownBy(() -> queueFacade.validateToken(token))
                 .isInstanceOf(CustomException.class)
                 .extracting("errorCode")
                 .isEqualTo(ErrorCode.INVALID_TOKEN);
     }
 
     @Test
-    @DisplayName("🟢 대기열_상태_업데이트_테스트_총_2건중_만료대상토큰_1건만_만료된다")
-    void updateQueueStatusesTest_대기열_상태_업데이트_테스트_총_2건중_만료대상토큰_1건만_만료된다() {
+    @DisplayName("🟢 대기열_상태_업데이트_테스트_WAITING_토큰_중_MAX_ACTIVE_TOKENS_개수만_활성화된다")
+    void activateTest_대기열_상태_업데이트_테스트_WAITING_토큰_중_MAX_ACTIVE_TOKENS_개수만_활성화된다() {
 
         // Given
-        // 활성화토큰1 (만료대상토큰)
-        Queue activeQueue1 = Queue.create(1L, 1L);
-        activeQueue1.setEnteredAt(LocalDateTime.now().minusMinutes(QueueConstants.TOKEN_EXPIRATION_MINUTES - 1));
-        queueRepository.save(activeQueue1);
-
-        // 활성화토큰2 (만료대상이 아닌 토큰)
-        Queue activeQueue2 = Queue.create(2L, 2L);
-        activeQueue2.setEnteredAt(LocalDateTime.now().minusMinutes(QueueConstants.TOKEN_EXPIRATION_MINUTES + 1));
-        queueRepository.save(activeQueue2);
-
-        // When
-        queueFacade.refreshQueue();
-
-        // Then
-        Long expiredQueueCnt = queueRepository.countByStatus(Queue.Status.EXPIRED);
-        Long activeQueueCnt = queueRepository.countByStatus(Queue.Status.ACTIVE);
-
-        assertEquals(1, expiredQueueCnt);
-        assertEquals(1, activeQueueCnt);
-    }
-
-    @Test
-    @DisplayName("🟢 대기_중인_토큰_활성화_상태로_변경_테스트_슬롯이_있으면_활성화된다")
-    void activateWaitingTokensTest_대기_중인_토큰_활성화_상태로_변경_테스트_슬롯이_있으면_활성화된다() {
-
-        // Given
-        // 활성화토큰1
-        Queue activeQueue1 = Queue.builder()
-                .userId(3L)
-                .token(UUID.randomUUID())
-                .status(Queue.Status.ACTIVE)
-                .enteredAt(LocalDateTime.now())
-                .createAt(LocalDateTime.now())
-                .build();
-        queueRepository.save(activeQueue1);
-
-        // 대기토큰1 (대기순서1)
-        Queue waitingQueue1 = Queue.builder()
-                .userId(4L)
-                .token(UUID.randomUUID())
-                .status(Queue.Status.WAITING)
-                .createAt(LocalDateTime.now().minusMinutes(10))
-                .build();
-        queueRepository.save(waitingQueue1);
-
-        // 대기토큰2 (대기순서2)
-        Queue waitingQueue2 = Queue.builder()
-                .userId(5L)
-                .token(UUID.randomUUID())
-                .status(Queue.Status.WAITING)
-                .createAt(LocalDateTime.now().minusMinutes(5))
-                .build();
-        queueRepository.save(waitingQueue2);
-
-        // When
-        queueFacade.refreshQueue();
-
-        // Then
-        Long activeQueueCnt = queueRepository.countByStatus(Queue.Status.ACTIVE);
-        Long waitingQueueCnt = queueRepository.countByStatus(Queue.Status.WAITING);
-
-        // 한 개의 활성화된 토큰에서 두 개가 더 활성화됨
-        assertEquals(3, activeQueueCnt);
-        // 모든 대기 중인 토큰이 활성화됨
-        assertEquals(0, waitingQueueCnt);
-    }
-
-    @Test
-    @DisplayName("🟢 대기_중인_토큰_활성화_상태로_변경_테스트_슬롯이_없으면_활성화되지_않는다")
-    void activateWaitingTokensTest_대기_중인_토큰_활성화_상태로_변경_테스트_슬롯이_없으면_활성화되지_않는다() {
-        // Given
-        // 모든 활성화 슬롯을 채워서 대기 중인 토큰이 활성화될 수 없도록 설정
-        int maxActiveUsers = QueueConstants.MAX_ACTIVE_USERS;
-        for (int i = 0; i < maxActiveUsers; i++) {
-            Queue activeQueue = Queue.create((long) i, (long) i);
-            queueRepository.save(activeQueue);
+        for (int i = 0; i < QueueConstants.MAX_ACTIVE_TOKENS + 5; i++) {
+            String token = UUID.randomUUID().toString();
+            queueRepository.addWaiting(new Queue(token, System.currentTimeMillis()));
         }
 
-        // 대기토큰1 (대기순서1)
-        Queue waitingQueue1 = Queue.builder()
-                .userId(4L)
-                .token(UUID.randomUUID())
-                .status(Queue.Status.WAITING)
-                .createAt(LocalDateTime.now().minusMinutes(10))
-                .build();
-        queueRepository.save(waitingQueue1);
-
         // When
-        queueFacade.refreshQueue();
+        queueFacade.activate();
 
         // Then
-        Long activeQueueCnt = queueRepository.countByStatus(Queue.Status.ACTIVE);
-        Long waitingQueueCnt = queueRepository.countByStatus(Queue.Status.WAITING);
+        Long count = queueRepository.countActiveTokens();
+        assertThat(count).isEqualTo(QueueConstants.MAX_ACTIVE_TOKENS);
+    }
 
-        // 최종 활성화토큰이 MAX_ACTIVE_USERS와 일치하는지 확인
-        assertEquals(maxActiveUsers, activeQueueCnt);
-        // 추가로 활성화 되지 않고 대기토큰이 존재하는지 확인
-        assertEquals(1, waitingQueueCnt);
+    @Test
+    @DisplayName("🟢 대기열_상태_업데이트_테스트_WAITING_토큰이_없으면_활성화되지_않는다")
+    void activateTest_대기열_상태_업데이트_테스트_WAITING_토큰이_없으면_활성화되지_않는다() {
+
+        // When
+        queueFacade.activate();
+
+        // Then
+        long count = queueRepository.countActiveTokens();
+        assertThat(count).isEqualTo(0);
     }
 }
