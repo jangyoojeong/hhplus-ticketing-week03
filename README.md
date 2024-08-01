@@ -11,7 +11,7 @@
 
 - [API 명세](https://github.com/jangyoojeong/hhplus-ticketing-week03/blob/master/doc/API.md)
 
-- [ERD](https://github.com/user-attachments/assets/5a487029-6110-4f33-82cb-1639132cd861)
+- [ERD](https://github.com/user-attachments/assets/9a4c13bd-0ac3-4f21-ac5c-e6ca07cf0187)
 
 - [Swagger](https://github.com/user-attachments/assets/8f1d7967-02e6-469f-b6c9-e80250777dc6)
 
