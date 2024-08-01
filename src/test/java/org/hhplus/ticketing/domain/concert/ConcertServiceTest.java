@@ -152,6 +152,7 @@ public class ConcertServiceTest {
 
         // Given
         Long reservationId = 1L;
+
         given(concertRepository.getActiveReservation(anyLong())).willReturn(Optional.empty());
 
         // When & Then

@@ -75,6 +75,25 @@ public class ConcertControllerUnitTest {
     }
 
     @Test
+    @DisplayName("🟢 콘서트_등록_컨트롤러_테스트_예상_리턴_확인")
+    void saveConcertTest_콘서트_등록_컨트롤러_테스트_예상_리턴_확인 () throws Exception {
+        // Given
+        String concertName = "콘서트1";
+        ConcertRequest.SaveConcertRequest request = new ConcertRequest.SaveConcertRequest(concertName);
+        ConcertResult.SaveConcertResult result = new ConcertResult.SaveConcertResult(1L, concertName);
+        ConcertResponse.SaveConcertResponse response = ConcertResponse.SaveConcertResponse.from(result);
+
+        given(concertFacade.saveConcert(any(ConcertCommand.SaveConcertCommand.class))).willReturn(result);
+
+        // When
+        ResponseEntity<ConcertResponse.SaveConcertResponse> responseEntity = concertController.saveConcert(request);
+
+        // Then
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+        assertEquals(response, responseEntity.getBody());
+    }
+
+    @Test
     @DisplayName("🟢 예약_가능한_날짜_조회_컨트롤러_테스트_예상_리턴_확인")
     void getAvailableDatesTest_예약_가능한_날짜_조회_컨트롤러_테스트_예상_리턴_확인() throws Exception {
 
@@ -92,6 +111,28 @@ public class ConcertControllerUnitTest {
 
         // When
         ResponseEntity<ConcertResponse.GetAvailableDatesResponse> responseEntity = concertController.getAvailableDates(concertId);
+
+        // Then
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+        assertEquals(response, responseEntity.getBody());
+    }
+
+    @Test
+    @DisplayName("🟢 콘서트_옵션_등록_컨트롤러_테스트_예상_리턴_확인")
+    void saveConcertOptionTest_콘서트_옵션_등록_컨트롤러_테스트_예상_리턴_확인 () throws Exception {
+        // Given
+        Long concertId = 1L;
+        LocalDateTime concertAt = LocalDateTime.now().plusDays(1);
+        int capacity = 50;
+
+        ConcertRequest.SaveConcertOptionRequest request = new ConcertRequest.SaveConcertOptionRequest(concertId, concertAt, capacity);
+        ConcertResult.SaveConcertOptionResult result = new ConcertResult.SaveConcertOptionResult(concertId, concertAt, capacity);
+        ConcertResponse.SaveConcertOptionResponse response = ConcertResponse.SaveConcertOptionResponse.from(result);
+
+        given(concertFacade.saveConcertOption(any(ConcertCommand.SaveConcertOptionCommand.class))).willReturn(result);
+
+        // When
+        ResponseEntity<ConcertResponse.SaveConcertOptionResponse> responseEntity = concertController.saveConcertOption(request);
 
         // Then
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
