@@ -30,13 +30,13 @@ public class PaymentControllerUnitTest {
     private PaymentFacade paymentFacade;
 
     private Long userId;
-    private UUID token;
+    private String token;
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
         userId = 1L;
-        token = UUID.randomUUID();
+        token = UUID.randomUUID().toString();
     }
 
     @Test
@@ -53,7 +53,7 @@ public class PaymentControllerUnitTest {
         given(paymentFacade.requestPayment(eq(token), any(PaymentCommand.RequestPaymentCommand.class))).willReturn(result);
 
         // When
-        ResponseEntity<PaymentResponse.PaymentProcessingResponse> responseEntity = paymentController.requestPayment("Bearer " + token.toString(), request);
+        ResponseEntity<PaymentResponse.PaymentProcessingResponse> responseEntity = paymentController.requestPayment("Bearer " + token, request);
 
         // Then
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());

@@ -14,8 +14,6 @@ import org.hhplus.ticketing.domain.user.model.UserResult;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.UUID;
-
 /**
  * 결제 관련 비즈니스 로직을 캡슐화하는 파사드 클래스입니다.
  */
@@ -36,7 +34,7 @@ public class PaymentFacade {
      * @return 결제 result 객체
      */
     @Transactional
-    public PaymentResult.RequestPaymentResult requestPayment(UUID token, PaymentCommand.RequestPaymentCommand command) {
+    public PaymentResult.RequestPaymentResult requestPayment(String token, PaymentCommand.RequestPaymentCommand command) {
 
         // 1. 좌석 소유권 배정 (예약됨 > 점유)
         ConcertResult.AssignSeatResult seatResult = concertService.assignSeat(command.getReservationId());
