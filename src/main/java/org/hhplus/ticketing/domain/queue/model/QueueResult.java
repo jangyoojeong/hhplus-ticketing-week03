@@ -16,6 +16,16 @@ public class QueueResult {
         private String token;                     // 토큰
         private Long position;                    // 대기순서
         private String remainingTime;             // 잔여시간
+        private Queue.Status status;              // 상태
+
+        public static QueueResult.IssueToken from(Queue domain) {
+            return QueueResult.IssueToken.builder()
+                    .token(domain.getToken())
+                    .position(domain.getPosition())
+                    .remainingTime(domain.getRemainingTime())
+                    .status(domain.getStatus())
+                    .build();
+        }
     }
 
     // 토큰 상태 Result
@@ -26,6 +36,15 @@ public class QueueResult {
     public static class QueueStatus {
         private Long position;                    // 대기순서
         private String remainingTime;             // 잔여시간
+        private Queue.Status status;              // 상태
+
+        public static QueueResult.QueueStatus from(Queue domain) {
+            return QueueResult.QueueStatus.builder()
+                    .position(domain.getPosition())
+                    .remainingTime(domain.getRemainingTime())
+                    .status(domain.getStatus())
+                    .build();
+        }
     }
 
 }

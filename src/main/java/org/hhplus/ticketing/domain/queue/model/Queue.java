@@ -4,8 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hhplus.ticketing.domain.common.exception.CustomException;
-import org.hhplus.ticketing.domain.common.exception.ErrorCode;
 import org.hhplus.ticketing.domain.queue.model.constants.QueueConstants;
 
 import java.time.Duration;
@@ -19,6 +17,9 @@ public class Queue {
 
     private String token;                          // 발급된 토큰
     private long score;                            // 토큰 발급 시각
+    private Long position;                         // 대기순서
+    private String remainingTime;                  // 잔여시간
+    private Status status;                         // 상태
 
     public static Queue create() {
         return Queue.builder()
@@ -27,13 +28,19 @@ public class Queue {
                 .build();
     }
 
+    public Queue setWaitingInfo(Long position) {
+        this.position = position;
+        this.remainingTime = Queue.getRemainingWaitTime(position);
+        this.status = Status.WAITING;
+        return this;
+    }
+
     public static Long getPosition(Long position) {
-        if (position == null) throw new CustomException(ErrorCode.INVALID_STATE);
-        return position + 1;
+        return position == null ? 0 : position + 1;
     }
 
     public static String getRemainingWaitTime(Long position) {
-        if (position <= 0) throw new CustomException(ErrorCode.INVALID_STATE);
+        if (position <= 0) return null;
 
         long peopleAhead = position - 1;
 
@@ -41,7 +48,11 @@ public class Queue {
         long totalSeconds = Math.max((peopleAhead / QueueConstants.MAX_ACTIVE_TOKENS) * 10, 10);
 
         Duration duration = Duration.ofSeconds(totalSeconds);
-
         return String.format("%02d분 %02d초", duration.toMinutes(), duration.getSeconds() % 60);
+    }
+
+    public enum Status {
+        ACTIVE,     // 활성화
+        WAITING,    // 대기중
     }
 }

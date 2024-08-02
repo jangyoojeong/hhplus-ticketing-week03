@@ -1,6 +1,7 @@
 package org.hhplus.ticketing.interfaces.controller.queue;
 
 import org.hhplus.ticketing.application.queue.QueueFacade;
+import org.hhplus.ticketing.domain.queue.model.Queue;
 import org.hhplus.ticketing.domain.queue.model.QueueCommand;
 import org.hhplus.ticketing.domain.queue.model.QueueResult;
 import org.hhplus.ticketing.interfaces.controller.queue.dto.request.QueueRequest;
@@ -44,7 +45,7 @@ public class QueueControllerUnitTest {
     void issueTokenTest_대기열_토큰_발급_컨트롤러_테스트_헤더_토큰정보_리턴_확인 () throws Exception {
         // Given
         QueueRequest.IssueToken request = new QueueRequest.IssueToken(userId);
-        QueueResult.IssueToken result = new QueueResult.IssueToken(token, 1L, "00시간 00분");
+        QueueResult.IssueToken result = new QueueResult.IssueToken(token, null, null, Queue.Status.ACTIVE);
         QueueResponse.IssueTokenResponse response = QueueResponse.IssueTokenResponse.from(result);
 
         given(queueFacade.issueToken(any(QueueCommand.IssueToken.class))).willReturn(result);
@@ -62,7 +63,7 @@ public class QueueControllerUnitTest {
     @DisplayName("🟢 대기열_확인_컨트롤러_테스트_예상_리턴_데이터_확인")
     void getQueueStatusTest_대기열_확인_컨트롤러_테스트_예상_리턴_데이터_확인 () throws Exception {
         // Given
-        QueueResult.QueueStatus result = new QueueResult.QueueStatus(1L, "00시간 00분");
+        QueueResult.QueueStatus result = new QueueResult.QueueStatus(0L, null, Queue.Status.ACTIVE);
         QueueResponse.QueueStatusResponse response = QueueResponse.QueueStatusResponse.from(result);
 
         given(queueFacade.getQueueStatus(any(String.class))).willReturn(result);

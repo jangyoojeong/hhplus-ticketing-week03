@@ -81,8 +81,9 @@ public class PaymentIntegrationTest {
         price = savedconcertSeats.get(0).getPrice();
 
         // 초기 활성화 토큰 적재
-        token = UUID.randomUUID().toString();
-        queueRepository.addActive(new Queue(token, System.currentTimeMillis()));
+        Queue queue = Queue.create();
+        token = queue.getToken();
+        queueRepository.addActive(queue);
 
         // 적재된 좌석 중 하나 예약상태로 저장
         ConcertSeat seat = savedconcertSeats.get(0);

@@ -20,12 +20,10 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.util.List;
-import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @ActiveProfiles("test")
@@ -62,8 +60,8 @@ public class QueueIntegrationTest {
     }
 
     @Test
-    @DisplayName("🟢 토큰_발급_통합_테스트_바로_입장_가능할경우_ACTIVE_토큰이_발급되고_대기순번_0L을_리턴한다")
-    void issueTokenTest_토큰_발급_통합_테스트_바로_입장_가능할경우_ACTIVE_토큰이_발급되고_대기순번_0L을_리턴한다() {
+    @DisplayName("🟢 토큰_발급_통합_테스트_바로_입장_가능할경우_ACTIVE_토큰이_발급되고_대기순번_null을_리턴한다")
+    void issueTokenTest_토큰_발급_통합_테스트_바로_입장_가능할경우_ACTIVE_토큰이_발급되고_대기순번_null을_리턴한다() {
         // Given
         QueueCommand.IssueToken command = new QueueCommand.IssueToken(userId);
 
@@ -72,7 +70,8 @@ public class QueueIntegrationTest {
 
         // Then
         assertNotNull(actualResult);
-        assertEquals(0L, actualResult.getPosition());
+        assertNull(actualResult.getPosition());
+        assertEquals(actualResult.getStatus(), Queue.Status.ACTIVE);
     }
 
     @Test
@@ -89,32 +88,33 @@ public class QueueIntegrationTest {
     }
 
     @Test
-    @DisplayName("🟢 대기열_상태_조회_통합_테스트_첫번째_발급된_활성화_토큰_상태는_INVALID_STATE_예외반환")
-    void getQueueStatusTest_대기열_상태_조회_통합_테스트_첫번째_발급된_활성화_토큰_상태는_INVALID_STATE_예외반환() {
+    @DisplayName("🟢 대기열_상태_조회_통합_테스트_첫번째_발급된_활성화_토큰_순서는_0L을_리턴한다.")
+    void getQueueStatusTest_대기열_상태_조회_통합_테스트_첫번째_발급된_활성화_토큰_순서는_0L을_리턴한다() {
         // Given
         QueueResult.IssueToken tokenResult = queueFacade.issueToken(new QueueCommand.IssueToken(userId));
         String issuedToken = tokenResult.getToken();
 
-        // When & Then
-        assertThatThrownBy(() -> queueFacade.getQueueStatus(issuedToken))
-                .isInstanceOf(CustomException.class)
-                .extracting("errorCode")
-                .isEqualTo(ErrorCode.INVALID_STATE);
+        // When
+        QueueResult.QueueStatus actualResult = queueFacade.getQueueStatus(issuedToken);
+
+        // Then
+        assertEquals(0, actualResult.getPosition());
     }
 
     @Test
     @DisplayName("🟢 대기열_상태_조회_통합_테스트_20번째_발급된_대기열_토큰의_대기순서는_20을_리턴한다")
     void getQueueStatusTest_대기열_상태_조회_통합_테스트_20번째_발급된_대기열_토큰의_대기순서는_20을_리턴한다() {
         // Given
-        // 모든 활성화 슬롯 채우기
+        // 모든 대기열 슬롯 채우기
         for (int i = 0; i < 19; i++) {
-            String token = UUID.randomUUID().toString();
-            queueRepository.addWaiting(new Queue(token, System.currentTimeMillis()));
+            Queue queue = Queue.create();
+            queueRepository.addWaiting(queue);
         }
 
         // 20번째 대기열 토큰 발급
-        String issuedToken = UUID.randomUUID().toString();
-        queueRepository.addWaiting(new Queue(issuedToken, System.currentTimeMillis()));
+        Queue queue = Queue.create();
+        String issuedToken = queue.getToken();
+        queueRepository.addWaiting(queue);
 
         // When
         QueueResult.QueueStatus actualStatusResult = queueFacade.getQueueStatus(issuedToken);
@@ -125,24 +125,12 @@ public class QueueIntegrationTest {
     }
 
     @Test
-    @DisplayName("🔴 대기열_상태_조회_통합_테스트_토큰_정보를_찾을_수_없으면_INVALID_STATE_예외반환")
-    void getQueueStatusTest_대기열_상태_조회_통합_테스트_토큰_정보를_찾을_수_없으면_INVALID_STATE_예외반환() {
-        // Given
-        String token = UUID.randomUUID().toString();
-
-        // When & Then
-        assertThatThrownBy(() -> queueFacade.getQueueStatus(token))
-                .isInstanceOf(CustomException.class)
-                .extracting("errorCode")
-                .isEqualTo(ErrorCode.INVALID_STATE);
-    }
-
-    @Test
     @DisplayName("🔴 토큰_검증_테스트_유효하지_않은_토큰일경우_INVALID_TOKEN_예외반환")
     void validateTokenTest_토큰_검증_테스트_유효하지_않은_토큰일경우_INVALID_TOKEN_예외반환() {
         // Given
-        String token = UUID.randomUUID().toString();
-        queueRepository.addWaiting(new Queue(token, System.currentTimeMillis()));
+        Queue queue = Queue.create();
+        String token = queue.getToken();
+        queueRepository.addWaiting(queue);
 
         // When & Then
         assertThatThrownBy(() -> queueFacade.validateToken(token))
@@ -157,8 +145,8 @@ public class QueueIntegrationTest {
 
         // Given
         for (int i = 0; i < QueueConstants.MAX_ACTIVE_TOKENS + 5; i++) {
-            String token = UUID.randomUUID().toString();
-            queueRepository.addWaiting(new Queue(token, System.currentTimeMillis()));
+            Queue queue = Queue.create();
+            queueRepository.addWaiting(queue);
         }
 
         // When

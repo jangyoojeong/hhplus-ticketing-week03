@@ -32,13 +32,15 @@ public class QueueService {
         Long activeCount = queueRepository.countActiveTokens();
 
         if (activeCount < QueueConstants.MAX_ACTIVE_TOKENS) {
+            queue.setStatus(Queue.Status.ACTIVE);
             queueRepository.addActive(queue);
-            return new QueueResult.IssueToken(queue.getToken(), 0L, "");
+        } else {
+            queueRepository.addWaiting(queue);
+            Long position = getWaitingPosition(queue.getToken());
+            queue.setWaitingInfo(position);
         }
 
-        queueRepository.addWaiting(queue);
-        Long position = getWaitingPosition(queue.getToken());
-        return new QueueResult.IssueToken(queue.getToken(), position, Queue.getRemainingWaitTime(position));
+        return QueueResult.IssueToken.from(queue);
     }
 
     /**
@@ -49,8 +51,7 @@ public class QueueService {
      * @throws CustomException 토큰 정보가 존재하지 않는 경우 발생하는 예외
      */
     public Long getWaitingPosition(String token) {
-        Long position = queueRepository.getWaitingPosition(token);
-        return Queue.getPosition(position);
+        return Queue.getPosition(queueRepository.getWaitingPosition(token));
     }
 
     /**
@@ -62,7 +63,7 @@ public class QueueService {
      */
     public QueueResult.QueueStatus getQueueStatus(String token) {
         Long position = getWaitingPosition(token);
-        return new QueueResult.QueueStatus(position, Queue.getRemainingWaitTime(position));
+        return QueueResult.QueueStatus.from(Queue.create().setWaitingInfo(position));
     }
 
     /**

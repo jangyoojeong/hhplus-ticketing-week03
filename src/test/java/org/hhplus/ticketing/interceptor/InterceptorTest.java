@@ -22,8 +22,6 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import java.util.UUID;
-
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
@@ -64,8 +62,9 @@ class InterceptorTest {
     void validateTokenTest_인터셉터_토큰_검증_테스트_ACTIVE_토큰은_200상태코드를_응답한다() {
 
         // Given
-        String token = UUID.randomUUID().toString();
-        queueRepository.addActive(new Queue(token, System.currentTimeMillis()));
+        Queue queue = Queue.create();
+        String token = queue.getToken();
+        queueRepository.addActive(queue);
 
         // HTTP 헤더에 인증 토큰 추가
         HttpHeaders headers = new HttpHeaders();
@@ -89,8 +88,9 @@ class InterceptorTest {
     @DisplayName("🔴 인터셉터_토큰_검증_테스트_WAITING_토큰은_INVALID_TOKEN_코드를_응답한다")
     void validateTokenTest_인터셉터_토큰_검증_테스트_WAITING_토큰은_INVALID_TOKEN_코드를_응답한다() {
         // Given
-        String token = UUID.randomUUID().toString();
-        queueRepository.addWaiting(new Queue(token, System.currentTimeMillis()));
+        Queue queue = Queue.create();
+        String token = queue.getToken();
+        queueRepository.addWaiting(queue);
 
         // HTTP 헤더에 인증 토큰 추가
         HttpHeaders headers = new HttpHeaders();

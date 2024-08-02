@@ -1,13 +1,11 @@
 package org.hhplus.ticketing.domain.queue.model;
 
-import org.hhplus.ticketing.domain.common.exception.CustomException;
-import org.hhplus.ticketing.domain.common.exception.ErrorCode;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 class QueueTest {
 
@@ -35,14 +33,14 @@ class QueueTest {
     }
 
     @Test
-    @DisplayName("🔴 순위계산_테스트_null이_입력되면_INVALID_STATE_예외반환")
-    void getPositionTest_순위계산_테스트_null이_입력되면_INVALID_STATE_예외반환() {
+    @DisplayName("🔴 순위계산_테스트_null이_입력되면_0이_리턴된다")
+    void getPositionTest_순위계산_테스트_null이_입력되면_0이_리턴된다() {
 
-        // When & Then
-        assertThatThrownBy(() -> Queue.getPosition(null))
-                .isInstanceOf(CustomException.class)
-                .extracting("errorCode")
-                .isEqualTo(ErrorCode.INVALID_STATE);
+        // When
+        Long position = Queue.getPosition(null);
+
+        // Then
+        assertThat(position).isEqualTo(0L);
     }
 
     @Test
@@ -57,13 +55,13 @@ class QueueTest {
     }
 
     @Test
-    @DisplayName("🔴 잔여시간계산_테스트_0이_입력되면_INVALID_STATE_예외반환")
-    void getRemainingWaitTimeTest_잔여시간계산_테스트_0이_입력되면_INVALID_STATE_예외반환() {
+    @DisplayName("🔴 잔여시간계산_테스트_0이_입력되면_null반환")
+    void getRemainingWaitTimeTest_잔여시간계산_테스트_0이_입력되면_null반환() {
 
-        // When & Then
-        assertThatThrownBy(() -> Queue.getRemainingWaitTime(0L))
-                .isInstanceOf(CustomException.class)
-                .extracting("errorCode")
-                .isEqualTo(ErrorCode.INVALID_STATE);
+        // When
+        String waitTime = Queue.getRemainingWaitTime(0L);
+
+        // Then
+        assertNull(waitTime);
     }
 }

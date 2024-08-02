@@ -67,20 +67,6 @@ public class QueueServiceTest {
     }
 
     @Test
-    @DisplayName("🔴 대기순번_테스트_토큰_정보를_찾을_수_없으면_INVALID_STATE_예외반환")
-    void getWaitingPositionTest_대기순번_테스트_토큰_정보를_찾을_수_없으면_INVALID_STATE_예외반환() {
-        // Given
-        String token = UUID.randomUUID().toString();
-        given(queueRepository.getWaitingPosition(anyString())).willReturn(null);
-
-        // When & Then
-        assertThatThrownBy(() -> queueService.getWaitingPosition(token))
-                .isInstanceOf(CustomException.class)
-                .extracting("errorCode")
-                .isEqualTo(ErrorCode.INVALID_STATE);
-    }
-
-    @Test
     @DisplayName("🟢 토큰_검증_테스트_유효한_토큰일경우")
     void validateTokenTest_토큰_검증_테스트_유효한_토큰일경우() {
         // Given

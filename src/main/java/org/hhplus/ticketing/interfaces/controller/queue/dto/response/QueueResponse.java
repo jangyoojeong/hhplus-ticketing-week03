@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hhplus.ticketing.domain.queue.model.Queue;
 import org.hhplus.ticketing.domain.queue.model.QueueResult;
 
 public class QueueResponse {
@@ -17,11 +18,13 @@ public class QueueResponse {
 
         private Long position;                    // 대기순서
         private String remainingTime;             // 잔여시간
+        private Queue.Status status;              // 상태
 
         public static IssueTokenResponse from(QueueResult.IssueToken result) {
             return IssueTokenResponse.builder()
                     .position(result.getPosition())
                     .remainingTime(result.getRemainingTime())
+                    .status(result.getStatus())
                     .build();
         }
     }
@@ -35,11 +38,13 @@ public class QueueResponse {
 
         private Long position;                    // 대기순서
         private String remainingTime;             // 잔여시간
+        private Queue.Status status;              // 상태
 
         public static QueueStatusResponse from(QueueResult.QueueStatus result) {
             return QueueStatusResponse.builder()
                     .position(result.getPosition())
                     .remainingTime(result.getRemainingTime())
+                    .status(result.getStatus())
                     .build();
         }
     }
