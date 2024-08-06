@@ -8,6 +8,20 @@ services:
     ports:
       - "6379:6379"
 
+  db:
+    image: mysql:8.0
+    container_name: mysql-container
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: my-secret-pw
+      MYSQL_DATABASE: mydatabase
+      MYSQL_USER: myuser
+      MYSQL_PASSWORD: mypassword
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+
   influxdb:
     image: influxdb:1.8
     container_name: influxdb
@@ -34,3 +48,4 @@ services:
 volumes:
   redis_data:
   influxdb_data:
+  mysql-data:
