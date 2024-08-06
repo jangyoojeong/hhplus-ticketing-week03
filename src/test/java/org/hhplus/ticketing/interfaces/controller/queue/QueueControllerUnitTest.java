@@ -45,17 +45,15 @@ public class QueueControllerUnitTest {
     void issueTokenTest_대기열_토큰_발급_컨트롤러_테스트_헤더_토큰정보_리턴_확인 () throws Exception {
         // Given
         QueueRequest.IssueToken request = new QueueRequest.IssueToken(userId);
-        QueueResult.IssueToken result = new QueueResult.IssueToken(token, null, null, Queue.Status.ACTIVE);
-        QueueResponse.IssueTokenResponse response = QueueResponse.IssueTokenResponse.from(result);
+        QueueResult.IssueToken result = new QueueResult.IssueToken(token);
 
         given(queueFacade.issueToken(any(QueueCommand.IssueToken.class))).willReturn(result);
 
         // When
-        ResponseEntity<QueueResponse.IssueTokenResponse> responseEntity = queueController.issueToken(request);
+        ResponseEntity<Void> responseEntity = queueController.issueToken(request);
 
         // Then
         assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode());
-        assertEquals(response, responseEntity.getBody());
         assertEquals("Bearer " + token, responseEntity.getHeaders().getFirst(HttpHeaders.AUTHORIZATION));
     }
 
@@ -63,13 +61,13 @@ public class QueueControllerUnitTest {
     @DisplayName("🟢 대기열_확인_컨트롤러_테스트_예상_리턴_데이터_확인")
     void getQueueStatusTest_대기열_확인_컨트롤러_테스트_예상_리턴_데이터_확인 () throws Exception {
         // Given
-        QueueResult.QueueStatus result = new QueueResult.QueueStatus(0L, null, Queue.Status.ACTIVE);
-        QueueResponse.QueueStatusResponse response = QueueResponse.QueueStatusResponse.from(result);
+        QueueResult.QueueStatus result = new QueueResult.QueueStatus(0L, null);
+        QueueResponse.QueueStatus response = QueueResponse.QueueStatus.from(result);
 
         given(queueFacade.getQueueStatus(any(String.class))).willReturn(result);
 
         // When
-        ResponseEntity<QueueResponse.QueueStatusResponse> responseEntity = queueController.getQueueStatus("Bearer " + token);
+        ResponseEntity<QueueResponse.QueueStatus> responseEntity = queueController.getQueueStatus("Bearer " + token);
 
         // Then
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());

@@ -25,7 +25,7 @@ public class ConcertFacade {
      * @param command 콘서트 저장 요청 command 객체
      * @return 저장된 콘서트 정보를 포함한 result 객체
      */
-    public ConcertResult.SaveConcertResult saveConcert(ConcertCommand.SaveConcertCommand command) {
+    public ConcertResult.SaveConcert saveConcert(ConcertCommand.SaveConcert command) {
         return concertService.saveConcert(command);
     }
 
@@ -34,7 +34,7 @@ public class ConcertFacade {
      *
      * @return 콘서트 목록 응답 객체
      */
-    public Page<ConcertResult.GetConcertListResult> getConcertList(Pageable pageable) {
+    public Page<ConcertResult.GetConcertList> getConcertList(Pageable pageable) {
         return concertService.getConcertList(pageable);
     }
 
@@ -44,7 +44,7 @@ public class ConcertFacade {
      * @param command 콘서트 옵션 저장 요청 command 객체
      * @return 저장된 콘서트 정보를 포함한 result 객체
      */
-    public ConcertResult.SaveConcertOptionResult saveConcertOption(ConcertCommand.SaveConcertOptionCommand command) {
+    public ConcertResult.SaveConcertOption saveConcertOption(ConcertCommand.SaveConcertOption command) {
         return concertService.saveConcertOption(command);
     }
 
@@ -54,7 +54,7 @@ public class ConcertFacade {
      * @param concertId 조회할 콘서트의 고유 ID
      * @return 예약 가능한 날짜 목록을 포함한 result 객체
      */
-    public ConcertResult.GetAvailableDatesResult getAvailableDates(Long concertId) {
+    public ConcertResult.GetAvailableDates getAvailableDates(Long concertId) {
         return concertService.getAvailableDates(concertId);
     }
 
@@ -64,7 +64,7 @@ public class ConcertFacade {
      * @param concertOptionId 좌석 예약 요청 command 객체
      * @return 예약 가능한 좌석 목록을 포함한 result 객체
      */
-    public ConcertResult.GetAvailableSeatsResult getAvailableSeats(Long concertOptionId) {
+    public ConcertResult.GetAvailableSeats getAvailableSeats(Long concertOptionId) {
         return concertService.getAvailableSeats(concertOptionId);
     }
 
@@ -74,7 +74,7 @@ public class ConcertFacade {
      * @param command 좌석 예약 요청 command 객체
      * @return 좌석 예약 정보를 포함한 result 객체
      */
-    public ConcertResult.ReserveSeatResult reserveSeat(ConcertCommand.ReserveSeatCommand command) {
+    public ConcertResult.ReserveSeat reserveSeat(ConcertCommand.ReserveSeat command) {
         return concertService.reserveSeat(command);
     }
 

@@ -12,12 +12,12 @@ public class UserResult {
     @NoArgsConstructor
     @AllArgsConstructor
     @Builder
-    public static class UserInfoResult {
+    public static class GetUser {
         private Long userId;           // 유저ID (키값)
         private String userName;       // 유저 이름
 
-        public static UserInfoResult from(UserInfo domain) {
-            return UserInfoResult.builder()
+        public static GetUser from(UserInfo domain) {
+            return GetUser.builder()
                     .userId(domain.getUserId())
                     .userName(domain.getUserName())
                     .build();
@@ -29,13 +29,13 @@ public class UserResult {
     @NoArgsConstructor
     @AllArgsConstructor
     @Builder
-    public static class ChargePointResult {
+    public static class ChargePoint {
 
         private Long userId;                    // userId
         private int point;                      // 충전 후 포인트 잔액
 
-        public static ChargePointResult from(UserPoint domain) {
-            return ChargePointResult.builder()
+        public static ChargePoint from(UserPoint domain) {
+            return ChargePoint.builder()
                     .userId(domain.getUserId())
                     .point(domain.getPoint())
                     .build();
@@ -47,13 +47,13 @@ public class UserResult {
     @NoArgsConstructor
     @AllArgsConstructor
     @Builder
-    public static class UsePointResult {
+    public static class UsePoint {
 
         private Long userId;                    // userId
         private int point;                      // 차감 후 포인트 잔액
 
-        public static UsePointResult from(UserPoint domain) {
-            return UsePointResult.builder()
+        public static UsePoint from(UserPoint domain) {
+            return UsePoint.builder()
                     .userId(domain.getUserId())
                     .point(domain.getPoint())
                     .build();
@@ -65,13 +65,13 @@ public class UserResult {
     @NoArgsConstructor
     @AllArgsConstructor
     @Builder
-    public static class UserPointResult {
+    public static class GetPoint {
 
         private Long userId;                    // userId
         private int point;                      // 차감 후 포인트 잔액
 
-        public static UserPointResult from(UserPoint domain) {
-            return UserPointResult.builder()
+        public static GetPoint from(UserPoint domain) {
+            return GetPoint.builder()
                     .userId(domain.getUserId())
                     .point(domain.getPoint())
                     .build();

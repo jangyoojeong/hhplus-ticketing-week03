@@ -36,15 +36,14 @@ public class QueueController {
      */
     @PostMapping("/token")
     @Operation(summary = "토큰 발급 API", description = "콘서트 대기열에 입장할 때 사용하는 토큰을 발급합니다.")
-    public ResponseEntity<QueueResponse.IssueTokenResponse> issueToken (@Valid @RequestBody QueueRequest.IssueToken request) {
+    public ResponseEntity<Void> issueToken (@Valid @RequestBody QueueRequest.IssueToken request) {
         QueueResult.IssueToken queueResult = queueFacade.issueToken(request.toCommand());
-        QueueResponse.IssueTokenResponse response = QueueResponse.IssueTokenResponse.from(queueResult);
 
         // 발급된 토큰 헤더에 리턴
         HttpHeaders headers = new HttpHeaders();
-        headers.add(AUTHORIZATION_HEADER, BEARER_PREFIX + queueResult.getToken().toString());
+        headers.add(AUTHORIZATION_HEADER, BEARER_PREFIX + queueResult.getToken());
 
-        return new ResponseEntity<>(response, headers, HttpStatus.CREATED);
+        return new ResponseEntity<>(headers, HttpStatus.CREATED);
     }
 
     /**
@@ -55,8 +54,8 @@ public class QueueController {
      */
     @GetMapping("/status")
     @Operation(summary = "대기열 조회 API", description = "사용자의 대기열 상태(대기순번 등)를 조회합니다.")
-    public ResponseEntity<QueueResponse.QueueStatusResponse> getQueueStatus (@RequestHeader(value = AUTHORIZATION_HEADER, required = true) String authorizationHeader) {
+    public ResponseEntity<QueueResponse.QueueStatus> getQueueStatus (@RequestHeader(value = AUTHORIZATION_HEADER, required = true) String authorizationHeader) {
         String token = authorizationHeader.replace(BEARER_PREFIX, "");
-        return ResponseEntity.status(HttpStatus.OK).body(QueueResponse.QueueStatusResponse.from(queueFacade.getQueueStatus(token)));
+        return ResponseEntity.status(HttpStatus.OK).body(QueueResponse.QueueStatus.from(queueFacade.getQueueStatus(token)));
     }
 }

@@ -23,7 +23,7 @@ public class UserFacade {
      * @param userId 잔액을 조회할 사용자의 ID
      * @return 잔액 result 객체
      */
-    public UserResult.UserPointResult getPointResult(Long userId) {
+    public UserResult.GetPoint getPointResult(Long userId) {
         return userPointService.getPointResult(userId);
     }
 
@@ -33,9 +33,9 @@ public class UserFacade {
      * @param command 잔액 충전 요청 객체
      * @return 충전된 잔액 정보를 포함한 응답 객체
      */
-    public UserResult.ChargePointResult chargePoint(UserCommand.ChargePointCommand command) {
+    public UserResult.ChargePoint chargePoint(UserCommand.ChargePoint command) {
         // 1. 유저 정보 확인 (유저 정보 없을 시 예외 리턴)
-        UserResult.UserInfoResult validateUser = userInfoService.validateUser(command.getUserId());
+        UserResult.GetUser validateUser = userInfoService.validateUser(command.getUserId());
 
         // 2. 잔액 충전 및 리턴
         return userPointService.chargePoint(command);

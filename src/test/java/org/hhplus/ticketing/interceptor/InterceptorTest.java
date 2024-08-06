@@ -75,9 +75,9 @@ class InterceptorTest {
 
         // When
         // API 요청을 발송
-        ResponseEntity<ConcertResponse.GetAvailableDatesResponse> response = restTemplate.exchange(
+        ResponseEntity<ConcertResponse.GetAvailableDates> response = restTemplate.exchange(
                 getBaseUrl() + "/api/concerts/" + concertId + "/available-dates",
-                HttpMethod.GET, entity, ConcertResponse.GetAvailableDatesResponse.class);
+                HttpMethod.GET, entity, ConcertResponse.GetAvailableDates.class);
 
         // Then
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -163,9 +163,9 @@ class InterceptorTest {
 
         // When
         // API 요청을 발송
-        ResponseEntity<UserResponse.UserPointResponse> response = restTemplate.exchange(
+        ResponseEntity<UserResponse.UserPoint> response = restTemplate.exchange(
                 getBaseUrl() + "/api/users/1/points",
-                HttpMethod.GET, entity, UserResponse.UserPointResponse.class);
+                HttpMethod.GET, entity, UserResponse.UserPoint.class);
 
         // Then
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);

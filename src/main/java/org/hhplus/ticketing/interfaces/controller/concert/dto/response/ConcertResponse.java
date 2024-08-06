@@ -15,13 +15,13 @@ public class ConcertResponse {
     @NoArgsConstructor
     @AllArgsConstructor
     @Builder
-    public static class SaveConcertResponse {
+    public static class SaveConcert {
 
         private Long concertId;             // 콘서트ID
         private String concertName;         // 콘서트명
 
-        public static SaveConcertResponse from(ConcertResult.SaveConcertResult result) {
-            return SaveConcertResponse.builder()
+        public static SaveConcert from(ConcertResult.SaveConcert result) {
+            return SaveConcert.builder()
                     .concertId(result.getConcertId())
                     .concertName(result.getConcertName())
                     .build();
@@ -32,13 +32,13 @@ public class ConcertResponse {
     @NoArgsConstructor
     @AllArgsConstructor
     @Builder
-    public static class SaveConcertOptionResponse {
+    public static class SaveConcertOption {
         private Long concertId;             // 콘서트ID
         private LocalDateTime concertAt;    // 콘서트 시간
         private int capacity;               // 콘서트 정원
 
-        public static SaveConcertOptionResponse from(ConcertResult.SaveConcertOptionResult result) {
-            return SaveConcertOptionResponse.builder()
+        public static SaveConcertOption from(ConcertResult.SaveConcertOption result) {
+            return SaveConcertOption.builder()
                     .concertId(result.getConcertId())
                     .concertAt(result.getConcertAt())
                     .capacity(result.getCapacity())
@@ -50,13 +50,13 @@ public class ConcertResponse {
     @NoArgsConstructor
     @AllArgsConstructor
     @Builder
-    public static class GetConcertListResponse {
+    public static class GetConcertList {
 
         private Long concertId;             // 콘서트ID
         private String concertName;         // 콘서트명
 
-        public static ConcertResponse.GetConcertListResponse from(ConcertResult.GetConcertListResult result) {
-            return GetConcertListResponse.builder()
+        public static GetConcertList from(ConcertResult.GetConcertList result) {
+            return GetConcertList.builder()
                     .concertId(result.getConcertId())
                     .concertName(result.getConcertName())
                     .build();
@@ -67,23 +67,23 @@ public class ConcertResponse {
     @NoArgsConstructor
     @AllArgsConstructor
     @Builder
-    public static class GetAvailableDatesResponse {
+    public static class GetAvailableDates {
 
         private Long concertId;                     // 콘서트ID
-        private List<ConcertResult.GetAvailableDatesResult.DateInfo> availableDates;     // 예약 가능한 날짜
+        private List<ConcertResult.GetAvailableDates.DateInfo> availableDates;     // 예약 가능한 날짜
 
-        public static GetAvailableDatesResponse from(ConcertResult.GetAvailableDatesResult result) {
-            List<ConcertResult.GetAvailableDatesResult.DateInfo> availableDates =
+        public static GetAvailableDates from(ConcertResult.GetAvailableDates result) {
+            List<ConcertResult.GetAvailableDates.DateInfo> availableDates =
                     Optional.ofNullable(result.getAvailableDates())
                             .orElse(Collections.emptyList())
                             .stream()
-                            .map(dateInfo -> ConcertResult.GetAvailableDatesResult.DateInfo.builder()
+                            .map(dateInfo -> ConcertResult.GetAvailableDates.DateInfo.builder()
                                     .concertOptionId(dateInfo.getConcertOptionId())
                                     .concertAt(dateInfo.getConcertAt())
                                     .build())
                             .collect(Collectors.toList());
 
-            return GetAvailableDatesResponse.builder()
+            return GetAvailableDates.builder()
                     .concertId(result.getConcertId())
                     .availableDates(availableDates)
                     .build();
@@ -94,23 +94,23 @@ public class ConcertResponse {
     @NoArgsConstructor
     @AllArgsConstructor
     @Builder
-    public static class GetAvailableSeatsResponse {
+    public static class GetAvailableSeats {
 
         private Long concertOptionId;       // 콘서트옵션ID  
-        private List<ConcertResult.GetAvailableSeatsResult.SeatInfo> availableSeats;     // 예약 가능한 좌석 리스트
+        private List<ConcertResult.GetAvailableSeats.SeatInfo> availableSeats;     // 예약 가능한 좌석 리스트
 
-        public static GetAvailableSeatsResponse from(ConcertResult.GetAvailableSeatsResult result) {
-            List<ConcertResult.GetAvailableSeatsResult.SeatInfo> availableSeats =
+        public static GetAvailableSeats from(ConcertResult.GetAvailableSeats result) {
+            List<ConcertResult.GetAvailableSeats.SeatInfo> availableSeats =
                     Optional.ofNullable(result.getAvailableSeats())
                             .orElse(Collections.emptyList())
                             .stream()
-                            .map(seatInfo -> ConcertResult.GetAvailableSeatsResult.SeatInfo.builder()
+                            .map(seatInfo -> ConcertResult.GetAvailableSeats.SeatInfo.builder()
                                     .concertSeatId(seatInfo.getConcertSeatId())
                                     .seatNumber(seatInfo.getSeatNumber())
                                     .build())
                             .collect(Collectors.toList());
 
-            return GetAvailableSeatsResponse.builder()
+            return GetAvailableSeats.builder()
                     .concertOptionId(result.getConcertOptionId())
                     .availableSeats(availableSeats)
                     .build();
@@ -121,14 +121,14 @@ public class ConcertResponse {
     @NoArgsConstructor
     @AllArgsConstructor
     @Builder
-    public static class ReserveSeatResponse {
+    public static class ReserveSeat {
 
         private Long reservationId;             // 예약ID
         private Long userId;                    // 유저ID
         private Long concertSeatId;             // 콘서트좌석ID
 
-        public static ConcertResponse.ReserveSeatResponse from(ConcertResult.ReserveSeatResult result) {
-            return ConcertResponse.ReserveSeatResponse.builder()
+        public static ReserveSeat from(ConcertResult.ReserveSeat result) {
+            return ReserveSeat.builder()
                     .reservationId(result.getReservationId())
                     .userId(result.getUserId())
                     .concertSeatId(result.getConcertSeatId())

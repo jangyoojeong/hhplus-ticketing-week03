@@ -17,13 +17,13 @@ public class ConcertRequest {
     @NoArgsConstructor
     @AllArgsConstructor
     @Builder
-    public static class SaveConcertRequest {
+    public static class SaveConcert {
 
         @NotNull(message = "콘서트 이름은 비어 있을 수 없습니다.")
         private String concertName;                    // 콘서트 이름
 
-        public ConcertCommand.SaveConcertCommand toCommand() {
-            return ConcertCommand.SaveConcertCommand
+        public ConcertCommand.SaveConcert toCommand() {
+            return ConcertCommand.SaveConcert
                     .builder()
                     .concertName(this.getConcertName())
                     .build();
@@ -35,7 +35,7 @@ public class ConcertRequest {
     @NoArgsConstructor
     @AllArgsConstructor
     @Builder
-    public static class SaveConcertOptionRequest {
+    public static class SaveConcertOption {
 
         @NotNull(message = "콘서트 ID는 비어 있을 수 없습니다.")
         private Long concertId;             // 콘서트ID
@@ -47,8 +47,8 @@ public class ConcertRequest {
         @Min(value = 1, message = "콘서트 정원은 최소 1명 이상이어야 합니다.")
         private int capacity;           // 콘서트 정원
 
-        public ConcertCommand.SaveConcertOptionCommand toCommand() {
-            return ConcertCommand.SaveConcertOptionCommand.builder()
+        public ConcertCommand.SaveConcertOption toCommand() {
+            return ConcertCommand.SaveConcertOption.builder()
                     .concertId(this.getConcertId())
                     .concertAt(this.getConcertAt())
                     .capacity(this.getCapacity())
@@ -61,7 +61,7 @@ public class ConcertRequest {
     @NoArgsConstructor
     @AllArgsConstructor
     @Builder
-    public static class ReserveSeatRequest {
+    public static class ReserveSeat {
 
         @NotNull(message = "사용자 ID는 비어 있을 수 없습니다.")
         private Long userId;                    // 유저ID
@@ -69,8 +69,8 @@ public class ConcertRequest {
         @NotNull(message = "콘서트좌석ID는 비어 있을 수 없습니다.")
         private Long concertSeatId;             // 콘서트좌석ID
 
-        public ConcertCommand.ReserveSeatCommand toCommand() {
-            return ConcertCommand.ReserveSeatCommand
+        public ConcertCommand.ReserveSeat toCommand() {
+            return ConcertCommand.ReserveSeat
                     .builder()
                     .userId(this.getUserId())
                     .concertSeatId(this.getConcertSeatId())

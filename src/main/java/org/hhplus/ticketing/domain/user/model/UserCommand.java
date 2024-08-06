@@ -9,7 +9,7 @@ public class UserCommand {
     @NoArgsConstructor
     @AllArgsConstructor
     @Builder
-    public static class ChargePointCommand {
+    public static class ChargePoint {
         private Long userId;                    // userId
         private int amount;                     // 충전금액
     }
@@ -19,7 +19,7 @@ public class UserCommand {
     @NoArgsConstructor
     @AllArgsConstructor
     @Builder
-    public static class UsePointCommand {
+    public static class UsePoint {
         private Long userId;                    // userId
         private int amount;                     // 차감금액
     }

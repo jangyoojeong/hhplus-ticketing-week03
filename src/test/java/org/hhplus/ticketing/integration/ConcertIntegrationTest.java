@@ -119,13 +119,13 @@ public class ConcertIntegrationTest {
 
         Page<Concert> concerts = new PageImpl<>(concertList, pageable, concertList.size());
 
-        List<ConcertResult.GetConcertListResult> result = concerts.stream()
-                .map(ConcertResult.GetConcertListResult::from)
+        List<ConcertResult.GetConcertList> result = concerts.stream()
+                .map(ConcertResult.GetConcertList::from)
                 .collect(Collectors.toList());
-        Page<ConcertResult.GetConcertListResult> expectedResult = new PageImpl<>(result, pageable, result.size());
+        Page<ConcertResult.GetConcertList> expectedResult = new PageImpl<>(result, pageable, result.size());
 
         // When
-        Page<ConcertResult.GetConcertListResult> actualResult = concertFacade.getConcertList(pageable);
+        Page<ConcertResult.GetConcertList> actualResult = concertFacade.getConcertList(pageable);
 
         // Then
         assertNotNull(actualResult);
@@ -140,7 +140,7 @@ public class ConcertIntegrationTest {
         String concertName = "콘서트1";
 
         // When
-        ConcertResult.SaveConcertResult retult = concertFacade.saveConcert(new ConcertCommand.SaveConcertCommand("콘서트1"));
+        ConcertResult.SaveConcert retult = concertFacade.saveConcert(new ConcertCommand.SaveConcert("콘서트1"));
 
         assertThat(retult.getConcertName()).isEqualTo(concertName);
     }
@@ -154,7 +154,7 @@ public class ConcertIntegrationTest {
 
         // When
         // 첫 번째 호출
-        Page<ConcertResult.GetConcertListResult> firstCall = concertFacade.getConcertList(pageable);
+        Page<ConcertResult.GetConcertList> firstCall = concertFacade.getConcertList(pageable);
         assertThat(firstCall).isNotNull();
 
         // 캐시 생성 확인
@@ -162,7 +162,7 @@ public class ConcertIntegrationTest {
         assertThat(redisTemplate.hasKey(cacheKey)).isTrue();
 
         // 두 번째 호출 (캐시 적용 확인)
-        Page<ConcertResult.GetConcertListResult> secondCall = concertFacade.getConcertList(pageable);
+        Page<ConcertResult.GetConcertList> secondCall = concertFacade.getConcertList(pageable);
         assertThat(secondCall).isNotNull();
 
         // 캐시 TTL 확인
@@ -179,10 +179,10 @@ public class ConcertIntegrationTest {
         LocalDateTime concertAt = LocalDateTime.now().plusDays(1);
         int capacity = 50;
 
-        ConcertCommand.SaveConcertOptionCommand command = new ConcertCommand.SaveConcertOptionCommand(concertId, concertAt, capacity);
+        ConcertCommand.SaveConcertOption command = new ConcertCommand.SaveConcertOption(concertId, concertAt, capacity);
 
         // When
-        ConcertResult.SaveConcertOptionResult retult = concertFacade.saveConcertOption(command);
+        ConcertResult.SaveConcertOption retult = concertFacade.saveConcertOption(command);
 
         assertThat(retult.getConcertId()).isEqualTo(concertId);
         assertThat(retult.getConcertAt()).isEqualTo(concertAt);
@@ -195,7 +195,7 @@ public class ConcertIntegrationTest {
 
         // When
         // 첫 번째 호출
-        ConcertResult.GetAvailableDatesResult firstCall = concertFacade.getAvailableDates(concertId);
+        ConcertResult.GetAvailableDates firstCall = concertFacade.getAvailableDates(concertId);
         assertThat(firstCall).isNotNull();
 
         // 캐시 생성 확인
@@ -203,7 +203,7 @@ public class ConcertIntegrationTest {
         assertThat(redisTemplate.hasKey(cacheKey)).isTrue();
 
         // When 두 번째 호출 (캐시 적용 확인)
-        ConcertResult.GetAvailableDatesResult secondCall = concertFacade.getAvailableDates(concertId);
+        ConcertResult.GetAvailableDates secondCall = concertFacade.getAvailableDates(concertId);
         assertThat(secondCall).isNotNull();
 
         // 캐시 TTL 확인
@@ -222,10 +222,10 @@ public class ConcertIntegrationTest {
                 .filter(option -> option.getConcertAt().isAfter(LocalDateTime.now())) // 현재 날짜 이후 필터링
                 .collect(Collectors.toList());
 
-        ConcertResult.GetAvailableDatesResult expectedResult = ConcertResult.GetAvailableDatesResult.from(availableConcertDates);
+        ConcertResult.GetAvailableDates expectedResult = ConcertResult.GetAvailableDates.from(availableConcertDates);
 
         // When
-        ConcertResult.GetAvailableDatesResult actualResult = concertFacade.getAvailableDates(concertId);
+        ConcertResult.GetAvailableDates actualResult = concertFacade.getAvailableDates(concertId);
 
         // Then
         assertNotNull(actualResult);
@@ -243,10 +243,10 @@ public class ConcertIntegrationTest {
                 .filter(seat -> seat.getStatus() == ConcertSeat.Status.AVAILABLE)
                 .collect(Collectors.toList());
 
-        ConcertResult.GetAvailableSeatsResult expectedResult = ConcertResult.GetAvailableSeatsResult.from(availableConcertSeats);
+        ConcertResult.GetAvailableSeats expectedResult = ConcertResult.GetAvailableSeats.from(availableConcertSeats);
 
         // When
-        ConcertResult.GetAvailableSeatsResult actualResult = concertFacade.getAvailableSeats(concertOptionId);
+        ConcertResult.GetAvailableSeats actualResult = concertFacade.getAvailableSeats(concertOptionId);
 
         // Then
         assertNotNull(actualResult);
@@ -257,10 +257,10 @@ public class ConcertIntegrationTest {
     @DisplayName("🟢 좌석_예약_테스트_좌석_예약_성공시_예약된_정보가_반환된다")
     void reserveSeatTest_좌석_예약_테스트_좌석_예약_성공시_예약된_정보가_반환된다() {
         // Given
-        ConcertCommand.ReserveSeatCommand command = new ConcertCommand.ReserveSeatCommand(userId, concertSeatId1);
+        ConcertCommand.ReserveSeat command = new ConcertCommand.ReserveSeat(userId, concertSeatId1);
 
         // When
-        ConcertResult.ReserveSeatResult actualResult = concertFacade.reserveSeat(command);
+        ConcertResult.ReserveSeat actualResult = concertFacade.reserveSeat(command);
 
         // Then
         List<Reservation> userReservations = concertRepository.findByUserId(userId);
@@ -274,7 +274,7 @@ public class ConcertIntegrationTest {
     @DisplayName("🔴 좌석_예약_테스트_해당_좌석이_예약가능한_상태가_아닐_경우_SEAT_NOT_FOUND_예외반환")
     void reserveSeatTest_좌석_예약_테스트_해당_좌석이_예약가능한_상태가_아닐_경우_SEAT_NOT_FOUND_예외반환() {
         // Given
-        ConcertCommand.ReserveSeatCommand command = new ConcertCommand.ReserveSeatCommand(userId, concertSeatId1);
+        ConcertCommand.ReserveSeat command = new ConcertCommand.ReserveSeat(userId, concertSeatId1);
 
         // 좌석을 미리 예약
         concertFacade.reserveSeat(command);

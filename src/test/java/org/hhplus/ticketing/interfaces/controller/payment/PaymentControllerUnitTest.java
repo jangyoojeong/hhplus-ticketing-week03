@@ -41,19 +41,19 @@ public class PaymentControllerUnitTest {
 
     @Test
     @DisplayName("🟢 결제_컨트롤러_테스트_예상_리턴_확인")
-    void requestPaymentTest_결제_컨트롤러_테스트_예상_리턴_확인 () throws Exception {
+    void payTest_결제_컨트롤러_테스트_예상_리턴_확인() throws Exception {
         // Given
         Long reservationId = 1L;
         int point = 2000;
 
-        PaymentRequest.PaymentProcessingRequest request = new PaymentRequest.PaymentProcessingRequest(userId, reservationId);
-        PaymentResult.RequestPaymentResult result = new PaymentResult.RequestPaymentResult(1L, userId, point);
-        PaymentResponse.PaymentProcessingResponse response = PaymentResponse.PaymentProcessingResponse.from(result);
+        PaymentRequest.Pay request = new PaymentRequest.Pay(userId, reservationId);
+        PaymentResult.Pay result = new PaymentResult.Pay(1L, userId, point);
+        PaymentResponse.Pay response = PaymentResponse.Pay.from(result);
 
-        given(paymentFacade.requestPayment(eq(token), any(PaymentCommand.RequestPaymentCommand.class))).willReturn(result);
+        given(paymentFacade.pay(eq(token), any(PaymentCommand.Pay.class))).willReturn(result);
 
         // When
-        ResponseEntity<PaymentResponse.PaymentProcessingResponse> responseEntity = paymentController.requestPayment("Bearer " + token, request);
+        ResponseEntity<PaymentResponse.Pay> responseEntity = paymentController.pay("Bearer " + token, request);
 
         // Then
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());

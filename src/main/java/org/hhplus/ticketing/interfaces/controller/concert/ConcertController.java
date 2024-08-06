@@ -31,9 +31,9 @@ public class ConcertController {
      */
     @GetMapping("/")
     @Operation(summary = "콘서트 목록 조회 API", description = "콘서트 목록을 조회합니다.")
-    public ResponseEntity<Page<ConcertResponse.GetConcertListResponse>> getConcertList(Pageable pageable) {
+    public ResponseEntity<Page<ConcertResponse.GetConcertList>> getConcertList(Pageable pageable) {
         return ResponseEntity.status(HttpStatus.OK).body(concertFacade.getConcertList(pageable)
-                .map(ConcertResponse.GetConcertListResponse::from));
+                .map(ConcertResponse.GetConcertList::from));
     }
 
     /**
@@ -44,8 +44,8 @@ public class ConcertController {
      */
     @PostMapping("/")
     @Operation(summary = "콘서트 등록 API", description = "콘서트를 등록합니다.")
-    public ResponseEntity<ConcertResponse.SaveConcertResponse> saveConcert(@Valid @RequestBody ConcertRequest.SaveConcertRequest request) {
-        return ResponseEntity.status(HttpStatus.OK).body(ConcertResponse.SaveConcertResponse.from(concertFacade.saveConcert(request.toCommand())));
+    public ResponseEntity<ConcertResponse.SaveConcert> saveConcert(@Valid @RequestBody ConcertRequest.SaveConcert request) {
+        return ResponseEntity.status(HttpStatus.OK).body(ConcertResponse.SaveConcert.from(concertFacade.saveConcert(request.toCommand())));
     }
 
     /**
@@ -56,8 +56,8 @@ public class ConcertController {
      */
     @PostMapping("/{concertId}/")
     @Operation(summary = "콘서트 옵션 등록 API", description = "특정 콘서트에 대해 옵션정보를 등록합니다.")
-    public ResponseEntity<ConcertResponse.SaveConcertOptionResponse> saveConcertOption(@Valid @RequestBody ConcertRequest.SaveConcertOptionRequest request) {
-        return ResponseEntity.status(HttpStatus.OK).body(ConcertResponse.SaveConcertOptionResponse.from(concertFacade.saveConcertOption(request.toCommand())));
+    public ResponseEntity<ConcertResponse.SaveConcertOption> saveConcertOption(@Valid @RequestBody ConcertRequest.SaveConcertOption request) {
+        return ResponseEntity.status(HttpStatus.OK).body(ConcertResponse.SaveConcertOption.from(concertFacade.saveConcertOption(request.toCommand())));
     }
 
     /**
@@ -68,8 +68,8 @@ public class ConcertController {
      */
     @GetMapping("/{concertId}/available-dates")
     @Operation(summary = "예약 가능 날짜 조회 API", description = "특정 콘서트에 대해 예약 가능한 날짜를 조회합니다.")
-    public ResponseEntity<ConcertResponse.GetAvailableDatesResponse> getAvailableDates(@PathVariable Long concertId) {
-            return ResponseEntity.status(HttpStatus.OK).body(ConcertResponse.GetAvailableDatesResponse.from(concertFacade.getAvailableDates(concertId)));
+    public ResponseEntity<ConcertResponse.GetAvailableDates> getAvailableDates(@PathVariable Long concertId) {
+            return ResponseEntity.status(HttpStatus.OK).body(ConcertResponse.GetAvailableDates.from(concertFacade.getAvailableDates(concertId)));
     }
 
     /**
@@ -80,8 +80,8 @@ public class ConcertController {
      */
     @GetMapping("/{concertOptionId}/available-seats")
     @Operation(summary = "예약 가능 좌석 조회 API", description = "특정 콘서트 옵션에 대해 예약 가능한 좌석을 조회합니다.")
-    public ResponseEntity<ConcertResponse.GetAvailableSeatsResponse> getAvailableSeats(@PathVariable Long concertOptionId) {
-        return ResponseEntity.status(HttpStatus.OK).body(ConcertResponse.GetAvailableSeatsResponse.from(concertFacade.getAvailableSeats(concertOptionId)));
+    public ResponseEntity<ConcertResponse.GetAvailableSeats> getAvailableSeats(@PathVariable Long concertOptionId) {
+        return ResponseEntity.status(HttpStatus.OK).body(ConcertResponse.GetAvailableSeats.from(concertFacade.getAvailableSeats(concertOptionId)));
     }
 
     /**
@@ -92,7 +92,7 @@ public class ConcertController {
      */
     @PostMapping("/reservations/seats")
     @Operation(summary = "좌석 예약 요청 API", description = "특정 콘서트 옵션의 좌석을 예약합니다.")
-    public ResponseEntity<ConcertResponse.ReserveSeatResponse> reserveSeat (@Valid @RequestBody ConcertRequest.ReserveSeatRequest request) {
-        return ResponseEntity.status(HttpStatus.OK).body(ConcertResponse.ReserveSeatResponse.from(concertFacade.reserveSeat(request.toCommand())));
+    public ResponseEntity<ConcertResponse.ReserveSeat> reserveSeat (@Valid @RequestBody ConcertRequest.ReserveSeat request) {
+        return ResponseEntity.status(HttpStatus.OK).body(ConcertResponse.ReserveSeat.from(concertFacade.reserveSeat(request.toCommand())));
     }
 }

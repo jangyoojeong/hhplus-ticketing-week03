@@ -53,21 +53,21 @@ public class ConcertControllerUnitTest {
 
         Page<Concert> concerts = new PageImpl<>(concertList, PageRequest.of(0, 20), concertList.size());
 
-        List<ConcertResult.GetConcertListResult> result = concerts.stream()
-                .map(ConcertResult.GetConcertListResult::from)
+        List<ConcertResult.GetConcertList> result = concerts.stream()
+                .map(ConcertResult.GetConcertList::from)
                 .collect(Collectors.toList());
 
-        Page<ConcertResult.GetConcertListResult> resultPage = new PageImpl<>(result, PageRequest.of(0, 20), result.size());
+        Page<ConcertResult.GetConcertList> resultPage = new PageImpl<>(result, PageRequest.of(0, 20), result.size());
 
-        List<ConcertResponse.GetConcertListResponse> response = resultPage.stream()
-                .map(ConcertResponse.GetConcertListResponse::from)
+        List<ConcertResponse.GetConcertList> response = resultPage.stream()
+                .map(ConcertResponse.GetConcertList::from)
                 .collect(Collectors.toList());
-        Page<ConcertResponse.GetConcertListResponse> responsePage = new PageImpl<>(response, PageRequest.of(0, 20), response.size());
+        Page<ConcertResponse.GetConcertList> responsePage = new PageImpl<>(response, PageRequest.of(0, 20), response.size());
 
         given(concertFacade.getConcertList(PageRequest.of(0, 20))).willReturn(resultPage);
 
         // When
-        ResponseEntity<Page<ConcertResponse.GetConcertListResponse>> responseEntity = concertController.getConcertList(PageRequest.of(0, 20));
+        ResponseEntity<Page<ConcertResponse.GetConcertList>> responseEntity = concertController.getConcertList(PageRequest.of(0, 20));
 
         // Then
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
@@ -79,14 +79,14 @@ public class ConcertControllerUnitTest {
     void saveConcertTest_콘서트_등록_컨트롤러_테스트_예상_리턴_확인 () throws Exception {
         // Given
         String concertName = "콘서트1";
-        ConcertRequest.SaveConcertRequest request = new ConcertRequest.SaveConcertRequest(concertName);
-        ConcertResult.SaveConcertResult result = new ConcertResult.SaveConcertResult(1L, concertName);
-        ConcertResponse.SaveConcertResponse response = ConcertResponse.SaveConcertResponse.from(result);
+        ConcertRequest.SaveConcert request = new ConcertRequest.SaveConcert(concertName);
+        ConcertResult.SaveConcert result = new ConcertResult.SaveConcert(1L, concertName);
+        ConcertResponse.SaveConcert response = ConcertResponse.SaveConcert.from(result);
 
-        given(concertFacade.saveConcert(any(ConcertCommand.SaveConcertCommand.class))).willReturn(result);
+        given(concertFacade.saveConcert(any(ConcertCommand.SaveConcert.class))).willReturn(result);
 
         // When
-        ResponseEntity<ConcertResponse.SaveConcertResponse> responseEntity = concertController.saveConcert(request);
+        ResponseEntity<ConcertResponse.SaveConcert> responseEntity = concertController.saveConcert(request);
 
         // Then
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
@@ -104,13 +104,13 @@ public class ConcertControllerUnitTest {
                 new ConcertOption(2L, concertId, LocalDateTime.now().plusDays(13), 50)
         );
 
-        ConcertResult.GetAvailableDatesResult result = ConcertResult.GetAvailableDatesResult.from(concertOptions);
-        ConcertResponse.GetAvailableDatesResponse response = ConcertResponse.GetAvailableDatesResponse.from(result);
+        ConcertResult.GetAvailableDates result = ConcertResult.GetAvailableDates.from(concertOptions);
+        ConcertResponse.GetAvailableDates response = ConcertResponse.GetAvailableDates.from(result);
 
         given(concertFacade.getAvailableDates(concertId)).willReturn(result);
 
         // When
-        ResponseEntity<ConcertResponse.GetAvailableDatesResponse> responseEntity = concertController.getAvailableDates(concertId);
+        ResponseEntity<ConcertResponse.GetAvailableDates> responseEntity = concertController.getAvailableDates(concertId);
 
         // Then
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
@@ -125,14 +125,14 @@ public class ConcertControllerUnitTest {
         LocalDateTime concertAt = LocalDateTime.now().plusDays(1);
         int capacity = 50;
 
-        ConcertRequest.SaveConcertOptionRequest request = new ConcertRequest.SaveConcertOptionRequest(concertId, concertAt, capacity);
-        ConcertResult.SaveConcertOptionResult result = new ConcertResult.SaveConcertOptionResult(concertId, concertAt, capacity);
-        ConcertResponse.SaveConcertOptionResponse response = ConcertResponse.SaveConcertOptionResponse.from(result);
+        ConcertRequest.SaveConcertOption request = new ConcertRequest.SaveConcertOption(concertId, concertAt, capacity);
+        ConcertResult.SaveConcertOption result = new ConcertResult.SaveConcertOption(concertId, concertAt, capacity);
+        ConcertResponse.SaveConcertOption response = ConcertResponse.SaveConcertOption.from(result);
 
-        given(concertFacade.saveConcertOption(any(ConcertCommand.SaveConcertOptionCommand.class))).willReturn(result);
+        given(concertFacade.saveConcertOption(any(ConcertCommand.SaveConcertOption.class))).willReturn(result);
 
         // When
-        ResponseEntity<ConcertResponse.SaveConcertOptionResponse> responseEntity = concertController.saveConcertOption(request);
+        ResponseEntity<ConcertResponse.SaveConcertOption> responseEntity = concertController.saveConcertOption(request);
 
         // Then
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
@@ -163,13 +163,13 @@ public class ConcertControllerUnitTest {
                         .build()
         );
 
-        ConcertResult.GetAvailableSeatsResult result = ConcertResult.GetAvailableSeatsResult.from(seats);
-        ConcertResponse.GetAvailableSeatsResponse response = ConcertResponse.GetAvailableSeatsResponse.from(result);
+        ConcertResult.GetAvailableSeats result = ConcertResult.GetAvailableSeats.from(seats);
+        ConcertResponse.GetAvailableSeats response = ConcertResponse.GetAvailableSeats.from(result);
 
         given(concertFacade.getAvailableSeats(concertOptionId)).willReturn(result);
 
         // When
-        ResponseEntity<ConcertResponse.GetAvailableSeatsResponse> responseEntity = concertController.getAvailableSeats(concertOptionId);
+        ResponseEntity<ConcertResponse.GetAvailableSeats> responseEntity = concertController.getAvailableSeats(concertOptionId);
 
         // Then
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
@@ -181,14 +181,14 @@ public class ConcertControllerUnitTest {
     void reserveSeatTest_좌석_예약_컨트롤러_테스트_예상_리턴_확인 () throws Exception {
         // Given
         Long concertSeatId = 1L;
-        ConcertRequest.ReserveSeatRequest request = new ConcertRequest.ReserveSeatRequest(userId, concertSeatId);
-        ConcertResult.ReserveSeatResult result = new ConcertResult.ReserveSeatResult(1L, userId, concertSeatId);
-        ConcertResponse.ReserveSeatResponse response = ConcertResponse.ReserveSeatResponse.from(result);
+        ConcertRequest.ReserveSeat request = new ConcertRequest.ReserveSeat(userId, concertSeatId);
+        ConcertResult.ReserveSeat result = new ConcertResult.ReserveSeat(1L, userId, concertSeatId);
+        ConcertResponse.ReserveSeat response = ConcertResponse.ReserveSeat.from(result);
 
-        given(concertFacade.reserveSeat(any(ConcertCommand.ReserveSeatCommand.class))).willReturn(result);
+        given(concertFacade.reserveSeat(any(ConcertCommand.ReserveSeat.class))).willReturn(result);
 
         // When
-        ResponseEntity<ConcertResponse.ReserveSeatResponse> responseEntity = concertController.reserveSeat(request);
+        ResponseEntity<ConcertResponse.ReserveSeat> responseEntity = concertController.reserveSeat(request);
 
         // Then
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());

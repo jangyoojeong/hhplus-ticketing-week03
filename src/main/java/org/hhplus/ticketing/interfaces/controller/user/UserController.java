@@ -27,8 +27,8 @@ public class UserController {
      */
     @PutMapping("/points/charge")
     @Operation(summary = "잔액 충전 API", description = "사용자의 잔액을 충전합니다.")
-    public ResponseEntity<UserResponse.ChargePointResponse> addUserPoint(@Valid @RequestBody UserRequest.ChargePointRequest request) {
-        return ResponseEntity.status(HttpStatus.OK).body(UserResponse.ChargePointResponse.from(userFacade.chargePoint(request.toCommand())));
+    public ResponseEntity<UserResponse.ChargePoint> addUserPoint(@Valid @RequestBody UserRequest.ChargePoint request) {
+        return ResponseEntity.status(HttpStatus.OK).body(UserResponse.ChargePoint.from(userFacade.chargePoint(request.toCommand())));
     }
 
     /**
@@ -39,7 +39,7 @@ public class UserController {
      */
     @GetMapping("/{userId}/points")
     @Operation(summary = "잔액 조회 API", description = "사용자의 잔액을 조회합니다.")
-    public ResponseEntity<UserResponse.UserPointResponse> getUserPoint (@PathVariable Long userId) {
-        return ResponseEntity.status(HttpStatus.OK).body(UserResponse.UserPointResponse.from(userFacade.getPointResult(userId)));
+    public ResponseEntity<UserResponse.UserPoint> getUserPoint (@PathVariable Long userId) {
+        return ResponseEntity.status(HttpStatus.OK).body(UserResponse.UserPoint.from(userFacade.getPointResult(userId)));
     }
 }

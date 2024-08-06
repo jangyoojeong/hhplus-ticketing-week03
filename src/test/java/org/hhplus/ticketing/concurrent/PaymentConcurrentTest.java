@@ -113,7 +113,7 @@ public class PaymentConcurrentTest {
                 .userId(userId)
                 .point(oldPoint)
                 .build();
-        userPointService.chargePoint(new UserCommand.ChargePointCommand(savedUserPoint.getUserId(), savedUserPoint.getPoint()));
+        userPointService.chargePoint(new UserCommand.ChargePoint(savedUserPoint.getUserId(), savedUserPoint.getPoint()));
     }
 
     @Test
@@ -121,7 +121,7 @@ public class PaymentConcurrentTest {
     void concurrentRequestPaymentTest_결제_요청_동시성_테스트_결제_요청을_따닥_클릭시_하나를_제외하고_실패해야한다22()  {
         // Given
         // 결제 요청 command 객체 생성
-        PaymentCommand.RequestPaymentCommand command = new PaymentCommand.RequestPaymentCommand(userId, reservationId, price);
+        PaymentCommand.Pay command = new PaymentCommand.Pay(userId, reservationId, price);
 
         // 10개의 스레드를 통해 동시에 요청 시도
         int numberOfThreads = 10;
@@ -140,7 +140,7 @@ public class PaymentConcurrentTest {
                 Instant start = Instant.now();
                 log.info("{} - 시작 시간 : {}", currentThreadNm, start);
                 try {
-                    paymentFacade.requestPayment(token, command);
+                    paymentFacade.pay(token, command);
                     return null;
                 } catch (Exception e) {
                     log.error("{} - 예외 발생 : {}", currentThreadNm, e.getMessage());

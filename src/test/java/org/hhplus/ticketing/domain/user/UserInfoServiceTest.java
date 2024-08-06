@@ -47,7 +47,7 @@ class UserInfoServiceTest {
         given(userInfoRepository.getUser(anyLong())).willReturn(Optional.of(userInfoDomain));
 
         // When
-        UserResult.UserInfoResult result = userInfoService.validateUser(userInfoDomain.getUserId());
+        UserResult.GetUser result = userInfoService.validateUser(userInfoDomain.getUserId());
 
         // Then
         assertNotNull(result);

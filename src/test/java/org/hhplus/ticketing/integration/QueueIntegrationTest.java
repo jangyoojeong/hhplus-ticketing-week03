@@ -4,6 +4,7 @@ import org.hhplus.ticketing.application.queue.QueueFacade;
 import org.hhplus.ticketing.domain.common.exception.CustomException;
 import org.hhplus.ticketing.domain.common.exception.ErrorCode;
 import org.hhplus.ticketing.domain.queue.QueueRepository;
+import org.hhplus.ticketing.domain.queue.QueueService;
 import org.hhplus.ticketing.domain.queue.model.Queue;
 import org.hhplus.ticketing.domain.queue.model.QueueCommand;
 import org.hhplus.ticketing.domain.queue.model.QueueResult;
@@ -34,6 +35,8 @@ public class QueueIntegrationTest {
     @Autowired
     private QueueFacade queueFacade;
     @Autowired
+    private QueueService queueService;
+    @Autowired
     private QueueRepository queueRepository;
     @Autowired
     TestDataInitializer testDataInitializer;
@@ -60,8 +63,8 @@ public class QueueIntegrationTest {
     }
 
     @Test
-    @DisplayName("🟢 토큰_발급_통합_테스트_바로_입장_가능할경우_ACTIVE_토큰이_발급되고_대기순번_null을_리턴한다")
-    void issueTokenTest_토큰_발급_통합_테스트_바로_입장_가능할경우_ACTIVE_토큰이_발급되고_대기순번_null을_리턴한다() {
+    @DisplayName("🟢 토큰_발급_통합_테스트_발급된_발급된_토큰을_리턴한다")
+    void issueTokenTest_토큰_발급_통합_테스트_발급된_발급된_토큰을_리턴한다() {
         // Given
         QueueCommand.IssueToken command = new QueueCommand.IssueToken(userId);
 
@@ -70,8 +73,6 @@ public class QueueIntegrationTest {
 
         // Then
         assertNotNull(actualResult);
-        assertNull(actualResult.getPosition());
-        assertEquals(actualResult.getStatus(), Queue.Status.ACTIVE);
     }
 
     @Test
@@ -88,8 +89,8 @@ public class QueueIntegrationTest {
     }
 
     @Test
-    @DisplayName("🟢 대기열_상태_조회_통합_테스트_첫번째_발급된_활성화_토큰_순서는_0L을_리턴한다.")
-    void getQueueStatusTest_대기열_상태_조회_통합_테스트_첫번째_발급된_활성화_토큰_순서는_0L을_리턴한다() {
+    @DisplayName("🟢 대기열_상태_조회_통합_테스트_첫번째_발급된_토큰_순서는_1L을_리턴한다.")
+    void getQueueStatusTest_대기열_상태_조회_통합_테스트_첫번째_발급된_토큰_순서는_1L을_리턴한다() {
         // Given
         QueueResult.IssueToken tokenResult = queueFacade.issueToken(new QueueCommand.IssueToken(userId));
         String issuedToken = tokenResult.getToken();
@@ -98,7 +99,7 @@ public class QueueIntegrationTest {
         QueueResult.QueueStatus actualResult = queueFacade.getQueueStatus(issuedToken);
 
         // Then
-        assertEquals(0, actualResult.getPosition());
+        assertEquals(1, actualResult.getPosition());
     }
 
     @Test
@@ -134,6 +135,39 @@ public class QueueIntegrationTest {
 
         // When & Then
         assertThatThrownBy(() -> queueFacade.validateToken(token))
+                .isInstanceOf(CustomException.class)
+                .extracting("errorCode")
+                .isEqualTo(ErrorCode.INVALID_TOKEN);
+    }
+
+    @Test
+    @DisplayName("🔴 토큰_만료_테스트_토큰이_정상적으로_만료되어_토큰검증시_INVALID_TOKEN_예외반환")
+    void expireTokenTest_토큰_만료_테스트_토큰이_정상적으로_만료되어_토큰검증시_INVALID_TOKEN_예외반환() {
+        // Given
+        Queue queue = Queue.create();
+        String token = queue.getToken();
+        queueRepository.addActive(queue);
+
+        // When
+        queueService.expireToken(token);
+
+        // When & Then
+        assertThatThrownBy(() -> queueFacade.validateToken(token))
+                .isInstanceOf(CustomException.class)
+                .extracting("errorCode")
+                .isEqualTo(ErrorCode.INVALID_TOKEN);
+    }
+
+    @Test
+    @DisplayName("🔴 토큰_만료_테스트_유효하지_않은_토큰일경우_INVALID_TOKEN_예외반환")
+    void expireTokenTest_토큰_만료_테스트_유효하지_않은_토큰일경우_INVALID_TOKEN_예외반환() {
+        // Given
+        Queue queue = Queue.create();
+        String token = queue.getToken();
+        queueRepository.addWaiting(queue);
+
+        // When & Then
+        assertThatThrownBy(() -> queueService.expireToken(token))
                 .isInstanceOf(CustomException.class)
                 .extracting("errorCode")
                 .isEqualTo(ErrorCode.INVALID_TOKEN);

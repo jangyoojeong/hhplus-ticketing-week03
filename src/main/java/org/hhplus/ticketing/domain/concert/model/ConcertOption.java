@@ -30,7 +30,7 @@ public class ConcertOption {
                 .build();
     }
 
-    public static ConcertOption from(ConcertCommand.SaveConcertOptionCommand command) {
+    public static ConcertOption from(ConcertCommand.SaveConcertOption command) {
         return ConcertOption.builder()
                 .concertId(command.getConcertId())
                 .concertAt(command.getConcertAt())

@@ -14,7 +14,7 @@ public class PaymentRequest {
     @NoArgsConstructor
     @AllArgsConstructor
     @Builder
-    public static class PaymentProcessingRequest {
+    public static class Pay {
 
         @NotNull(message = "사용자 ID는 비어 있을 수 없습니다.")
         private Long userId;                    // 사용자ID
@@ -22,8 +22,8 @@ public class PaymentRequest {
         @NotNull(message = "예약 ID는 비어 있을 수 없습니다.")
         private Long reservationId;             // 예약ID
 
-        public PaymentCommand.RequestPaymentCommand toCommand() {
-            return PaymentCommand.RequestPaymentCommand.builder()
+        public PaymentCommand.Pay toCommand() {
+            return PaymentCommand.Pay.builder()
                     .userId(this.getUserId())
                     .reservationId(this.getReservationId())
                     .build();
