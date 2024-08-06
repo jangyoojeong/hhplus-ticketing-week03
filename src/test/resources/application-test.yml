@@ -3,19 +3,12 @@ spring:
     activate:
       on-profile: test
 
-  # H2 Database 설정
+  # MySQL Database 설정
   datasource:
-    driver-class-name: org.h2.Driver
-    #url: 'jdbc:h2:mem:test'   # H2 DB 연결 주소 (In-Memory Mode)
-    url: 'jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE'
-    username: sa              # H2 DB 접속 ID (사용자 지정)
-    password:                 # H2 DB 접속 PW (사용자 지정)
-
-  # H2 Console 설정
-  h2:
-    console: # H2 DB를 웹에서 관리할 수 있는 기능
-      enabled: true           # H2 Console 사용 여부
-      path: /h2-console       # H2 Console 접속 주소
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/testdb?allowPublicKeyRetrieval=true&useSSL=false&requireSSL=false # 테스트용 MySQL DB 연결 주소
+    username: testuser                          # 테스트용 MySQL DB 접속 ID
+    password: testpassword                      # 테스트용 MySQL DB 접속 PW
 
   # page 설정
   data:
@@ -26,12 +19,11 @@ spring:
 
   # JPA 설정
   jpa:
-    database-platform: org.hibernate.dialect.H2Dialect
     hibernate:
       ddl-auto: create-drop        # DB 초기화 전략 (none, create, create-drop, update, validate)
     properties:
       hibernate:
-        dialect: org.hibernate.dialect.H2Dialect
+        dialect: org.hibernate.dialect.MySQLDialect  # MySQL 방언으로 변경
         format_sql: true      # 쿼리 로그 포맷 (정렬)
         show_sql: true        # 쿼리 로그 출력
 

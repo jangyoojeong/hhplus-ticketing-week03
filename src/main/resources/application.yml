@@ -5,20 +5,14 @@ spring:
   profiles:
     active: default
 
-  # H2 Database 설정
+  # MySQL Database 설정
   datasource:
-    driver-class-name: org.h2.Driver
-    url: 'jdbc:h2:~/realdb'    # H2 DB 연결 주소 (Embedded Mode)
-    username: sa              # H2 DB 접속 ID (사용자 지정)
-    password:                 # H2 DB 접속 PW (사용자 지정)
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/realdb?allowPublicKeyRetrieval=true&useSSL=false&requireSSL=false # MySQL DB 연결 주소
+    username: myuser                          # MySQL DB 접속 ID
+    password: mypassword                      # MySQL DB 접속 PW
 
-  # H2 Console 설정
-  h2:
-    console: # H2 DB를 웹에서 관리할 수 있는 기능
-      enabled: true           # H2 Console 사용 여부
-      path: /h2-console       # H2 Console 접속 주소
-
-  # page 설정
+  # 페이지 설정
   data:
     web:
       pageable:
@@ -27,12 +21,12 @@ spring:
 
   # JPA 설정
   jpa:
-    database-platform: org.hibernate.dialect.H2Dialect
     hibernate:
-      ddl-auto: none        # DB 초기화 전략 (none, create, create-drop, update, validate)
+      ddl-auto: create  # DB 초기화 전략 (none, create, create-drop, update, validate)
+    open-in-view: false  # Disable open-in-view to avoid performance issues
     properties:
       hibernate:
-        dialect: org.hibernate.dialect.H2Dialect
+        dialect: org.hibernate.dialect.MySQLDialect  # MySQL 방언으로 변경
         format_sql: true      # 쿼리 로그 포맷 (정렬)
         show_sql: true        # 쿼리 로그 출력
 
