@@ -15,7 +15,7 @@ public class ConcertCommand {
     @NoArgsConstructor
     @AllArgsConstructor
     @Builder
-    public static class SaveConcertCommand {
+    public static class SaveConcert {
 
         private String concertName;                    // 콘서트 이름
 
@@ -26,7 +26,7 @@ public class ConcertCommand {
     @NoArgsConstructor
     @AllArgsConstructor
     @Builder
-    public static class SaveConcertOptionCommand {
+    public static class SaveConcertOption {
 
         private Long concertId;             // 콘서트ID
         private LocalDateTime concertAt;    // 콘서트 시간
@@ -39,7 +39,7 @@ public class ConcertCommand {
     @NoArgsConstructor
     @AllArgsConstructor
     @Builder
-    public static class ReserveSeatCommand {
+    public static class ReserveSeat {
 
         private Long userId;                    // 유저ID
         private Long concertSeatId;             // 콘서트좌석ID

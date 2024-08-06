@@ -23,16 +23,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.time.Duration;
 import java.time.Instant;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -66,12 +65,14 @@ public class PaymentConcurrentTest {
     private PaymentRepository paymentRepository;
     @Autowired
     TestDataInitializer testDataInitializer;
+    @Autowired
+    private RedisTemplate<String, String> redisTemplate;
 
     private List<UserInfo> savedusers;
     private List<ConcertSeat> savedconcertSeats;
     private UserPoint savedUserPoint;
 
-    private UUID token;
+    private String token;
     private Long userId;
     private Long concertSeatId;
     private Long reservationId;
@@ -79,6 +80,9 @@ public class PaymentConcurrentTest {
 
     @BeforeEach
     void setUp() {
+        // 모든 키 삭제
+        redisTemplate.getConnectionFactory().getConnection().flushDb();
+
         testDataInitializer.initializeTestData();
 
         // initializer 로 적재된 초기 데이터 세팅
@@ -90,15 +94,9 @@ public class PaymentConcurrentTest {
         price = savedconcertSeats.get(0).getPrice();
 
         // 초기 활성화 토큰 적재
-        Queue queue = Queue.builder()
-                .userId(userId)
-                .token(UUID.randomUUID())
-                .status(Queue.Status.ACTIVE)
-                .enteredAt(LocalDateTime.now())
-                .createAt(LocalDateTime.now())
-                .build();
-        Queue savedQueue = queueRepository.save(queue);
-        token = savedQueue.getToken();
+        Queue queue = Queue.create();
+        token = queue.getToken();
+        queueRepository.addActive(queue);
 
         // 적재된 좌석 중 하나 예약상태로 저장
         ConcertSeat seat = savedconcertSeats.get(0);
@@ -115,7 +113,7 @@ public class PaymentConcurrentTest {
                 .userId(userId)
                 .point(oldPoint)
                 .build();
-        userPointService.chargePoint(new UserCommand.ChargePointCommand(savedUserPoint.getUserId(), savedUserPoint.getPoint()));
+        userPointService.chargePoint(new UserCommand.ChargePoint(savedUserPoint.getUserId(), savedUserPoint.getPoint()));
     }
 
     @Test
@@ -123,7 +121,7 @@ public class PaymentConcurrentTest {
     void concurrentRequestPaymentTest_결제_요청_동시성_테스트_결제_요청을_따닥_클릭시_하나를_제외하고_실패해야한다22()  {
         // Given
         // 결제 요청 command 객체 생성
-        PaymentCommand.RequestPaymentCommand command = new PaymentCommand.RequestPaymentCommand(userId, reservationId, price);
+        PaymentCommand.Pay command = new PaymentCommand.Pay(userId, reservationId, price);
 
         // 10개의 스레드를 통해 동시에 요청 시도
         int numberOfThreads = 10;
@@ -142,7 +140,7 @@ public class PaymentConcurrentTest {
                 Instant start = Instant.now();
                 log.info("{} - 시작 시간 : {}", currentThreadNm, start);
                 try {
-                    paymentFacade.requestPayment(token, command);
+                    paymentFacade.pay(token, command);
                     return null;
                 } catch (Exception e) {
                     log.error("{} - 예외 발생 : {}", currentThreadNm, e.getMessage());

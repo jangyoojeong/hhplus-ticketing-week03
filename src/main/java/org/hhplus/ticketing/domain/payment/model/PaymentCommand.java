@@ -12,7 +12,7 @@ public class PaymentCommand {
     @NoArgsConstructor
     @AllArgsConstructor
     @Builder
-    public static class RequestPaymentCommand {
+    public static class Pay {
 
         private Long userId;                    // 사용자ID
         private Long reservationId;             // 예약ID

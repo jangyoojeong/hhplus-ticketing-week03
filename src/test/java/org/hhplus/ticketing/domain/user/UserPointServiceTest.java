@@ -50,7 +50,7 @@ class UserPointServiceTest {
     void addUserPointTest_잔액_충전_테스트_기존_50000포인트에_20000포인트_충전_시_70000포인트를_반환한다() {
         // Given
         int addAmount = 20000;
-        UserCommand.ChargePointCommand command = new UserCommand.ChargePointCommand(userId, addAmount);
+        UserCommand.ChargePoint command = new UserCommand.ChargePoint(userId, addAmount);
 
         given(userPointRepository.getUserPoint(anyLong())).willReturn(Optional.ofNullable(userPoint));
         given(userPointRepository.save(any(UserPoint.class))).willAnswer(invocation -> {
@@ -60,7 +60,7 @@ class UserPointServiceTest {
         });
 
         // When
-        UserResult.ChargePointResult result = userPointService.chargePoint(command);
+        UserResult.ChargePoint result = userPointService.chargePoint(command);
 
         // Then
         assertNotNull(result);
@@ -74,7 +74,7 @@ class UserPointServiceTest {
     void useUserPointTest_잔액_충전_테스트_기존_50000포인트에_20000포인트_차감_시_30000포인트를_반환한다() {
         // Given
         int useAmount = 20000;
-        UserCommand.UsePointCommand command = new UserCommand.UsePointCommand(userId, useAmount);
+        UserCommand.UsePoint command = new UserCommand.UsePoint(userId, useAmount);
 
         given(userPointRepository.getUserPoint(anyLong())).willReturn(Optional.ofNullable(userPoint));
         given(userPointRepository.save(any(UserPoint.class))).willAnswer(invocation -> {
@@ -84,7 +84,7 @@ class UserPointServiceTest {
         });
 
         // When
-        UserResult.UsePointResult result = userPointService.usePoint(command);
+        UserResult.UsePoint result = userPointService.usePoint(command);
 
         // Then
         assertNotNull(result);
@@ -98,7 +98,7 @@ class UserPointServiceTest {
     void useUserPointTest_잔액_부족_테스트_기존_50000포인트에_200000포인트_차감_시_INSUFFICIENT_POINTS_예외반환() {
         // Given
         int useAmount = 200000;
-        UserCommand.UsePointCommand command = new UserCommand.UsePointCommand(userId, useAmount);
+        UserCommand.UsePoint command = new UserCommand.UsePoint(userId, useAmount);
 
         given(userPointRepository.getUserPoint(anyLong())).willReturn(Optional.ofNullable(userPoint));
 
@@ -116,7 +116,7 @@ class UserPointServiceTest {
         given(userPointRepository.getUserPoint(anyLong())).willReturn(Optional.ofNullable(userPoint));
 
         // When
-        UserResult.UserPointResult result = userPointService.getPointResult(userId);
+        UserResult.GetPoint result = userPointService.getPointResult(userId);
 
         // Then
         assertNotNull(result);

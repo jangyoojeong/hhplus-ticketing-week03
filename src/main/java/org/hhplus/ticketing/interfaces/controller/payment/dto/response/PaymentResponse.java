@@ -14,14 +14,14 @@ public class PaymentResponse {
     @NoArgsConstructor
     @AllArgsConstructor
     @Builder
-    public static class PaymentProcessingResponse {
+    public static class Pay {
 
         private Long paymentId;                 // 결제ID
         private Long userId;                    // 사용자ID
         private int point;                      // 포인트 (결제 후 포인트)
 
-        public static PaymentResponse.PaymentProcessingResponse from(PaymentResult.RequestPaymentResult result) {
-            return PaymentProcessingResponse.builder()
+        public static Pay from(PaymentResult.Pay result) {
+            return Pay.builder()
                     .paymentId(result.getPaymentId())
                     .userId(result.getUserId())
                     .point(result.getPoint())

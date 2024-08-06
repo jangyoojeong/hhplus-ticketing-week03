@@ -31,45 +31,43 @@ public class QueueControllerUnitTest {
     private QueueFacade queueFacade;
 
     private Long userId;
-    private UUID token;
+    private String token;
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
         userId = 1L;
-        token = UUID.randomUUID();
+        token = UUID.randomUUID().toString();
     }
 
     @Test
     @DisplayName("🟢 대기열_토큰_발급_컨트롤러_테스트_헤더_토큰정보_리턴_확인")
     void issueTokenTest_대기열_토큰_발급_컨트롤러_테스트_헤더_토큰정보_리턴_확인 () throws Exception {
         // Given
-        QueueRequest.IssueTokenRequest request = new QueueRequest.IssueTokenRequest(userId);
-        QueueResult.IssueTokenResult result = new QueueResult.IssueTokenResult(userId, token);
-        QueueResponse.IssueTokenResponse response = QueueResponse.IssueTokenResponse.from(result);
+        QueueRequest.IssueToken request = new QueueRequest.IssueToken(userId);
+        QueueResult.IssueToken result = new QueueResult.IssueToken(token);
 
-        given(queueFacade.issueToken(any(QueueCommand.IssueTokenCommand.class))).willReturn(result);
+        given(queueFacade.issueToken(any(QueueCommand.IssueToken.class))).willReturn(result);
 
         // When
-        ResponseEntity<QueueResponse.IssueTokenResponse> responseEntity = queueController.issueToken(request);
+        ResponseEntity<Void> responseEntity = queueController.issueToken(request);
 
         // Then
         assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode());
-        assertEquals(response, responseEntity.getBody());
-        assertEquals("Bearer " + token.toString(), responseEntity.getHeaders().getFirst(HttpHeaders.AUTHORIZATION));
+        assertEquals("Bearer " + token, responseEntity.getHeaders().getFirst(HttpHeaders.AUTHORIZATION));
     }
 
     @Test
     @DisplayName("🟢 대기열_확인_컨트롤러_테스트_예상_리턴_데이터_확인")
     void getQueueStatusTest_대기열_확인_컨트롤러_테스트_예상_리턴_데이터_확인 () throws Exception {
         // Given
-        QueueResult.QueueStatusResult result = new QueueResult.QueueStatusResult(userId, token, 0L, Queue.Status.ACTIVE);
-        QueueResponse.QueueStatusResponse response = QueueResponse.QueueStatusResponse.from(result);
+        QueueResult.QueueStatus result = new QueueResult.QueueStatus(0L, null);
+        QueueResponse.QueueStatus response = QueueResponse.QueueStatus.from(result);
 
-        given(queueFacade.getQueueStatus(any(UUID.class))).willReturn(result);
+        given(queueFacade.getQueueStatus(any(String.class))).willReturn(result);
 
         // When
-        ResponseEntity<QueueResponse.QueueStatusResponse> responseEntity = queueController.getQueueStatus("Bearer " + token.toString());
+        ResponseEntity<QueueResponse.QueueStatus> responseEntity = queueController.getQueueStatus("Bearer " + token);
 
         // Then
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());

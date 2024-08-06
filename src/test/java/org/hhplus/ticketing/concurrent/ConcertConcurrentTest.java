@@ -56,7 +56,7 @@ public class ConcertConcurrentTest {
         Long concertSeatId1 = 1L;
 
         // 좌석 예약 요청 command 객체 생성
-        ConcertCommand.ReserveSeatCommand command = new ConcertCommand.ReserveSeatCommand(userId, concertSeatId1);
+        ConcertCommand.ReserveSeat command = new ConcertCommand.ReserveSeat(userId, concertSeatId1);
 
         // 10개의 스레드를 통해 동시에 좌석 예약 시도
         int numberOfThreads = 10;

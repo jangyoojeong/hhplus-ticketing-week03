@@ -15,24 +15,21 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
 @ActiveProfiles("test")
@@ -46,6 +43,8 @@ public class ConcertIntegrationTest {
     private ConcertRepository concertRepository;
     @Autowired
     TestDataInitializer testDataInitializer;
+    @Autowired
+    private RedisTemplate<String, String> redisTemplate;
 
     private List<UserInfo> savedusers;
     private Concert savedConcert;
@@ -61,6 +60,9 @@ public class ConcertIntegrationTest {
 
     @BeforeEach
     void setUp() {
+        // 모든 키 삭제
+        redisTemplate.getConnectionFactory().getConnection().flushDb();
+
         testDataInitializer.initializeTestData();
 
         // initializer 로 적재된 초기 데이터 세팅
@@ -113,19 +115,100 @@ public class ConcertIntegrationTest {
                 new Concert(1L, "콘서트1")
         );
 
-        Page<Concert> concerts = new PageImpl<>(concertList, PageRequest.of(0, 20), concertList.size());
+        Pageable pageable = PageRequest.of(0, 20);
 
-        List<ConcertResult.GetConcertListResult> result = concerts.stream()
-                .map(ConcertResult.GetConcertListResult::from)
+        Page<Concert> concerts = new PageImpl<>(concertList, pageable, concertList.size());
+
+        List<ConcertResult.GetConcertList> result = concerts.stream()
+                .map(ConcertResult.GetConcertList::from)
                 .collect(Collectors.toList());
-        Page<ConcertResult.GetConcertListResult> expectedResult = new PageImpl<>(result, PageRequest.of(0, 20), result.size());
+        Page<ConcertResult.GetConcertList> expectedResult = new PageImpl<>(result, pageable, result.size());
 
         // When
-        Page<ConcertResult.GetConcertListResult> actualResult = concertFacade.getConcertList(PageRequest.of(0, 20));
+        Page<ConcertResult.GetConcertList> actualResult = concertFacade.getConcertList(pageable);
 
         // Then
         assertNotNull(actualResult);
         assertThat(actualResult.getContent()).isEqualTo(expectedResult.getContent());
+    }
+
+    @Test
+    @DisplayName("🟢 콘서트_등록_테스트_저장후_저장된_콘서트_정보가_리턴된다")
+    void saveConcertTest_콘서트_등록_테스트_저장후_저장된_콘서트_정보가_리턴된다() {
+
+        // Given
+        String concertName = "콘서트1";
+
+        // When
+        ConcertResult.SaveConcert retult = concertFacade.saveConcert(new ConcertCommand.SaveConcert("콘서트1"));
+
+        assertThat(retult.getConcertName()).isEqualTo(concertName);
+    }
+
+    @Test
+    @DisplayName("🟢 콘서트_목록_조회_테스트_두번째_조회시에는_캐시에_있는_데이터를_참조한다")
+    public void getConcertListTest_콘서트_목록_조회_테스트_두번째_조회시에는_캐시에_있는_데이터를_참조한다() {
+
+        // Given
+        Pageable pageable = PageRequest.of(0, 20);
+
+        // When
+        // 첫 번째 호출
+        Page<ConcertResult.GetConcertList> firstCall = concertFacade.getConcertList(pageable);
+        assertThat(firstCall).isNotNull();
+
+        // 캐시 생성 확인
+        String cacheKey = "concertCache::" + 0;
+        assertThat(redisTemplate.hasKey(cacheKey)).isTrue();
+
+        // 두 번째 호출 (캐시 적용 확인)
+        Page<ConcertResult.GetConcertList> secondCall = concertFacade.getConcertList(pageable);
+        assertThat(secondCall).isNotNull();
+
+        // 캐시 TTL 확인
+        Long ttl = redisTemplate.getExpire(cacheKey, TimeUnit.SECONDS);
+        assertThat(ttl).isGreaterThan(0);
+    }
+
+    @Test
+    @DisplayName("🟢 콘서트_옵션_등록_테스트_저장후_저장된_콘서트_옵션_정보가_리턴된다")
+    void saveConcertOptionTest_콘서트_옵션_등록_테스트_저장후_저장된_콘서트_옵션_정보가_리턴된다() {
+
+        // Given
+        Long concertId = 1L;
+        LocalDateTime concertAt = LocalDateTime.now().plusDays(1);
+        int capacity = 50;
+
+        ConcertCommand.SaveConcertOption command = new ConcertCommand.SaveConcertOption(concertId, concertAt, capacity);
+
+        // When
+        ConcertResult.SaveConcertOption retult = concertFacade.saveConcertOption(command);
+
+        assertThat(retult.getConcertId()).isEqualTo(concertId);
+        assertThat(retult.getConcertAt()).isEqualTo(concertAt);
+        assertThat(retult.getCapacity()).isEqualTo(capacity);
+    }
+
+    @Test
+    @DisplayName("🟢 예약_가능한_날짜_조회_테스트_두번째_조회시에는_캐시에_있는_데이터를_참조한다")
+    public void getDatesForReservationTest_예약_가능한_날짜_조회_테스트_두번째_조회시에는_캐시에_있는_데이터를_참조한다() {
+
+        // When
+        // 첫 번째 호출
+        ConcertResult.GetAvailableDates firstCall = concertFacade.getAvailableDates(concertId);
+        assertThat(firstCall).isNotNull();
+
+        // 캐시 생성 확인
+        String cacheKey = "concertOptionCache::" + concertId;
+        assertThat(redisTemplate.hasKey(cacheKey)).isTrue();
+
+        // When 두 번째 호출 (캐시 적용 확인)
+        ConcertResult.GetAvailableDates secondCall = concertFacade.getAvailableDates(concertId);
+        assertThat(secondCall).isNotNull();
+
+        // 캐시 TTL 확인
+        Long ttl = redisTemplate.getExpire(cacheKey, TimeUnit.SECONDS);
+        assertThat(ttl).isGreaterThan(0);
     }
 
     @Test
@@ -139,10 +222,10 @@ public class ConcertIntegrationTest {
                 .filter(option -> option.getConcertAt().isAfter(LocalDateTime.now())) // 현재 날짜 이후 필터링
                 .collect(Collectors.toList());
 
-        ConcertResult.GetAvailableDatesResult expectedResult = ConcertResult.GetAvailableDatesResult.from(availableConcertDates);
+        ConcertResult.GetAvailableDates expectedResult = ConcertResult.GetAvailableDates.from(availableConcertDates);
 
         // When
-        ConcertResult.GetAvailableDatesResult actualResult = concertFacade.getAvailableDates(concertId);
+        ConcertResult.GetAvailableDates actualResult = concertFacade.getAvailableDates(concertId);
 
         // Then
         assertNotNull(actualResult);
@@ -160,10 +243,10 @@ public class ConcertIntegrationTest {
                 .filter(seat -> seat.getStatus() == ConcertSeat.Status.AVAILABLE)
                 .collect(Collectors.toList());
 
-        ConcertResult.GetAvailableSeatsResult expectedResult = ConcertResult.GetAvailableSeatsResult.from(availableConcertSeats);
+        ConcertResult.GetAvailableSeats expectedResult = ConcertResult.GetAvailableSeats.from(availableConcertSeats);
 
         // When
-        ConcertResult.GetAvailableSeatsResult actualResult = concertFacade.getAvailableSeats(concertOptionId);
+        ConcertResult.GetAvailableSeats actualResult = concertFacade.getAvailableSeats(concertOptionId);
 
         // Then
         assertNotNull(actualResult);
@@ -174,10 +257,10 @@ public class ConcertIntegrationTest {
     @DisplayName("🟢 좌석_예약_테스트_좌석_예약_성공시_예약된_정보가_반환된다")
     void reserveSeatTest_좌석_예약_테스트_좌석_예약_성공시_예약된_정보가_반환된다() {
         // Given
-        ConcertCommand.ReserveSeatCommand command = new ConcertCommand.ReserveSeatCommand(userId, concertSeatId1);
+        ConcertCommand.ReserveSeat command = new ConcertCommand.ReserveSeat(userId, concertSeatId1);
 
         // When
-        ConcertResult.ReserveSeatResult actualResult = concertFacade.reserveSeat(command);
+        ConcertResult.ReserveSeat actualResult = concertFacade.reserveSeat(command);
 
         // Then
         List<Reservation> userReservations = concertRepository.findByUserId(userId);
@@ -191,7 +274,7 @@ public class ConcertIntegrationTest {
     @DisplayName("🔴 좌석_예약_테스트_해당_좌석이_예약가능한_상태가_아닐_경우_SEAT_NOT_FOUND_예외반환")
     void reserveSeatTest_좌석_예약_테스트_해당_좌석이_예약가능한_상태가_아닐_경우_SEAT_NOT_FOUND_예외반환() {
         // Given
-        ConcertCommand.ReserveSeatCommand command = new ConcertCommand.ReserveSeatCommand(userId, concertSeatId1);
+        ConcertCommand.ReserveSeat command = new ConcertCommand.ReserveSeat(userId, concertSeatId1);
 
         // 좌석을 미리 예약
         concertFacade.reserveSeat(command);
@@ -201,53 +284,6 @@ public class ConcertIntegrationTest {
                 .isInstanceOf(CustomException.class)
                 .extracting("errorCode")
                 .isEqualTo(ErrorCode.SEAT_NOT_FOUND_OR_ALREADY_RESERVED);
-    }
-
-    @Test
-    @DisplayName("🔴 좌석_예약_테스트_여러_스레드에서_동시에_좌석_예약시_하나를_제외하고_전부_실패해야한다")
-    void concurrentReserveSeatTest_좌석_예약_테스트_여러_스레드에서_동시에_좌석_예약시_하나를_제외하고_전부_실패해야한다() throws InterruptedException, ExecutionException {
-
-        // Given
-        Long userId = 50L;
-
-        // 좌석 예약 요청 command 객체 생성
-        ConcertCommand.ReserveSeatCommand command = new ConcertCommand.ReserveSeatCommand(userId, concertSeatId1);
-
-        // 10개의 스레드를 통해 동시에 좌석 예약 시도
-        int numberOfThreads = 10;
-        ExecutorService executorService = Executors.newFixedThreadPool(numberOfThreads);
-        List<Future<Exception>> futures = new ArrayList<>();
-
-        // When
-        // 각 스레드에서 좌석 예약 시도
-        for (int i = 0; i < numberOfThreads; i++) {
-            futures.add(executorService.submit(() -> {
-                try {
-                    concertFacade.reserveSeat(command);
-                    return null;
-                } catch (Exception e) {
-                    return e;
-                }
-            }));
-        }
-
-        // Then
-        // 예외 결과 확인
-        List<Exception> exceptions = new ArrayList<>();
-        for (Future<Exception> future : futures) {
-            Exception e = future.get();
-            if (e != null) {
-                exceptions.add(e);
-            }
-        }
-
-        // 예약 성공 결과 확인 (단 하나의 예약만 성공했는지 확인)
-        List<Reservation> userReservations = concertRepository.findByUserId(userId);
-        assertThat(userReservations).hasSize(1);
-
-        // 예외 발생 스레드 개수 체크 (단 하나의 스레드만 성공했는지 검증)
-        int numberOfExceptions = exceptions.size();
-        assertTrue(numberOfExceptions == numberOfThreads - 1, "예외 발생 스레드 개수 불일치");
     }
 
     @Test

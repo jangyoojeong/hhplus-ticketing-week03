@@ -18,12 +18,12 @@ public class ConcertResult {
     @NoArgsConstructor
     @AllArgsConstructor
     @Builder
-    public static class SaveConcertResult {
+    public static class SaveConcert {
         private Long concertId;             // 콘서트ID
         private String concertName;         // 콘서트명
 
-        public static SaveConcertResult from(Concert domain) {
-            return SaveConcertResult.builder()
+        public static SaveConcert from(Concert domain) {
+            return SaveConcert.builder()
                     .concertId(domain.getConcertId())
                     .concertName(domain.getConcertName())
                     .build();
@@ -35,13 +35,13 @@ public class ConcertResult {
     @NoArgsConstructor
     @AllArgsConstructor
     @Builder
-    public static class SaveConcertOptionResult {
+    public static class SaveConcertOption {
         private Long concertId;             // 콘서트ID
         private LocalDateTime concertAt;    // 콘서트 시간
         private int capacity;               // 콘서트 정원
 
-        public static SaveConcertOptionResult from(ConcertOption domain) {
-            return SaveConcertOptionResult.builder()
+        public static SaveConcertOption from(ConcertOption domain) {
+            return SaveConcertOption.builder()
                     .concertId(domain.getConcertId())
                     .concertAt(domain.getConcertAt())
                     .capacity(domain.getCapacity())
@@ -54,14 +54,14 @@ public class ConcertResult {
     @NoArgsConstructor
     @AllArgsConstructor
     @Builder
-    public static class GetConcertListResult implements Serializable {
+    public static class GetConcertList implements Serializable {
         private static final long serialVersionUID = 1L;
 
         private Long concertId;             // 콘서트ID
         private String concertName;         // 콘서트명
 
-        public static GetConcertListResult from(Concert domain) {
-            return GetConcertListResult.builder()
+        public static GetConcertList from(Concert domain) {
+            return GetConcertList.builder()
                     .concertId(domain.getConcertId())
                     .concertName(domain.getConcertName())
                     .build();
@@ -73,7 +73,7 @@ public class ConcertResult {
     @NoArgsConstructor
     @AllArgsConstructor
     @Builder
-    public static class GetAvailableDatesResult implements Serializable {
+    public static class GetAvailableDates implements Serializable {
         private static final long serialVersionUID = 1L;
 
         private Long concertId;                    // 콘서트ID
@@ -90,9 +90,9 @@ public class ConcertResult {
             private LocalDate concertAt;
         }
 
-        public static GetAvailableDatesResult from(List<ConcertOption> domains) {
+        public static GetAvailableDates from(List<ConcertOption> domains) {
             if (domains == null || domains.isEmpty()) {
-                return new GetAvailableDatesResult();
+                return new GetAvailableDates();
             }
 
             List<DateInfo> availableDates = domains.stream()
@@ -102,7 +102,7 @@ public class ConcertResult {
                             .build())
                     .collect(Collectors.toList());
 
-            return GetAvailableDatesResult.builder()
+            return GetAvailableDates.builder()
                     .concertId(domains.get(0).getConcertId())
                     .availableDates(availableDates)
                     .build();
@@ -114,7 +114,7 @@ public class ConcertResult {
     @NoArgsConstructor
     @AllArgsConstructor
     @Builder
-    public static class GetAvailableSeatsResult {
+    public static class GetAvailableSeats {
         private Long concertOptionId;                // 콘서트옵션ID
         private List<SeatInfo> availableSeats;       // 예약가능한 좌석 리스트
 
@@ -127,19 +127,19 @@ public class ConcertResult {
             private int seatNumber;
         }
 
-        public static GetAvailableSeatsResult from(List<ConcertSeat> domains) {
+        public static GetAvailableSeats from(List<ConcertSeat> domains) {
             if (domains == null || domains.isEmpty()) {
-                return new GetAvailableSeatsResult();
+                return new GetAvailableSeats();
             }
 
-            List<GetAvailableSeatsResult.SeatInfo> availableSeats = domains.stream()
+            List<GetAvailableSeats.SeatInfo> availableSeats = domains.stream()
                     .map(domain -> SeatInfo.builder()
                             .concertSeatId(domain.getConcertSeatId())
                             .seatNumber(domain.getSeatNumber())
                             .build())
                     .collect(Collectors.toList());
 
-            return GetAvailableSeatsResult.builder()
+            return GetAvailableSeats.builder()
                     .concertOptionId(domains.get(0).getConcertOptionId())
                     .availableSeats(availableSeats)
                     .build();
@@ -151,13 +151,13 @@ public class ConcertResult {
     @NoArgsConstructor
     @AllArgsConstructor
     @Builder
-    public static class ReserveSeatResult {
+    public static class ReserveSeat {
         private Long reservationId;             // 예약ID
         private Long userId;                    // 유저ID
         private Long concertSeatId;             // 콘서트좌석ID
 
-        public static ConcertResult.ReserveSeatResult from(Reservation domain) {
-            return ConcertResult.ReserveSeatResult.builder()
+        public static ReserveSeat from(Reservation domain) {
+            return ReserveSeat.builder()
                     .reservationId(domain.getReservationId())
                     .userId(domain.getUserId())
                     .concertSeatId(domain.getConcertSeatId())
@@ -170,12 +170,12 @@ public class ConcertResult {
     @NoArgsConstructor
     @AllArgsConstructor
     @Builder
-    public static class AssignSeatResult {
+    public static class AssignSeat {
         private Long concertSeatId;          // 콘서트좌석ID
         private int price;                   // 좌석가격
 
-        public static AssignSeatResult from(ConcertSeat domain) {
-            return AssignSeatResult.builder()
+        public static AssignSeat from(Reservation domain) {
+            return AssignSeat.builder()
                     .concertSeatId(domain.getConcertSeatId())
                     .price(domain.getPrice())
                     .build();

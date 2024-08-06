@@ -12,7 +12,7 @@ public class QueueCommand {
     @NoArgsConstructor
     @AllArgsConstructor
     @Builder
-    public static class IssueTokenCommand {
+    public static class IssueToken {
         private Long userId;                    // 유저ID
     }
 }

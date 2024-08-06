@@ -70,7 +70,7 @@ public class ConcertServiceTest {
         given(concertRepository.getAvailableDates(anyLong(), any(LocalDateTime.class))).willReturn(concertOptions);
 
         // When
-        ConcertResult.GetAvailableDatesResult result = concertService.getAvailableDates(1L);
+        ConcertResult.GetAvailableDates result = concertService.getAvailableDates(1L);
 
         // Then
         assertNotNull(result);
@@ -87,7 +87,7 @@ public class ConcertServiceTest {
         given(concertRepository.getAvailableSeats(anyLong())).willReturn(concertSeats);
 
         // When
-        ConcertResult.GetAvailableSeatsResult result = concertService.getAvailableSeats(1L);
+        ConcertResult.GetAvailableSeats result = concertService.getAvailableSeats(1L);
 
         // Then
         assertNotNull(result);
@@ -100,13 +100,13 @@ public class ConcertServiceTest {
     void reserveSeatTest_좌석_예약_테스트_정상적으로_예약_성공() {
 
         // Given
-        ConcertCommand.ReserveSeatCommand command = new ConcertCommand.ReserveSeatCommand(1L, 1L);
+        ConcertCommand.ReserveSeat command = new ConcertCommand.ReserveSeat(1L, 1L);
         given(concertRepository.getAvailableSeat(anyLong())).willReturn(Optional.of(seat));
         given(concertRepository.saveSeat(any(ConcertSeat.class))).willReturn(seat);
         given(concertRepository.saveReservation(any(Reservation.class))).willReturn(reservation);
 
         // When
-        ConcertResult.ReserveSeatResult result = concertService.reserveSeat(command);
+        ConcertResult.ReserveSeat result = concertService.reserveSeat(command);
 
         // Then
         assertNotNull(result);
@@ -119,7 +119,7 @@ public class ConcertServiceTest {
     void reserveSeatTest_좌석_예약_테스트_해당_좌석이_예약가능한_상태가_아닐_경우_SEAT_NOT_FOUND_OR_ALREADY_RESERVED_예외반환() {
 
         // Given
-        ConcertCommand.ReserveSeatCommand command = new ConcertCommand.ReserveSeatCommand(1L, 1L);
+        ConcertCommand.ReserveSeat command = new ConcertCommand.ReserveSeat(1L, 1L);
         given(concertRepository.getAvailableSeat(anyLong())).willReturn(Optional.empty());
 
         // When & Then
@@ -152,6 +152,7 @@ public class ConcertServiceTest {
 
         // Given
         Long reservationId = 1L;
+
         given(concertRepository.getActiveReservation(anyLong())).willReturn(Optional.empty());
 
         // When & Then
@@ -178,7 +179,7 @@ public class ConcertServiceTest {
         given(concertRepository.saveSeat(any(ConcertSeat.class))).willReturn(seat);
 
         // When
-        ConcertResult.AssignSeatResult result = concertService.assignSeat(reservationId);
+        ConcertResult.AssignSeat result = concertService.assignSeat(reservationId);
 
         // Then
         assertNotNull(result);

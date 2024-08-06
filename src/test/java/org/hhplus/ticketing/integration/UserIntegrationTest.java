@@ -58,16 +58,16 @@ class UserIntegrationTest {
         int addPoint = 5000;
 
         // 잔액 충전 요청 command 객체 생성
-        UserCommand.ChargePointCommand chargePointCommand = UserCommand.ChargePointCommand.builder()
+        UserCommand.ChargePoint chargePoint = UserCommand.ChargePoint.builder()
                 .userId(userId1)
                 .amount(addPoint)
                 .build();
 
         // 예상 반환 result 객체 생성
-        UserResult.ChargePointResult expectedResult = new UserResult.ChargePointResult(userId1, addPoint);
+        UserResult.ChargePoint expectedResult = new UserResult.ChargePoint(userId1, addPoint);
 
         // When
-        UserResult.ChargePointResult actualResult = userFacade.chargePoint(chargePointCommand);
+        UserResult.ChargePoint actualResult = userFacade.chargePoint(chargePoint);
 
         // Then
         assertNotNull(actualResult);
@@ -81,13 +81,13 @@ class UserIntegrationTest {
         // Given
         int addPoint = 5000;
 
-        UserCommand.ChargePointCommand chargePointCommand99 = UserCommand.ChargePointCommand.builder()
+        UserCommand.ChargePoint chargePoint99 = UserCommand.ChargePoint.builder()
                 .userId(nonExistentUserId)        // 99L : 유효하지 않은 사용자 ID
                 .amount(addPoint)
                 .build();
 
         // When & Then
-        assertThatThrownBy(() -> userFacade.chargePoint(chargePointCommand99))
+        assertThatThrownBy(() -> userFacade.chargePoint(chargePoint99))
                 .isInstanceOf(CustomException.class)
                 .extracting("errorCode")
                 .isEqualTo(ErrorCode.USER_NOT_FOUND);
@@ -101,13 +101,13 @@ class UserIntegrationTest {
         int chargeAmount = 0;
 
         // 잔액 충전 요청 command 객체 생성
-        UserCommand.ChargePointCommand chargePointCommand = UserCommand.ChargePointCommand.builder()
+        UserCommand.ChargePoint chargePoint = UserCommand.ChargePoint.builder()
                 .userId(userId1)
                 .amount(chargeAmount)
                 .build();
 
         // When & Then
-        assertThatThrownBy(() -> userFacade.chargePoint(chargePointCommand))
+        assertThatThrownBy(() -> userFacade.chargePoint(chargePoint))
                 .isInstanceOf(CustomException.class)
                 .extracting("errorCode")
                 .isEqualTo(ErrorCode.INVALID_AMOUNT_VALUE);
@@ -123,16 +123,16 @@ class UserIntegrationTest {
         int finalPoint = oldPoint + addPoint;
 
         // 잔액 충전 요청 command 객체 생성
-        UserCommand.ChargePointCommand chargePointCommand = UserCommand.ChargePointCommand.builder()
+        UserCommand.ChargePoint chargePoint = UserCommand.ChargePoint.builder()
                 .userId(userId2)
                 .amount(addPoint)
                 .build();
 
         // 예상 반환 result 객체 생성
-        UserResult.ChargePointResult expectedResult = new UserResult.ChargePointResult(userId2, finalPoint);
+        UserResult.ChargePoint expectedResult = new UserResult.ChargePoint(userId2, finalPoint);
 
         // When
-        UserResult.ChargePointResult actualResult = userFacade.chargePoint(chargePointCommand);
+        UserResult.ChargePoint actualResult = userFacade.chargePoint(chargePoint);
 
         // Then
         assertNotNull(actualResult);
@@ -147,13 +147,13 @@ class UserIntegrationTest {
         int oldPoint = 1000;
 
         // 초기 포인트 충전
-        userFacade.chargePoint(new UserCommand.ChargePointCommand(userId1, oldPoint));
+        userFacade.chargePoint(new UserCommand.ChargePoint(userId1, oldPoint));
 
         // 예상 반환 result 객체 생성
-        UserResult.UserPointResult expectedResult = new UserResult.UserPointResult(userId1, oldPoint);
+        UserResult.GetPoint expectedResult = new UserResult.GetPoint(userId1, oldPoint);
 
         // When
-        UserResult.UserPointResult actualResult = userFacade.getPointResult(userId1);
+        UserResult.GetPoint actualResult = userFacade.getPointResult(userId1);
 
         // Then
         assertNotNull(actualResult);

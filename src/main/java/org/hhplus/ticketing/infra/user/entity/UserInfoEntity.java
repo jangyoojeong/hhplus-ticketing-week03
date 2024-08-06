@@ -8,7 +8,6 @@ import lombok.NoArgsConstructor;
 import org.hhplus.ticketing.domain.user.model.UserInfo;
 
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 @Data
 @NoArgsConstructor
@@ -23,9 +22,6 @@ public class UserInfoEntity {
     @Column(name = "user_id", nullable = false, updatable = false)
     private Long userId;                      // 유저ID (키값)
 
-    @Column(name = "uuid", nullable = false, unique = true, updatable = false, columnDefinition = "BINARY(16)")
-    private UUID uuid;                       // 유저 uuid
-
     @Column(name = "user_name", nullable = false)
     private String userName;                 // 유저 이름
 
@@ -37,9 +33,6 @@ public class UserInfoEntity {
 
     @PrePersist
     private void prePersist() {
-        if (uuid == null) {
-            uuid = UUID.randomUUID();
-        }
         createdAt = LocalDateTime.now();
         updatedAt = LocalDateTime.now();
     }
@@ -52,7 +45,6 @@ public class UserInfoEntity {
     public static UserInfoEntity from(UserInfo domain) {
         return UserInfoEntity.builder()
                 .userId(domain.getUserId())
-                .uuid(domain.getUuid())
                 .userName(domain.getUserName())
                 .build();
     }
@@ -60,7 +52,6 @@ public class UserInfoEntity {
     public UserInfo toDomain() {
         return UserInfo.builder()
                 .userId(this.getUserId())
-                .uuid(this.getUuid())
                 .userName(this.getUserName())
                 .build();
     }

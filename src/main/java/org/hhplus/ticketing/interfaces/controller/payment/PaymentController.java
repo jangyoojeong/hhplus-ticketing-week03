@@ -11,7 +11,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.UUID;
 
 /**
  * 결제 관련 API를 제공하는 컨트롤러입니다.
@@ -36,8 +35,8 @@ public class PaymentController {
      */
     @PostMapping("/")
     @Operation(summary = "결제 API", description = "예약한 좌석의 결제를 처리합니다.")
-    public ResponseEntity<PaymentResponse.PaymentProcessingResponse> requestPayment (@RequestHeader(value = AUTHORIZATION_HEADER, required = true) String authorizationHeader, @Valid @RequestBody PaymentRequest.PaymentProcessingRequest request) {
+    public ResponseEntity<PaymentResponse.Pay> pay(@RequestHeader(value = AUTHORIZATION_HEADER, required = true) String authorizationHeader, @Valid @RequestBody PaymentRequest.Pay request) {
         String token = authorizationHeader.replace(BEARER_PREFIX, "");
-        return ResponseEntity.status(HttpStatus.OK).body(PaymentResponse.PaymentProcessingResponse.from(paymentFacade.requestPayment(UUID.fromString(token), request.toCommand())));
+        return ResponseEntity.status(HttpStatus.OK).body(PaymentResponse.Pay.from(paymentFacade.pay(token, request.toCommand())));
     }
 }

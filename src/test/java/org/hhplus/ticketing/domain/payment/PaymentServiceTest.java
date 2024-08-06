@@ -50,15 +50,15 @@ class PaymentServiceTest {
     void createPayment_History_좌석_결제_요청_정상적으로_실행된다() {
 
         // Given
-        PaymentCommand.RequestPaymentCommand command = new PaymentCommand.RequestPaymentCommand(1L, 1L, price);
+        PaymentCommand.Pay command = new PaymentCommand.Pay(1L, 1L, price);
         given(paymentRepository.save(any(Payment.class))).willReturn(paymentDomain);
 
         // When
-        PaymentResult.RequestPaymentResult result = paymentService.createPayment(command);
+        PaymentResult.Pay result = paymentService.createPayment(command);
 
         // Then
         assertNotNull(result);
-        assertEquals(PaymentResult.RequestPaymentResult.from(paymentDomain), result);
+        assertEquals(PaymentResult.Pay.from(paymentDomain), result);
         verify(paymentRepository, times(1)).save(any(Payment.class));
     }
 }

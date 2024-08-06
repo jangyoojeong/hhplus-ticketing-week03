@@ -5,11 +5,7 @@ import org.hhplus.ticketing.domain.queue.QueueService;
 import org.hhplus.ticketing.domain.queue.model.QueueCommand;
 import org.hhplus.ticketing.domain.queue.model.QueueResult;
 import org.hhplus.ticketing.domain.user.UserInfoService;
-import org.hhplus.ticketing.domain.user.model.UserResult;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.util.UUID;
 
 /**
  * 대기열 관련 비즈니스 로직을 캡슐화하는 파사드 클래스입니다.
@@ -28,13 +24,13 @@ public class QueueFacade {
      * @param command 토큰 발급 요청 command 객체
      * @return 발급된 토큰과 대기열 정보를 포함한 result 객체
      */
-    public QueueResult.IssueTokenResult issueToken(QueueCommand.IssueTokenCommand command) {
+    public QueueResult.IssueToken issueToken(QueueCommand.IssueToken command) {
 
         // 1. 유저 정보 확인 (유저 정보 없을 시 예외 리턴)
-        UserResult.UserInfoResult validateUser = userInfoService.validateUser(command.getUserId());
+        userInfoService.validateUser(command.getUserId());
 
         // 2. 대기열 토큰 발급 및 리턴
-        return queueService.issueToken(command);
+        return queueService.issueToken();
     }
 
     /**
@@ -43,7 +39,7 @@ public class QueueFacade {
      * @param token 대기열 상태 조회할 token
      * @return 대기순번 등 대기열 상태 result 객체
      */
-    public QueueResult.QueueStatusResult getQueueStatus(UUID token) {
+    public QueueResult.QueueStatus getQueueStatus(String token) {
         return queueService.getQueueStatus(token);
     }
 
@@ -52,7 +48,7 @@ public class QueueFacade {
      *
      * @param token 검증할 토큰
      */
-    public void validateToken (UUID token) {
+    public void validateToken (String token) {
         queueService.validateToken(token);
     }
 
@@ -61,9 +57,7 @@ public class QueueFacade {
      * 1. 만료 대상 토큰 만료
      * 2. 빈자리 만큼 활성화
      */
-    @Transactional
-    public void refreshQueue() {
-        queueService.expire();
+    public void activate() {
         queueService.activate();
     }
 }

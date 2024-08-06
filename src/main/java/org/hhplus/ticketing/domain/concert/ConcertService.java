@@ -6,8 +6,12 @@ import org.hhplus.ticketing.domain.common.exception.CustomException;
 import org.hhplus.ticketing.domain.common.exception.ErrorCode;
 import org.hhplus.ticketing.domain.concert.model.*;
 import org.hhplus.ticketing.domain.concert.model.constants.ConcertConstants;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,9 +35,10 @@ public class ConcertService {
      * @param command 콘서트 저장 요청 command 객체
      * @return 저장된 콘서트 정보를 포함한 result 객체
      */
+    @CacheEvict(value = "concertCache", allEntries = true)
     @Transactional
-    public ConcertResult.SaveConcertResult saveConcert(ConcertCommand.SaveConcertCommand command) {
-        return ConcertResult.SaveConcertResult.from(concertRepository.saveConcert(Concert.create(command.getConcertName())));
+    public ConcertResult.SaveConcert saveConcert(ConcertCommand.SaveConcert command) {
+        return ConcertResult.SaveConcert.from(concertRepository.saveConcert(Concert.create(command.getConcertName())));
     }
 
     /**
@@ -42,21 +47,24 @@ public class ConcertService {
      * @param pageable 페이징 정보
      * @return 페이징 처리된 콘서트 목록 응답 객체
      */
+    @Cacheable(value = "concertCache", key = "#pageable.pageNumber")
     @Transactional(readOnly = true)
-    public Page<ConcertResult.GetConcertListResult> getConcertList(Pageable pageable) {
-        return concertRepository.getConcertList(pageable)
-                .map(ConcertResult.GetConcertListResult::from);
+    public Page<ConcertResult.GetConcertList> getConcertList(Pageable pageable) {
+        Pageable sortedPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by("createdAt").descending());
+        return concertRepository.getConcertList(sortedPageable)
+                .map(ConcertResult.GetConcertList::from);
     }
 
     /**
-     * 콘서트를 저장합니다.
+     * 콘서트 옵션을 저장합니다.
      *
-     * @param command 콘서트 저장 요청 command 객체
-     * @return 저장된 콘서트 정보를 포함한 result 객체
+     * @param command 콘서트 옵션 저장 요청 command 객체
+     * @return 저장된 콘서트 옵션 정보를 포함한 result 객체
      */
+    @CacheEvict(value = "concertOptionCache", key = "#command.concertId")
     @Transactional
-    public ConcertResult.SaveConcertOptionResult saveConcertOption(ConcertCommand.SaveConcertOptionCommand command) {
-        return ConcertResult.SaveConcertOptionResult.from(concertRepository.saveConcertOption(ConcertOption.from(command)));
+    public ConcertResult.SaveConcertOption saveConcertOption(ConcertCommand.SaveConcertOption command) {
+        return ConcertResult.SaveConcertOption.from(concertRepository.saveConcertOption(ConcertOption.from(command)));
     }
 
     /**
@@ -65,9 +73,10 @@ public class ConcertService {
      * @param concertId 조회할 콘서트의 고유 ID
      * @return 예약 가능한 날짜 목록을 포함한 result 객체
      */
+    @Cacheable(value = "concertOptionCache", key = "#concertId")
     @Transactional(readOnly = true)
-    public ConcertResult.GetAvailableDatesResult getAvailableDates(Long concertId) {
-        return ConcertResult.GetAvailableDatesResult.from(concertRepository.getAvailableDates(concertId, LocalDateTime.now()));
+    public ConcertResult.GetAvailableDates getAvailableDates(Long concertId) {
+        return ConcertResult.GetAvailableDates.from(concertRepository.getAvailableDates(concertId, LocalDateTime.now()));
     }
 
     /**
@@ -77,8 +86,8 @@ public class ConcertService {
      * @return 예약 가능한 좌석 목록을 포함한 result 객체
      */
     @Transactional(readOnly = true)
-    public ConcertResult.GetAvailableSeatsResult getAvailableSeats(Long concertOptionId) {
-        return ConcertResult.GetAvailableSeatsResult.from(concertRepository.getAvailableSeats(concertOptionId));
+    public ConcertResult.GetAvailableSeats getAvailableSeats(Long concertOptionId) {
+        return ConcertResult.GetAvailableSeats.from(concertRepository.getAvailableSeats(concertOptionId));
     }
 
     /**
@@ -89,7 +98,7 @@ public class ConcertService {
      * @throws CustomException 예약 가능한 좌석이 없거나 이미 선점된 경우 발생
      */
     @Transactional
-    public ConcertResult.ReserveSeatResult reserveSeat(ConcertCommand.ReserveSeatCommand command) {
+    public ConcertResult.ReserveSeat reserveSeat(ConcertCommand.ReserveSeat command) {
 
         // 1. 좌석 정보 조회 (해당 좌석이 예약 가능한지)
         ConcertSeat seat = concertRepository.getAvailableSeat(command.getConcertSeatId()).orElseThrow(()
@@ -98,7 +107,7 @@ public class ConcertService {
         concertRepository.saveSeat(seat);
 
         Reservation reservation = Reservation.create(command.getConcertSeatId(), command.getUserId(), seat.getPrice());
-        return ConcertResult.ReserveSeatResult.from(concertRepository.saveReservation(reservation));
+        return ConcertResult.ReserveSeat.from(concertRepository.saveReservation(reservation));
     }
 
     /**
@@ -121,7 +130,7 @@ public class ConcertService {
      * @throws CustomException 예약 또는 좌석 정보가 유효하지 않은 경우 발생
      */
     @Transactional
-    public ConcertResult.AssignSeatResult assignSeat(Long reservationId) {
+    public ConcertResult.AssignSeat assignSeat(Long reservationId) {
 
         Reservation reservation = getReservation(reservationId);
         reservation.setOccupied();
@@ -130,10 +139,9 @@ public class ConcertService {
         ConcertSeat seat = concertRepository.findSeatById(reservation.getConcertSeatId()).orElseThrow(()
                 -> new CustomException(ErrorCode.INVALID_SEAT_SELECTION));
         seat.setOccupied();
+        concertRepository.saveSeat(seat);
 
-
-
-        return ConcertResult.AssignSeatResult.from(concertRepository.saveSeat(seat));
+        return ConcertResult.AssignSeat.from(reservation);
     }
 
     /**
@@ -146,11 +154,11 @@ public class ConcertService {
     public void releaseReservations() {
         LocalDateTime expirationTime = LocalDateTime.now().minusMinutes(ConcertConstants.RESERVATION_EXPIRATION_MINUTES);
         List<Reservation> expiredReservations = concertRepository.getExpiredReservations(expirationTime);
-        if (expiredReservations.isEmpty()) return;
-
-        expiredReservations.forEach(Reservation::setExpired);
-        concertRepository.saveAllReservation(expiredReservations);
-        log.info("총 {}개의 예약이 만료되었습니다.", expiredReservations.size());
+        if (!expiredReservations.isEmpty()) {
+            expiredReservations.forEach(Reservation::setExpired);
+            concertRepository.saveAllReservation(expiredReservations);
+            log.info("총 {}개의 예약이 만료되었습니다.", expiredReservations.size());
+        }
 
         releaseSeats(expiredReservations);
     }

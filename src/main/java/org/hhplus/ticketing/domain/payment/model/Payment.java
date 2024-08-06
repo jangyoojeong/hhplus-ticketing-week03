@@ -22,7 +22,7 @@ public class Payment {
     private LocalDateTime paymentAt;        // 결제시간
     private Status status;                  // 결제상태 (결제완료[COMPLETED]/결제취소[CANCELED])
 
-    public static Payment from(PaymentCommand.RequestPaymentCommand command) {
+    public static Payment from(PaymentCommand.Pay command) {
         return Payment.builder()
                 .reservationId(command.getReservationId())
                 .price(command.getPrice())

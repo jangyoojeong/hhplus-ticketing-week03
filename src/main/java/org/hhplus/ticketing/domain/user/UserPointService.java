@@ -37,8 +37,8 @@ public class UserPointService {
      * @param userId 포인트 잔액을 조회할 사용자의 ID
      * @return 사용자의 포인트 잔액 결과 객체
      */
-    public UserResult.UserPointResult getPointResult (Long userId) {
-        return UserResult.UserPointResult.from(getPoint(userId));
+    public UserResult.GetPoint getPointResult (Long userId) {
+        return UserResult.GetPoint.from(getPoint(userId));
     }
 
     /**
@@ -48,10 +48,10 @@ public class UserPointService {
      * @return 충전된 잔액 정보를 포함한 응답 객체
      */
     @Transactional
-    public UserResult.ChargePointResult chargePoint (UserCommand.ChargePointCommand command) {
+    public UserResult.ChargePoint chargePoint (UserCommand.ChargePoint command) {
         UserPoint userPoint = getPoint(command.getUserId());
         userPoint.chargePoint(command.getAmount());
-        UserResult.ChargePointResult result = UserResult.ChargePointResult.from(userPointRepository.save(userPoint));
+        UserResult.ChargePoint result = UserResult.ChargePoint.from(userPointRepository.save(userPoint));
         saveHistory(command.getUserId(), command.getAmount(), UserPointHistory.Type.CHARGE);
         return result;
     }
@@ -63,10 +63,10 @@ public class UserPointService {
      * @return 차감된 잔액 정보를 포함한 응답 객체
      */
     @Transactional
-    public UserResult.UsePointResult usePoint (UserCommand.UsePointCommand command) {
+    public UserResult.UsePoint usePoint (UserCommand.UsePoint command) {
         UserPoint userPoint = getPoint(command.getUserId());
         userPoint.usePoint(command.getAmount());
-        UserResult.UsePointResult result = UserResult.UsePointResult.from(userPointRepository.save(userPoint));
+        UserResult.UsePoint result = UserResult.UsePoint.from(userPointRepository.save(userPoint));
         saveHistory(command.getUserId(), command.getAmount(), UserPointHistory.Type.USE);
         return result;
     }

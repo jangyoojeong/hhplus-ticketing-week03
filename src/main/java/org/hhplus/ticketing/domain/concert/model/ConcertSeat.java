@@ -71,5 +71,4 @@ public class ConcertSeat {
         RESERVED,      // 예약됨
         OCCUPIED;      // 점유
     }
-
 }

@@ -66,7 +66,7 @@ public class UserConcurrentTest {
         int addPoint = 5000;
 
         // 잔액 충전 요청 command 객체 생성
-        UserCommand.ChargePointCommand command = UserCommand.ChargePointCommand.builder()
+        UserCommand.ChargePoint command = UserCommand.ChargePoint.builder()
                 .userId(userId1)
                 .amount(addPoint)
                 .build();

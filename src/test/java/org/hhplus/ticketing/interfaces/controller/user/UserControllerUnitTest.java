@@ -41,14 +41,14 @@ public class UserControllerUnitTest {
         // Given
         int currentPoints = 0;
 
-        UserRequest.ChargePointRequest request = new UserRequest.ChargePointRequest(userId, 50000);
-        UserResult.ChargePointResult result = new UserResult.ChargePointResult(userId, currentPoints + 50000);
-        UserResponse.ChargePointResponse response = UserResponse.ChargePointResponse.from(result);
+        UserRequest.ChargePoint request = new UserRequest.ChargePoint(userId, 50000);
+        UserResult.ChargePoint result = new UserResult.ChargePoint(userId, currentPoints + 50000);
+        UserResponse.ChargePoint response = UserResponse.ChargePoint.from(result);
 
-        given(userFacade.chargePoint(any(UserCommand.ChargePointCommand.class))).willReturn(result);
+        given(userFacade.chargePoint(any(UserCommand.ChargePoint.class))).willReturn(result);
 
         // When
-        ResponseEntity<UserResponse.ChargePointResponse> responseEntity = userController.addUserPoint(request);
+        ResponseEntity<UserResponse.ChargePoint> responseEntity = userController.addUserPoint(request);
 
         // Then
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
@@ -59,13 +59,13 @@ public class UserControllerUnitTest {
     @DisplayName("🟢 잔액_충전_컨트롤러_테스트_조회_후_50000_포인트_리턴_확인")
     void getUserPointTest_잔액_충전_컨트롤러_테스트_조회_후_50000_포인트_리턴_확인 () throws Exception {
         // Given
-        UserResult.UserPointResult result = new UserResult.UserPointResult(userId, 50000);
-        UserResponse.UserPointResponse response = UserResponse.UserPointResponse.from(result);
+        UserResult.GetPoint result = new UserResult.GetPoint(userId, 50000);
+        UserResponse.UserPoint response = UserResponse.UserPoint.from(result);
 
         given(userFacade.getPointResult(userId)).willReturn(result);
 
         // When
-        ResponseEntity<UserResponse.UserPointResponse> responseEntity = userController.getUserPoint(userId);
+        ResponseEntity<UserResponse.UserPoint> responseEntity = userController.getUserPoint(userId);
 
         // Then
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());

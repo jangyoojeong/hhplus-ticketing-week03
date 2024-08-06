@@ -22,8 +22,8 @@ public class UserInfoService {
      * @return userId에 해당하는 사용자를 포함하는 Optional 객체
      */
     @Transactional(readOnly = true)
-    public UserResult.UserInfoResult validateUser (Long userId) {
-        return UserResult.UserInfoResult.from(userInfoRepository.getUser(userId).orElseThrow(()
+    public UserResult.GetUser validateUser (Long userId) {
+        return UserResult.GetUser.from(userInfoRepository.getUser(userId).orElseThrow(()
                 -> new CustomException(ErrorCode.USER_NOT_FOUND)));
     }
 }

@@ -25,7 +25,7 @@ public class PaymentService {
      * @return 결제 result 객체
      */
     @Transactional
-    public PaymentResult.RequestPaymentResult createPayment(PaymentCommand.RequestPaymentCommand command) {
-        return PaymentResult.RequestPaymentResult.from(paymentRepository.save(Payment.from(command)));
+    public PaymentResult.Pay createPayment(PaymentCommand.Pay command) {
+        return PaymentResult.Pay.from(paymentRepository.save(Payment.from(command)));
     }
 }

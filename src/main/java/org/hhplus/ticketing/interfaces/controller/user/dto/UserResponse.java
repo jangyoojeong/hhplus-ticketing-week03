@@ -13,13 +13,13 @@ public class UserResponse {
     @NoArgsConstructor
     @AllArgsConstructor
     @Builder
-    public static class ChargePointResponse {
+    public static class ChargePoint {
 
         private Long userId;                    // userId
         private int point;                      // 충전 후 포인트 잔액
 
-        public static ChargePointResponse from(UserResult.ChargePointResult result) {
-            return ChargePointResponse.builder()
+        public static ChargePoint from(UserResult.ChargePoint result) {
+            return ChargePoint.builder()
                     .userId(result.getUserId())
                     .point(result.getPoint())
                     .build();
@@ -31,13 +31,13 @@ public class UserResponse {
     @NoArgsConstructor
     @AllArgsConstructor
     @Builder
-    public static class UserPointResponse {
+    public static class UserPoint {
 
         private Long userId;                    // userId
         private int point;                      // 포인트 잔액
 
-        public static UserPointResponse from(UserResult.UserPointResult result) {
-            return UserPointResponse.builder()
+        public static UserPoint from(UserResult.GetPoint result) {
+            return UserPoint.builder()
                     .userId(result.getUserId())
                     .point(result.getPoint())
                     .build();

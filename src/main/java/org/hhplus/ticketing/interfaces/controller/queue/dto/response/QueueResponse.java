@@ -9,38 +9,20 @@ import org.hhplus.ticketing.domain.queue.model.QueueResult;
 
 public class QueueResponse {
 
-    // 발급된 토큰과 대기열 정보를 포함한 response
-    @Data
-    @NoArgsConstructor
-    @AllArgsConstructor
-    @Builder
-    public static class IssueTokenResponse {
-
-        private Long userId;                    // 유저ID
-
-        public static IssueTokenResponse from(QueueResult.IssueTokenResult result) {
-            return IssueTokenResponse.builder()
-                    .userId(result.getUserId())
-                    .build();
-        }
-    }
-
     // 대기순번 등 대기열 상태 Response
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
     @Builder
-    public static class QueueStatusResponse {
+    public static class QueueStatus {
 
-        private Long userId;                    // 유저ID
-        private Long position;                  // 대기순서
-        private Queue.Status status;             // 토큰상태
+        private Long position;                    // 대기순서
+        private String remainingTime;             // 잔여시간
 
-        public static QueueStatusResponse from(QueueResult.QueueStatusResult result) {
-            return QueueStatusResponse.builder()
-                    .userId(result.getUserId())
+        public static QueueStatus from(QueueResult.QueueStatus result) {
+            return QueueStatus.builder()
                     .position(result.getPosition())
-                    .status(result.getStatus())
+                    .remainingTime(result.getRemainingTime())
                     .build();
         }
     }

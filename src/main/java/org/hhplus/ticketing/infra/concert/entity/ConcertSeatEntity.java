@@ -28,6 +28,7 @@ public class ConcertSeatEntity {
     @Column(name = "seat_number", nullable = false)
     private int seatNumber;                 // 좌석번호 (1~50)
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "grade", nullable = false)
     private ConcertSeat.Grade grade;        // 좌석등급
     
