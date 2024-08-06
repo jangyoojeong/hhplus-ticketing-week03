@@ -29,17 +29,7 @@ public class QueueService {
      */
     public QueueResult.IssueToken issueToken() {
         Queue queue = Queue.create();
-        Long activeCount = queueRepository.countActiveTokens();
-
-        if (activeCount < QueueConstants.MAX_ACTIVE_TOKENS) {
-            queue.setStatus(Queue.Status.ACTIVE);
-            queueRepository.addActive(queue);
-        } else {
-            queueRepository.addWaiting(queue);
-            Long position = getWaitingPosition(queue.getToken());
-            queue.setWaitingInfo(position);
-        }
-
+        queueRepository.addWaiting(queue);
         return QueueResult.IssueToken.from(queue);
     }
 
@@ -48,7 +38,6 @@ public class QueueService {
      *
      * @param token 대기열 순위를 조회할 토큰
      * @return 대기열 내 순위
-     * @throws CustomException 토큰 정보가 존재하지 않는 경우 발생하는 예외
      */
     public Long getWaitingPosition(String token) {
         return Queue.getPosition(queueRepository.getWaitingPosition(token));
@@ -59,11 +48,10 @@ public class QueueService {
      *
      * @param token 대기열 상태 조회할 토큰
      * @return 대기순번 등 대기열 상태 result 객체
-     * @throws CustomException 토큰 정보가 존재하지 않는 경우 발생하는 예외
      */
     public QueueResult.QueueStatus getQueueStatus(String token) {
         Long position = getWaitingPosition(token);
-        return QueueResult.QueueStatus.from(Queue.create().setWaitingInfo(position));
+        return QueueResult.QueueStatus.from(Queue.getWaitingInfo(position));
     }
 
     /**

@@ -19,7 +19,6 @@ public class Queue {
     private long score;                            // 토큰 발급 시각
     private Long position;                         // 대기순서
     private String remainingTime;                  // 잔여시간
-    private Status status;                         // 상태
 
     public static Queue create() {
         return Queue.builder()
@@ -28,11 +27,11 @@ public class Queue {
                 .build();
     }
 
-    public Queue setWaitingInfo(Long position) {
-        this.position = position;
-        this.remainingTime = Queue.getRemainingWaitTime(position);
-        this.status = Status.WAITING;
-        return this;
+    public static Queue getWaitingInfo(Long position) {
+        return Queue.builder()
+                .position(position)
+                .remainingTime(Queue.getRemainingWaitTime(position))
+                .build();
     }
 
     public static Long getPosition(Long position) {
@@ -45,14 +44,12 @@ public class Queue {
         long peopleAhead = position - 1;
 
         // (앞에 대기중인 유저의 수 / 한 사이클에서 처리할 수 있는 유저의 수) * 한 사이클의 시간
-        long totalSeconds = Math.max((peopleAhead / QueueConstants.MAX_ACTIVE_TOKENS) * 10, 10);
+        long totalSeconds = (long) Math.ceil((double) peopleAhead / QueueConstants.MAX_ACTIVE_TOKENS) * QueueConstants.INTERVAL_SECONDS;
+
+        // 최소 한 사이클의 시간 추가
+        totalSeconds = Math.max(totalSeconds, QueueConstants.INTERVAL_SECONDS);
 
         Duration duration = Duration.ofSeconds(totalSeconds);
-        return String.format("%02d분 %02d초", duration.toMinutes(), duration.getSeconds() % 60);
-    }
-
-    public enum Status {
-        ACTIVE,     // 활성화
-        WAITING,    // 대기중
+        return String.format("%02d시간 %02d분 %02d초", duration.toHoursPart(), duration.toMinutesPart(), duration.toSecondsPart());
     }
 }

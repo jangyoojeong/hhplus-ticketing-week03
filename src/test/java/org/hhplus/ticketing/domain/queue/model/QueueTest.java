@@ -33,7 +33,7 @@ class QueueTest {
     }
 
     @Test
-    @DisplayName("🔴 순위계산_테스트_null이_입력되면_0이_리턴된다")
+    @DisplayName("🟢 순위계산_테스트_null이_입력되면_0이_리턴된다")
     void getPositionTest_순위계산_테스트_null이_입력되면_0이_리턴된다() {
 
         // When
@@ -51,11 +51,11 @@ class QueueTest {
         String waitTime = Queue.getRemainingWaitTime(1L);
 
         // Then
-        assertEquals("00분 10초", waitTime);
+        assertEquals("00시간 00분 10초", waitTime);
     }
 
     @Test
-    @DisplayName("🔴 잔여시간계산_테스트_0이_입력되면_null반환")
+    @DisplayName("🟢 잔여시간계산_테스트_0이_입력되면_null반환")
     void getRemainingWaitTimeTest_잔여시간계산_테스트_0이_입력되면_null반환() {
 
         // When

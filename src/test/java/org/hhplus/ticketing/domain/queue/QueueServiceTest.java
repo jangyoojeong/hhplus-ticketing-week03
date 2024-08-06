@@ -49,7 +49,6 @@ public class QueueServiceTest {
         // Then
         assertNotNull(result);
         assertNotNull(result.getToken());
-        assertEquals(1L, result.getPosition());
     }
 
     @Test
