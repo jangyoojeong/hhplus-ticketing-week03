@@ -12,9 +12,8 @@ spring:
     username: myuser                          # MySQL DB 접속 ID
     password: mypassword                      # MySQL DB 접속 PW
 
-
+  # Redis 설정
   data:
-    # Redis 설정
     redis:
       host: localhost
       port: 6379
