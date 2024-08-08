@@ -131,7 +131,6 @@ public class ConcertService {
      */
     @Transactional
     public ConcertResult.AssignSeat assignSeat(Long reservationId) {
-
         Reservation reservation = getReservation(reservationId);
         reservation.setOccupied();
         concertRepository.saveReservation(reservation);
