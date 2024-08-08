@@ -1,8 +1,9 @@
 package org.hhplus.ticketing.interfaces.controller.payment;
 
+import org.hhplus.ticketing.application.payment.PaymentCreteria;
 import org.hhplus.ticketing.application.payment.PaymentFacade;
 import org.hhplus.ticketing.domain.payment.model.PaymentCommand;
-import org.hhplus.ticketing.domain.payment.model.PaymentResult;
+import org.hhplus.ticketing.application.payment.PaymentResult;
 import org.hhplus.ticketing.interfaces.controller.payment.dto.request.PaymentRequest;
 import org.hhplus.ticketing.interfaces.controller.payment.dto.response.PaymentResponse;
 import org.junit.jupiter.api.BeforeEach;
@@ -47,10 +48,10 @@ public class PaymentControllerUnitTest {
         int point = 2000;
 
         PaymentRequest.Pay request = new PaymentRequest.Pay(userId, reservationId);
-        PaymentResult.Pay result = new PaymentResult.Pay(1L, userId, point);
+        PaymentResult.Pay result = new PaymentResult.Pay(1L);
         PaymentResponse.Pay response = PaymentResponse.Pay.from(result);
 
-        given(paymentFacade.pay(eq(token), any(PaymentCommand.Pay.class))).willReturn(result);
+        given(paymentFacade.pay(any(PaymentCreteria.Pay.class))).willReturn(result);
 
         // When
         ResponseEntity<PaymentResponse.Pay> responseEntity = paymentController.pay("Bearer " + token, request);
