@@ -79,7 +79,7 @@ public class QueueService {
      * 주기적으로 실행되어 일정 수의 대기 중인 토큰을 활성화 상태로 변경합니다.
      */
     public void activate() {
-        Set<String> waitingTokens = queueRepository.getActivatableTokens(0, QueueConstants.MAX_ACTIVE_TOKENS - 1);
+        Set<String> waitingTokens = queueRepository.getActivatableTokens(0, QueueConstants.MAX_ACTIVE_USERS - 1);
         if (waitingTokens.isEmpty()) return;
 
         queueRepository.activate(waitingTokens);

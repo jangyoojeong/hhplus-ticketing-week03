@@ -178,7 +178,7 @@ public class QueueIntegrationTest {
     void activateTest_대기열_상태_업데이트_테스트_WAITING_토큰_중_MAX_ACTIVE_TOKENS_개수만_활성화된다() {
 
         // Given
-        for (int i = 0; i < QueueConstants.MAX_ACTIVE_TOKENS + 5; i++) {
+        for (int i = 0; i < QueueConstants.MAX_ACTIVE_USERS + 5; i++) {
             Queue queue = Queue.create();
             queueRepository.addWaiting(queue);
         }
@@ -188,7 +188,7 @@ public class QueueIntegrationTest {
 
         // Then
         Long count = queueRepository.countActiveTokens();
-        assertThat(count).isEqualTo(QueueConstants.MAX_ACTIVE_TOKENS);
+        assertThat(count).isEqualTo(QueueConstants.MAX_ACTIVE_USERS);
     }
 
     @Test
