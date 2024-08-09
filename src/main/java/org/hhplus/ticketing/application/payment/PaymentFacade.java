@@ -30,7 +30,6 @@ public class PaymentFacade {
      * @return 결제 result 객체
      */
     public PaymentResult.Pay pay(PaymentCreteria.Pay creteria) {
-        log.info("결제파사드 진입");
         Reservation reservation = concertService.getReservation(creteria.getReservationId());
         PaymentCommand.Pay paymentCommand = PaymentCommand.Pay.builder()
                 .userId(creteria.getUserId())
