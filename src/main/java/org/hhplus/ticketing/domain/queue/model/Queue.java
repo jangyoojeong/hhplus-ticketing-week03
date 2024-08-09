@@ -44,7 +44,7 @@ public class Queue {
         long peopleAhead = position - 1;
 
         // (앞에 대기중인 유저의 수 / 한 사이클에서 처리할 수 있는 유저의 수) * 한 사이클의 시간
-        long totalSeconds = (long) Math.ceil((double) peopleAhead / QueueConstants.MAX_ACTIVE_TOKENS) * QueueConstants.INTERVAL_SECONDS;
+        long totalSeconds = (long) Math.ceil((double) peopleAhead / QueueConstants.MAX_ACTIVE_USERS) * QueueConstants.INTERVAL_SECONDS;
 
         // 최소 한 사이클의 시간 추가
         totalSeconds = Math.max(totalSeconds, QueueConstants.INTERVAL_SECONDS);

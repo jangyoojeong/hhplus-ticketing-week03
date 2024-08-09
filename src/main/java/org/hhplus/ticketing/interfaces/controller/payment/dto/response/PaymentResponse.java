@@ -4,29 +4,22 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hhplus.ticketing.domain.payment.model.PaymentResult;
+import org.hhplus.ticketing.application.payment.PaymentResult;
 
-// 결제 컨트롤러 단위테스트입니다.
 public class PaymentResponse {
 
-    // 결제 진행 response
+    // 결제 response
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
     @Builder
     public static class Pay {
-
         private Long paymentId;                 // 결제ID
-        private Long userId;                    // 사용자ID
-        private int point;                      // 포인트 (결제 후 포인트)
 
         public static Pay from(PaymentResult.Pay result) {
             return Pay.builder()
                     .paymentId(result.getPaymentId())
-                    .userId(result.getUserId())
-                    .point(result.getPoint())
                     .build();
         }
-
     }
 }

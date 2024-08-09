@@ -1,22 +1,24 @@
 package org.hhplus.ticketing.domain.payment;
 
+import org.hhplus.ticketing.domain.payment.event.PaymentEvent;
+import org.hhplus.ticketing.domain.payment.event.PaymentEventPublisher;
 import org.hhplus.ticketing.domain.payment.model.PaymentCommand;
 import org.hhplus.ticketing.domain.payment.model.Payment;
-import org.hhplus.ticketing.domain.payment.model.PaymentResult;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.*;
+import org.springframework.context.ApplicationEventPublisher;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
-import static org.mockito.Mockito.times;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatNoException;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 
 // 결제 서비스 단위테스트입니다.
@@ -26,8 +28,14 @@ class PaymentServiceTest {
     private PaymentService paymentService;
     @Mock
     private PaymentRepository paymentRepository;
+    @Mock
+    private PaymentEventPublisher eventPublisher;
+    @Mock
+    private ApplicationEventPublisher applicationEventPublisher;
+    @Captor
+    private ArgumentCaptor<PaymentEvent.Success> eventCaptor;
 
-    private Payment paymentDomain;
+    private Payment payment;
     private int price;
 
     @BeforeEach
@@ -36,7 +44,7 @@ class PaymentServiceTest {
 
         price = 1000;
 
-        paymentDomain = Payment.builder()
+        payment = Payment.builder()
                 .paymentId(1L)
                 .reservationId(1L)
                 .price(price)
@@ -46,19 +54,21 @@ class PaymentServiceTest {
     }
 
     @Test
-    @DisplayName("🟢 좌석_결제_요청_정상적으로_실행된다")
-    void createPayment_History_좌석_결제_요청_정상적으로_실행된다() {
+    @DisplayName("🟢 결제요청_테스트_결제를_생성하고_관련_이벤트를_성공적으로_발행한다")
+    void payTest_결제요청_테스트_결제를_생성하고_관련_이벤트를_성공적으로_발행한다() {
 
         // Given
-        PaymentCommand.Pay command = new PaymentCommand.Pay(1L, 1L, price);
-        given(paymentRepository.save(any(Payment.class))).willReturn(paymentDomain);
+        String token = UUID.randomUUID().toString();
+        PaymentCommand.Pay command = new PaymentCommand.Pay(1L, 1L, price, token);
+        given(paymentRepository.save(any(Payment.class))).willReturn(payment);
 
         // When
-        PaymentResult.Pay result = paymentService.createPayment(command);
+        Payment result = paymentService.pay(command);
 
         // Then
         assertNotNull(result);
-        assertEquals(PaymentResult.Pay.from(paymentDomain), result);
-        verify(paymentRepository, times(1)).save(any(Payment.class));
+        assertEquals(payment.getPaymentId(), result.getPaymentId());
+        verify(paymentRepository).save(any(Payment.class));
+        verify(eventPublisher).success(any(PaymentEvent.Success.class));
     }
 }

@@ -5,11 +5,11 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hhplus.ticketing.domain.payment.model.PaymentCommand;
+import org.hhplus.ticketing.application.payment.PaymentCreteria;
 
 public class PaymentRequest {
 
-    // 결제 진행 request
+    // 결제 request
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
@@ -22,10 +22,11 @@ public class PaymentRequest {
         @NotNull(message = "예약 ID는 비어 있을 수 없습니다.")
         private Long reservationId;             // 예약ID
 
-        public PaymentCommand.Pay toCommand() {
-            return PaymentCommand.Pay.builder()
+        public PaymentCreteria.Pay toCreteria(String token) {
+            return PaymentCreteria.Pay.builder()
                     .userId(this.getUserId())
                     .reservationId(this.getReservationId())
+                    .token(token)
                     .build();
         }
     }

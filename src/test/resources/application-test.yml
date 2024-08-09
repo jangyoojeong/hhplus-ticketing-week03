@@ -10,8 +10,13 @@ spring:
     username: testuser                          # 테스트용 MySQL DB 접속 ID
     password: testpassword                      # 테스트용 MySQL DB 접속 PW
 
-  # page 설정
+  # Redis 설정
   data:
+    redis:
+      host: localhost
+      port: 6379
+
+    # page 설정
     web:
       pageable:
         default-page-size: 20
@@ -31,32 +36,27 @@ spring:
   cache:
     type: redis
 
-  # Redis 설정
-  redis:
-    host: localhost
-    port: 6379
-
 logging:
   level:
     org:
       hibernate:
-        SQL: OFF
+        SQL: DEBUG # Hibernate SQL 로그를 디버그 레벨로 설정
         type:
           descriptor:
             sql:
-              BasicBinder: OFF
+              BasicBinder: TRACE # SQL 바인딩 정보 로깅
     springframework:
       jdbc:
         core:
-          JdbcTemplate: OFF
-          StatementCreatorUtils: OFF
+          JdbcTemplate: DEBUG # JdbcTemplate 로그를 디버그 레벨로 설정
+          StatementCreatorUtils: DEBUG # StatementCreatorUtils 로그를 디버그 레벨로 설정
       orm:
-        jpa: OFF
-      transaction: OFF
+        jpa: DEBUG # JPA 로그를 디버그 레벨로 설정
+      transaction: DEBUG # 트랜잭션 로그를 디버그 레벨로 설정
       data:
         jpa:
           repository:
-            query: OFF
+            query: DEBUG # JPA 쿼리 로그를 디버그 레벨로 설정
           support:
-            SimpleJpaRepository: OFF
-      orm.jpa.vendor.HibernateJpaDialect: OFF
+            SimpleJpaRepository: DEBUG # SimpleJpaRepository 로그를 디버그 레벨로 설정
+      orm.jpa.vendor.HibernateJpaDialect: DEBUG # HibernateJpaDialect 로그를 디버그 레벨로 설정

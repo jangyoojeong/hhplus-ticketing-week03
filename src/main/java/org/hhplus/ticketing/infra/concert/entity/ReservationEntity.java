@@ -46,7 +46,7 @@ public class ReservationEntity {
 
     @Version
     @Column(name = "version")
-    private Long version;                           // 낙관적 락 버전 필드
+    private Long version = 0L;                           // 낙관적 락 버전 필드
 
     @PrePersist
     private void prePersist() {
