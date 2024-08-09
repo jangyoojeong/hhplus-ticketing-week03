@@ -17,7 +17,11 @@
 
 - [동시성 분석 자료](https://tide-stoplight-55c.notion.site/9b80d52f4a4d48f79d0fbd4d7bda573e?pvs=4)
 
-- [성능 개선 전략](https://www.notion.so/7ab1f27490b443c8945c19a2f8c07f54)
+- [성능 개선 전략](https://tide-stoplight-55c.notion.site/7ab1f27490b443c8945c19a2f8c07f54?pvs=4)
+
+- [쿼리 성능 개선 보고서](https://tide-stoplight-55c.notion.site/e6106c4e976f4747b16e13592bd810e5?pvs=4)
+
+- [MSA 서비스 분리 제안서](https://tide-stoplight-55c.notion.site/MSA-74c107b5832d40aab57609e7fb136a03?pvs=4)
 
 ---
 
