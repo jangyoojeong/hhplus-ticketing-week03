@@ -20,17 +20,7 @@ public class PaymentEventListener {
     @Async
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void paymentSuccessHandler(PaymentEvent.Success event) {
-        log.info("결제 리슨!");
-        try {
-            log.info("Starting push notification...");
-            pushClient.sendKakaotalk("결제완료", event);
-            log.info("Push notification completed.");
-
-            log.info("Starting data platform sync...");
-            dataPlatformClient.send("결제완료", event);
-            log.info("Data platform sync completed.");
-        } catch (Exception e) {
-            log.error("Error in event listener", e);
-        }
+        pushClient.sendKakaotalk("결제완료", event);
+        dataPlatformClient.send("결제완료", event);
     }
 }
