@@ -6,7 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hhplus.ticketing.domain.concert.model.ConcertCommand;
+import org.hhplus.ticketing.application.concert.ConcertCriteria;
 
 import java.time.LocalDateTime;
 
@@ -22,8 +22,8 @@ public class ConcertRequest {
         @NotNull(message = "콘서트 이름은 비어 있을 수 없습니다.")
         private String concertName;                    // 콘서트 이름
 
-        public ConcertCommand.SaveConcert toCommand() {
-            return ConcertCommand.SaveConcert
+        public ConcertCriteria.SaveConcert toCriteria() {
+            return ConcertCriteria.SaveConcert
                     .builder()
                     .concertName(this.getConcertName())
                     .build();
@@ -47,8 +47,8 @@ public class ConcertRequest {
         @Min(value = 1, message = "콘서트 정원은 최소 1명 이상이어야 합니다.")
         private int capacity;           // 콘서트 정원
 
-        public ConcertCommand.SaveConcertOption toCommand() {
-            return ConcertCommand.SaveConcertOption.builder()
+        public ConcertCriteria.SaveConcertOption toCriteria() {
+            return ConcertCriteria.SaveConcertOption.builder()
                     .concertId(this.getConcertId())
                     .concertAt(this.getConcertAt())
                     .capacity(this.getCapacity())
@@ -69,8 +69,8 @@ public class ConcertRequest {
         @NotNull(message = "콘서트좌석ID는 비어 있을 수 없습니다.")
         private Long concertSeatId;             // 콘서트좌석ID
 
-        public ConcertCommand.ReserveSeat toCommand() {
-            return ConcertCommand.ReserveSeat
+        public ConcertCriteria.ReserveSeat toCriteria() {
+            return ConcertCriteria.ReserveSeat
                     .builder()
                     .userId(this.getUserId())
                     .concertSeatId(this.getConcertSeatId())

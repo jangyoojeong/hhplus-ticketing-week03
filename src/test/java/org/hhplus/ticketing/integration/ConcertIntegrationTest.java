@@ -1,6 +1,8 @@
 package org.hhplus.ticketing.integration;
 
+import org.hhplus.ticketing.application.concert.ConcertCriteria;
 import org.hhplus.ticketing.application.concert.ConcertFacade;
+import org.hhplus.ticketing.application.concert.ConcertResult;
 import org.hhplus.ticketing.domain.common.exception.CustomException;
 import org.hhplus.ticketing.domain.common.exception.ErrorCode;
 import org.hhplus.ticketing.domain.concert.ConcertRepository;
@@ -140,7 +142,7 @@ public class ConcertIntegrationTest {
         String concertName = "콘서트1";
 
         // When
-        ConcertResult.SaveConcert retult = concertFacade.saveConcert(new ConcertCommand.SaveConcert("콘서트1"));
+        ConcertResult.SaveConcert retult = concertFacade.saveConcert(new ConcertCriteria.SaveConcert("콘서트1"));
 
         assertThat(retult.getConcertName()).isEqualTo(concertName);
     }
@@ -179,7 +181,7 @@ public class ConcertIntegrationTest {
         LocalDateTime concertAt = LocalDateTime.now().plusDays(1);
         int capacity = 50;
 
-        ConcertCommand.SaveConcertOption command = new ConcertCommand.SaveConcertOption(concertId, concertAt, capacity);
+        ConcertCriteria.SaveConcertOption command = new ConcertCriteria.SaveConcertOption(concertId, concertAt, capacity);
 
         // When
         ConcertResult.SaveConcertOption retult = concertFacade.saveConcertOption(command);
@@ -257,7 +259,7 @@ public class ConcertIntegrationTest {
     @DisplayName("🟢 좌석_예약_테스트_좌석_예약_성공시_예약된_정보가_반환된다")
     void reserveSeatTest_좌석_예약_테스트_좌석_예약_성공시_예약된_정보가_반환된다() {
         // Given
-        ConcertCommand.ReserveSeat command = new ConcertCommand.ReserveSeat(userId, concertSeatId1);
+        ConcertCriteria.ReserveSeat command = new ConcertCriteria.ReserveSeat(userId, concertSeatId1);
 
         // When
         ConcertResult.ReserveSeat actualResult = concertFacade.reserveSeat(command);
@@ -274,7 +276,7 @@ public class ConcertIntegrationTest {
     @DisplayName("🔴 좌석_예약_테스트_해당_좌석이_예약가능한_상태가_아닐_경우_SEAT_NOT_FOUND_예외반환")
     void reserveSeatTest_좌석_예약_테스트_해당_좌석이_예약가능한_상태가_아닐_경우_SEAT_NOT_FOUND_예외반환() {
         // Given
-        ConcertCommand.ReserveSeat command = new ConcertCommand.ReserveSeat(userId, concertSeatId1);
+        ConcertCriteria.ReserveSeat command = new ConcertCriteria.ReserveSeat(userId, concertSeatId1);
 
         // 좌석을 미리 예약
         concertFacade.reserveSeat(command);

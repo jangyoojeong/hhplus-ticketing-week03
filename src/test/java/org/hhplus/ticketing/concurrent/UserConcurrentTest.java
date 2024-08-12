@@ -1,8 +1,8 @@
 package org.hhplus.ticketing.concurrent;
 
+import org.hhplus.ticketing.application.user.UserCriteria;
 import org.hhplus.ticketing.application.user.UserFacade;
 import org.hhplus.ticketing.domain.user.UserPointRepository;
-import org.hhplus.ticketing.domain.user.model.UserCommand;
 import org.hhplus.ticketing.domain.user.model.UserInfo;
 import org.hhplus.ticketing.domain.user.model.UserPoint;
 import org.hhplus.ticketing.utils.TestDataInitializer;
@@ -65,8 +65,8 @@ public class UserConcurrentTest {
         // Given
         int addPoint = 5000;
 
-        // 잔액 충전 요청 command 객체 생성
-        UserCommand.ChargePoint command = UserCommand.ChargePoint.builder()
+        // 잔액 충전 요청 criteria 객체 생성
+        UserCriteria.ChargePoint criteria = UserCriteria.ChargePoint.builder()
                 .userId(userId1)
                 .amount(addPoint)
                 .build();
@@ -88,7 +88,7 @@ public class UserConcurrentTest {
                 Instant start = Instant.now();
                 log.info("{} - 시작 시간 : {}", currentThreadNm, start);
                 try {
-                    userFacade.chargePoint(command);
+                    userFacade.chargePoint(criteria);
                     return null;
                 } catch (Exception e) {
                     log.error("{} - 예외 발생 : {}", currentThreadNm, e.getMessage());

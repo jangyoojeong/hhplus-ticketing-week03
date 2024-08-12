@@ -1,6 +1,6 @@
 package org.hhplus.ticketing.concurrent;
 
-import org.hhplus.ticketing.application.payment.PaymentCreteria;
+import org.hhplus.ticketing.application.payment.PaymentCriteria;
 import org.hhplus.ticketing.application.payment.PaymentFacade;
 import org.hhplus.ticketing.application.user.UserFacade;
 import org.hhplus.ticketing.domain.concert.ConcertRepository;
@@ -8,7 +8,6 @@ import org.hhplus.ticketing.domain.concert.model.ConcertSeat;
 import org.hhplus.ticketing.domain.concert.model.Reservation;
 import org.hhplus.ticketing.domain.payment.PaymentRepository;
 import org.hhplus.ticketing.domain.payment.model.Payment;
-import org.hhplus.ticketing.domain.payment.model.PaymentCommand;
 import org.hhplus.ticketing.domain.queue.QueueRepository;
 import org.hhplus.ticketing.domain.queue.model.Queue;
 import org.hhplus.ticketing.domain.user.UserPointRepository;
@@ -122,7 +121,7 @@ public class PaymentConcurrentTest {
     void concurrentRequestPaymentTest_결제_요청_동시성_테스트_결제_요청을_따닥_클릭시_하나를_제외하고_실패해야한다()  {
         // Given
         // 결제 요청 command 객체 생성
-        PaymentCreteria.Pay creteria = new PaymentCreteria.Pay(userId, reservationId, price, token);
+        PaymentCriteria.Pay creteria = new PaymentCriteria.Pay(userId, reservationId, price, token);
 
         // 10개의 스레드를 통해 동시에 요청 시도
         int numberOfThreads = 10;

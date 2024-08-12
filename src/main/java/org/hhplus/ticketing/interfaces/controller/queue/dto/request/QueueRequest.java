@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hhplus.ticketing.domain.queue.model.QueueCommand;
+import org.hhplus.ticketing.application.queue.QueueCriteria;
 
 public class QueueRequest {
 
@@ -19,8 +19,11 @@ public class QueueRequest {
         @NotNull(message = "사용자 ID는 비어 있을 수 없습니다.")
         private Long userId;                    // 유저ID
 
-        public QueueCommand.IssueToken toCommand() {
-            return QueueCommand.IssueToken.builder().userId(this.getUserId()).build();
+        public QueueCriteria.IssueToken toCriteria() {
+            return QueueCriteria.IssueToken
+                    .builder()
+                    .userId(this.getUserId())
+                    .build();
         }
     }
 }

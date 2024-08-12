@@ -2,8 +2,6 @@ package org.hhplus.ticketing.application.queue;
 
 import lombok.RequiredArgsConstructor;
 import org.hhplus.ticketing.domain.queue.QueueService;
-import org.hhplus.ticketing.domain.queue.model.QueueCommand;
-import org.hhplus.ticketing.domain.queue.model.QueueResult;
 import org.hhplus.ticketing.domain.user.UserInfoService;
 import org.springframework.stereotype.Component;
 
@@ -24,13 +22,13 @@ public class QueueFacade {
      * @param command 토큰 발급 요청 command 객체
      * @return 발급된 토큰과 대기열 정보를 포함한 result 객체
      */
-    public QueueResult.IssueToken issueToken(QueueCommand.IssueToken command) {
+    public QueueResult.IssueToken issueToken(QueueCriteria.IssueToken command) {
 
         // 1. 유저 정보 확인 (유저 정보 없을 시 예외 리턴)
         userInfoService.validateUser(command.getUserId());
 
         // 2. 대기열 토큰 발급 및 리턴
-        return queueService.issueToken();
+        return QueueResult.IssueToken.from(queueService.issueToken());
     }
 
     /**
@@ -40,7 +38,7 @@ public class QueueFacade {
      * @return 대기순번 등 대기열 상태 result 객체
      */
     public QueueResult.QueueStatus getQueueStatus(String token) {
-        return queueService.getQueueStatus(token);
+        return QueueResult.QueueStatus.from(queueService.getQueueStatus(token));
     }
 
     /**

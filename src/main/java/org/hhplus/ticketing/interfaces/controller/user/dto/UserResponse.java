@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hhplus.ticketing.domain.user.model.UserResult;
+import org.hhplus.ticketing.application.user.UserResult;
 
 public class UserResponse {
 

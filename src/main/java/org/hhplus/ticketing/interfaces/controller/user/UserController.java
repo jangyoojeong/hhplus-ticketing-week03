@@ -28,7 +28,7 @@ public class UserController {
     @PutMapping("/points/charge")
     @Operation(summary = "잔액 충전 API", description = "사용자의 잔액을 충전합니다.")
     public ResponseEntity<UserResponse.ChargePoint> addUserPoint(@Valid @RequestBody UserRequest.ChargePoint request) {
-        return ResponseEntity.status(HttpStatus.OK).body(UserResponse.ChargePoint.from(userFacade.chargePoint(request.toCommand())));
+        return ResponseEntity.status(HttpStatus.OK).body(UserResponse.ChargePoint.from(userFacade.chargePoint(request.toCriteria())));
     }
 
     /**

@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hhplus.ticketing.application.payment.PaymentCreteria;
+import org.hhplus.ticketing.application.payment.PaymentCriteria;
 
 public class PaymentRequest {
 
@@ -22,8 +22,8 @@ public class PaymentRequest {
         @NotNull(message = "예약 ID는 비어 있을 수 없습니다.")
         private Long reservationId;             // 예약ID
 
-        public PaymentCreteria.Pay toCreteria(String token) {
-            return PaymentCreteria.Pay.builder()
+        public PaymentCriteria.Pay toCriteria(String token) {
+            return PaymentCriteria.Pay.builder()
                     .userId(this.getUserId())
                     .reservationId(this.getReservationId())
                     .token(token)

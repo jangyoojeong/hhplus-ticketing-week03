@@ -5,9 +5,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-public class PaymentCreteria {
+public class PaymentCriteria {
 
-    // 결제 creteria
+    // 결제 criteria
     @Data
     @NoArgsConstructor
     @AllArgsConstructor

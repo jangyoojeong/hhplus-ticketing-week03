@@ -2,7 +2,7 @@ package org.hhplus.ticketing.domain.queue;
 
 import org.hhplus.ticketing.domain.common.exception.CustomException;
 import org.hhplus.ticketing.domain.common.exception.ErrorCode;
-import org.hhplus.ticketing.domain.queue.model.QueueResult;
+import org.hhplus.ticketing.domain.queue.model.Queue;
 import org.hhplus.ticketing.domain.queue.model.constants.QueueConstants;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -44,7 +44,7 @@ public class QueueServiceTest {
         given(queueRepository.getWaitingPosition(anyString())).willReturn(0L);
 
         // When
-        QueueResult.IssueToken result = queueService.issueToken();
+        Queue result = queueService.issueToken();
 
         // Then
         assertNotNull(result);

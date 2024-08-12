@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.hhplus.ticketing.domain.common.exception.CustomException;
 import org.hhplus.ticketing.domain.common.exception.ErrorCode;
 import org.hhplus.ticketing.domain.queue.model.Queue;
-import org.hhplus.ticketing.domain.queue.model.QueueResult;
 import org.hhplus.ticketing.domain.queue.model.constants.QueueConstants;
 import org.springframework.stereotype.Service;
 
@@ -25,12 +24,12 @@ public class QueueService {
      * 콘서트 대기열에 입장할 때 사용하는 토큰을 발급합니다.
      * 사용자는 이 토큰을 통해 대기열에 대한 인증을 받을 수 있습니다.
      *
-     * @return 발급된 토큰과 대기열 정보를 포함한 result 객체
+     * @return 발급된 토큰과 대기열 정보를 포함한 domain 객체
      */
-    public QueueResult.IssueToken issueToken() {
+    public Queue issueToken() {
         Queue queue = Queue.create();
         queueRepository.addWaiting(queue);
-        return QueueResult.IssueToken.from(queue);
+        return queue;
     }
 
     /**
@@ -47,11 +46,11 @@ public class QueueService {
      * 사용자의 대기열 상태(대기순번 등)를 반환합니다.
      *
      * @param token 대기열 상태 조회할 토큰
-     * @return 대기순번 등 대기열 상태 result 객체
+     * @return 대기순번 등 대기열 상태 domain 객체
      */
-    public QueueResult.QueueStatus getQueueStatus(String token) {
+    public Queue getQueueStatus(String token) {
         Long position = getWaitingPosition(token);
-        return QueueResult.QueueStatus.from(Queue.getWaitingInfo(position));
+        return Queue.getWaitingInfo(position);
     }
 
     /**

@@ -4,8 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hhplus.ticketing.domain.queue.model.Queue;
-import org.hhplus.ticketing.domain.queue.model.QueueResult;
+import org.hhplus.ticketing.application.queue.QueueResult;
 
 public class QueueResponse {
 

@@ -1,28 +1,12 @@
-package org.hhplus.ticketing.domain.user.model;
+package org.hhplus.ticketing.application.user;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hhplus.ticketing.domain.user.model.UserPoint;
 
 public class UserResult {
-
-    // 사용자 조회 result
-    @Data
-    @NoArgsConstructor
-    @AllArgsConstructor
-    @Builder
-    public static class GetUser {
-        private Long userId;           // 유저ID (키값)
-        private String userName;       // 유저 이름
-
-        public static GetUser from(UserInfo domain) {
-            return GetUser.builder()
-                    .userId(domain.getUserId())
-                    .userName(domain.getUserName())
-                    .build();
-        }
-    }
 
     // 사용자 잔액 충전 result
     @Data

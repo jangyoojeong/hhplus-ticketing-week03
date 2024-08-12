@@ -6,7 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hhplus.ticketing.domain.user.model.UserCommand;
+import org.hhplus.ticketing.application.user.UserCriteria;
 
 public class UserRequest {
 
@@ -22,10 +22,8 @@ public class UserRequest {
         @Min(value = 1, message = "충전 금액은 1원 이상이어야 합니다.")
         private int amount;                     // 충전금액
 
-        public UserCommand.ChargePoint toCommand() {
-            return UserCommand.ChargePoint.builder().userId(this.getUserId()).amount(this.getAmount()).build();
+        public UserCriteria.ChargePoint toCriteria() {
+            return UserCriteria.ChargePoint.builder().userId(this.getUserId()).amount(this.getAmount()).build();
         }
     }
-
-
 }

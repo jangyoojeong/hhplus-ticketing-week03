@@ -3,8 +3,6 @@ package org.hhplus.ticketing.application.concert;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.hhplus.ticketing.domain.concert.ConcertService;
-import org.hhplus.ticketing.domain.concert.model.ConcertCommand;
-import org.hhplus.ticketing.domain.concert.model.ConcertResult;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
@@ -22,11 +20,11 @@ public class ConcertFacade {
     /**
      * 콘서트를 저장합니다.
      *
-     * @param command 콘서트 저장 요청 command 객체
+     * @param criteria 콘서트 저장 요청 criteria 객체
      * @return 저장된 콘서트 정보를 포함한 result 객체
      */
-    public ConcertResult.SaveConcert saveConcert(ConcertCommand.SaveConcert command) {
-        return concertService.saveConcert(command);
+    public ConcertResult.SaveConcert saveConcert(ConcertCriteria.SaveConcert criteria) {
+        return ConcertResult.SaveConcert.from(concertService.saveConcert(criteria.toCommand()));
     }
 
     /**
@@ -35,17 +33,18 @@ public class ConcertFacade {
      * @return 콘서트 목록 응답 객체
      */
     public Page<ConcertResult.GetConcertList> getConcertList(Pageable pageable) {
-        return concertService.getConcertList(pageable);
+        return concertService.getConcertList(pageable)
+                .map(ConcertResult.GetConcertList::from);
     }
 
     /**
      * 콘서트 옵션을 저장합니다.
      *
-     * @param command 콘서트 옵션 저장 요청 command 객체
+     * @param criteria 콘서트 옵션 저장 요청 criteria 객체
      * @return 저장된 콘서트 정보를 포함한 result 객체
      */
-    public ConcertResult.SaveConcertOption saveConcertOption(ConcertCommand.SaveConcertOption command) {
-        return concertService.saveConcertOption(command);
+    public ConcertResult.SaveConcertOption saveConcertOption(ConcertCriteria.SaveConcertOption criteria) {
+        return ConcertResult.SaveConcertOption.from(concertService.saveConcertOption(criteria.toCommand()));
     }
 
     /**
@@ -55,27 +54,27 @@ public class ConcertFacade {
      * @return 예약 가능한 날짜 목록을 포함한 result 객체
      */
     public ConcertResult.GetAvailableDates getAvailableDates(Long concertId) {
-        return concertService.getAvailableDates(concertId);
+        return ConcertResult.GetAvailableDates.from(concertService.getAvailableDates(concertId));
     }
 
     /**
      * 특정 콘서트 옵션에 대해 예약 가능한 좌석을 조회합니다.
      *
-     * @param concertOptionId 좌석 예약 요청 command 객체
+     * @param concertOptionId 좌석 예약 요청 criteria 객체
      * @return 예약 가능한 좌석 목록을 포함한 result 객체
      */
     public ConcertResult.GetAvailableSeats getAvailableSeats(Long concertOptionId) {
-        return concertService.getAvailableSeats(concertOptionId);
+        return ConcertResult.GetAvailableSeats.from(concertService.getAvailableSeats(concertOptionId));
     }
 
     /**
      * 특정 콘서트 옵션의 좌석을 예약합니다. (낙관적락)
      *
-     * @param command 좌석 예약 요청 command 객체
+     * @param criteria 좌석 예약 요청 criteria 객체
      * @return 좌석 예약 정보를 포함한 result 객체
      */
-    public ConcertResult.ReserveSeat reserveSeat(ConcertCommand.ReserveSeat command) {
-        return concertService.reserveSeat(command);
+    public ConcertResult.ReserveSeat reserveSeat(ConcertCriteria.ReserveSeat criteria) {
+        return ConcertResult.ReserveSeat.from(concertService.reserveSeat(criteria.toCommand()));
     }
 
     /**

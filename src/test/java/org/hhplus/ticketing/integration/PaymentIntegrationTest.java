@@ -1,6 +1,6 @@
 package org.hhplus.ticketing.integration;
 
-import org.hhplus.ticketing.application.payment.PaymentCreteria;
+import org.hhplus.ticketing.application.payment.PaymentCriteria;
 import org.hhplus.ticketing.application.payment.PaymentFacade;
 import org.hhplus.ticketing.domain.common.exception.CustomException;
 import org.hhplus.ticketing.domain.common.exception.ErrorCode;
@@ -8,18 +8,14 @@ import org.hhplus.ticketing.domain.concert.ConcertRepository;
 import org.hhplus.ticketing.domain.concert.model.ConcertSeat;
 import org.hhplus.ticketing.domain.concert.model.Reservation;
 import org.hhplus.ticketing.domain.payment.PaymentRepository;
-import org.hhplus.ticketing.domain.payment.event.PaymentEvent;
 import org.hhplus.ticketing.domain.payment.model.Payment;
-import org.hhplus.ticketing.domain.payment.model.PaymentCommand;
 import org.hhplus.ticketing.application.payment.PaymentResult;
 import org.hhplus.ticketing.domain.queue.QueueRepository;
 import org.hhplus.ticketing.domain.queue.model.Queue;
-import org.hhplus.ticketing.domain.user.UserPointRepository;
 import org.hhplus.ticketing.domain.user.UserPointService;
 import org.hhplus.ticketing.domain.user.model.UserCommand;
 import org.hhplus.ticketing.domain.user.model.UserInfo;
 import org.hhplus.ticketing.domain.user.model.UserPoint;
-import org.hhplus.ticketing.domain.user.model.UserResult;
 import org.hhplus.ticketing.utils.TestDataInitializer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -35,7 +31,6 @@ import java.util.Optional;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThatNoException;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
@@ -113,14 +108,14 @@ public class PaymentIntegrationTest {
     void requestPaymentTest_결제_요청_통합_테스트_결제가_성공하고_기존_50000포인트에서_30000포인트가_차감된_20000포인트가_조회된다() {
 
         // Given
-        PaymentCreteria.Pay creteria = new PaymentCreteria.Pay(userId, reservationId, price, token);
+        PaymentCriteria.Pay creteria = new PaymentCriteria.Pay(userId, reservationId, price, token);
 
         // When
         PaymentResult.Pay actualResult = paymentFacade.pay(creteria);
 
         // Then
         assertNotNull(actualResult);
-        UserResult.GetPoint pointResult = userPointService.getPointResult(userId);
+        UserPoint pointResult = userPointService.getPointResult(userId);
         assertEquals(savedUserPoint.getPoint() - price, pointResult.getPoint());
     }
 
@@ -129,7 +124,7 @@ public class PaymentIntegrationTest {
     void requestPaymentTest_결제_요청_통합_테스트_결제가_성공하고_결제정보가_적재된다() {
 
         // Given
-        PaymentCreteria.Pay creteria = new PaymentCreteria.Pay(userId, reservationId, price, token);
+        PaymentCriteria.Pay creteria = new PaymentCriteria.Pay(userId, reservationId, price, token);
 
         // When
         PaymentResult.Pay actualResult = paymentFacade.pay(creteria);
@@ -145,7 +140,7 @@ public class PaymentIntegrationTest {
     void requestPaymentTest_결제_요청_통합_테스트_결제가_성공하고_좌석_소유권이_배정된다() {
 
         // Given
-        PaymentCreteria.Pay creteria = new PaymentCreteria.Pay(userId, reservationId, price, token);
+        PaymentCriteria.Pay creteria = new PaymentCriteria.Pay(userId, reservationId, price, token);
 
         // When
         PaymentResult.Pay actualResult = paymentFacade.pay(creteria);
@@ -163,7 +158,7 @@ public class PaymentIntegrationTest {
     void requestPaymentTest_결제_요청_통합_테스트_결제가_성공하고_대기열_토큰이_만료된다() {
 
         // Given
-        PaymentCreteria.Pay creteria = new PaymentCreteria.Pay(userId, reservationId, price, token);
+        PaymentCriteria.Pay creteria = new PaymentCriteria.Pay(userId, reservationId, price, token);
 
         // When
         PaymentResult.Pay actualResult = paymentFacade.pay(creteria);
@@ -179,7 +174,7 @@ public class PaymentIntegrationTest {
 
         // Given
         Long nonExistentReservationId = 99L;    // 존재하지 않는 예약코드
-        PaymentCreteria.Pay creteria = new PaymentCreteria.Pay(userId, nonExistentReservationId, price, token);
+        PaymentCriteria.Pay creteria = new PaymentCriteria.Pay(userId, nonExistentReservationId, price, token);
 
         // When & Then
         assertThatThrownBy(() -> paymentFacade.pay(creteria))
@@ -196,7 +191,7 @@ public class PaymentIntegrationTest {
         int amount = 100000;
         userPointService.usePoint(new UserCommand.UsePoint(savedUserPoint.getUserId(), amount));
 
-        PaymentCreteria.Pay creteria = new PaymentCreteria.Pay(userId, reservationId, amount, token);
+        PaymentCriteria.Pay creteria = new PaymentCriteria.Pay(userId, reservationId, amount, token);
 
         // When & Then
         assertThatThrownBy(() -> paymentFacade.pay(creteria))
@@ -212,7 +207,7 @@ public class PaymentIntegrationTest {
         // Given
         String nonExistentToken = UUID.randomUUID().toString();
 
-        PaymentCreteria.Pay creteria = new PaymentCreteria.Pay(userId, reservationId, price, nonExistentToken);
+        PaymentCriteria.Pay creteria = new PaymentCriteria.Pay(userId, reservationId, price, nonExistentToken);
 
         // When & Then
         assertThatThrownBy(() -> paymentFacade.pay(creteria))

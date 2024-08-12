@@ -3,7 +3,6 @@ package org.hhplus.ticketing.domain.user;
 import org.hhplus.ticketing.domain.common.exception.CustomException;
 import org.hhplus.ticketing.domain.common.exception.ErrorCode;
 import org.hhplus.ticketing.domain.user.model.UserInfo;
-import org.hhplus.ticketing.domain.user.model.UserResult;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -47,7 +46,7 @@ class UserInfoServiceTest {
         given(userInfoRepository.getUser(anyLong())).willReturn(Optional.of(userInfoDomain));
 
         // When
-        UserResult.GetUser result = userInfoService.validateUser(userInfoDomain.getUserId());
+        UserInfo result = userInfoService.validateUser(userInfoDomain.getUserId());
 
         // Then
         assertNotNull(result);

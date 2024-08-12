@@ -1,9 +1,8 @@
 package org.hhplus.ticketing.interfaces.controller.queue;
 
+import org.hhplus.ticketing.application.queue.QueueCriteria;
 import org.hhplus.ticketing.application.queue.QueueFacade;
-import org.hhplus.ticketing.domain.queue.model.Queue;
-import org.hhplus.ticketing.domain.queue.model.QueueCommand;
-import org.hhplus.ticketing.domain.queue.model.QueueResult;
+import org.hhplus.ticketing.application.queue.QueueResult;
 import org.hhplus.ticketing.interfaces.controller.queue.dto.request.QueueRequest;
 import org.hhplus.ticketing.interfaces.controller.queue.dto.response.QueueResponse;
 import org.junit.jupiter.api.BeforeEach;
@@ -47,7 +46,7 @@ public class QueueControllerUnitTest {
         QueueRequest.IssueToken request = new QueueRequest.IssueToken(userId);
         QueueResult.IssueToken result = new QueueResult.IssueToken(token);
 
-        given(queueFacade.issueToken(any(QueueCommand.IssueToken.class))).willReturn(result);
+        given(queueFacade.issueToken(any(QueueCriteria.IssueToken.class))).willReturn(result);
 
         // When
         ResponseEntity<Void> responseEntity = queueController.issueToken(request);

@@ -63,19 +63,20 @@ public class ConcertServiceTest {
     void getAvailableDatesTest_예약_가능한_날짜_조회_테스트() {
 
         // Given
-        List<ConcertOption> concertOptions = Arrays.asList(
+        List<ConcertOption> options = Arrays.asList(
                 new ConcertOption(1L, 1L, LocalDateTime.now().plusDays(1), 50),
                 new ConcertOption(2L, 1L, LocalDateTime.now().plusDays(2), 50)
         );
-        given(concertRepository.getAvailableDates(anyLong(), any(LocalDateTime.class))).willReturn(concertOptions);
+        given(concertRepository.getAvailableDates(anyLong(), any(LocalDateTime.class))).willReturn(options);
 
         // When
-        ConcertResult.GetAvailableDates result = concertService.getAvailableDates(1L);
+        List<ConcertOption> result = concertService.getAvailableDates(1L);
 
         // Then
-        assertNotNull(result);
-        assertEquals(1L, result.getConcertId());
-        assertEquals(2, result.getAvailableDates().size());
+        assertThat(result)
+                .hasSize(options.size())
+                .usingRecursiveFieldByFieldElementComparator()
+                .containsExactlyElementsOf(options);
     }
 
     @Test
@@ -83,16 +84,17 @@ public class ConcertServiceTest {
     void getAvailableSeatsTest_예약_가능한_좌석_조회_테스트() {
 
         // Given
-        List<ConcertSeat> concertSeats = Collections.singletonList(seat);
-        given(concertRepository.getAvailableSeats(anyLong())).willReturn(concertSeats);
+        List<ConcertSeat> seats = Collections.singletonList(seat);
+        given(concertRepository.getAvailableSeats(anyLong())).willReturn(seats);
 
         // When
-        ConcertResult.GetAvailableSeats result = concertService.getAvailableSeats(1L);
+        List<ConcertSeat> result = concertService.getAvailableSeats(1L);
 
         // Then
-        assertNotNull(result);
-        assertEquals(1L, result.getConcertOptionId());
-        assertEquals(1, result.getAvailableSeats().size());
+        assertThat(result)
+                .hasSize(seats.size())
+                .usingRecursiveFieldByFieldElementComparator()
+                .containsExactlyElementsOf(seats);
     }
 
     @Test
@@ -106,7 +108,7 @@ public class ConcertServiceTest {
         given(concertRepository.saveReservation(any(Reservation.class))).willReturn(reservation);
 
         // When
-        ConcertResult.ReserveSeat result = concertService.reserveSeat(command);
+        Reservation result = concertService.reserveSeat(command);
 
         // Then
         assertNotNull(result);
@@ -141,7 +143,6 @@ public class ConcertServiceTest {
         Reservation reservation = concertService.getReservation(reservationId);
 
         // Then
-        assertNotNull(reservation);
         assertEquals(reservationId, reservation.getReservationId());
         verify(concertRepository, times(1)).getActiveReservation(reservationId);
     }
@@ -179,10 +180,9 @@ public class ConcertServiceTest {
         given(concertRepository.saveSeat(any(ConcertSeat.class))).willReturn(seat);
 
         // When
-        ConcertResult.AssignSeat result = concertService.assignSeat(reservationId);
+        Reservation result = concertService.assignSeat(reservationId);
 
         // Then
-        assertNotNull(result);
         assertThat(result.getConcertSeatId()).isEqualTo(concertSeatId);
     }
 

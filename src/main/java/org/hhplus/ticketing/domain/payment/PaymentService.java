@@ -6,7 +6,6 @@ import org.hhplus.ticketing.domain.payment.event.PaymentEvent;
 import org.hhplus.ticketing.domain.payment.event.PaymentEventPublisher;
 import org.hhplus.ticketing.domain.payment.model.Payment;
 import org.hhplus.ticketing.domain.payment.model.PaymentCommand;
-import org.hhplus.ticketing.application.payment.PaymentResult;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,7 +30,7 @@ public class PaymentService {
     public Payment pay(PaymentCommand.Pay command) {
         // 1. 결제 생성
         Payment payment = paymentRepository.save(Payment.from(command));
-        // 결제 성공 이벤트 발행
+        // 2. 결제 성공 이벤트 발행
         eventPublisher.success(PaymentEvent.Success.builder()
                 .token(command.getToken())
                 .userId(command.getUserId())

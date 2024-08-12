@@ -2,7 +2,7 @@ package org.hhplus.ticketing.concurrent;
 
 import org.hhplus.ticketing.application.concert.ConcertFacade;
 import org.hhplus.ticketing.domain.concert.ConcertRepository;
-import org.hhplus.ticketing.domain.concert.model.ConcertCommand;
+import org.hhplus.ticketing.application.concert.ConcertCriteria;
 import org.hhplus.ticketing.domain.concert.model.Reservation;
 import org.hhplus.ticketing.utils.TestDataInitializer;
 import org.junit.jupiter.api.BeforeEach;
@@ -56,7 +56,7 @@ public class ConcertConcurrentTest {
         Long concertSeatId1 = 1L;
 
         // 좌석 예약 요청 command 객체 생성
-        ConcertCommand.ReserveSeat command = new ConcertCommand.ReserveSeat(userId, concertSeatId1);
+        ConcertCriteria.ReserveSeat command = new ConcertCriteria.ReserveSeat(userId, concertSeatId1);
 
         // 10개의 스레드를 통해 동시에 좌석 예약 시도
         int numberOfThreads = 10;
