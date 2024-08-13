@@ -1,7 +1,7 @@
 package org.hhplus.ticketing.interfaces.controller.concert.dto.response;
 
 import lombok.*;
-import org.hhplus.ticketing.domain.concert.model.ConcertResult;
+import org.hhplus.ticketing.application.concert.ConcertResult;
 
 import java.time.LocalDateTime;
 import java.util.Collections;

@@ -17,6 +17,7 @@ public class PaymentCommand {
         private Long userId;                    // 사용자ID
         private Long reservationId;             // 예약ID
         private int price;                      // 결제금액
+        private String token;                   // 토큰
 
     }
 }

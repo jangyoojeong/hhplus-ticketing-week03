@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.hhplus.ticketing.domain.common.exception.CustomException;
 import org.hhplus.ticketing.domain.common.exception.ErrorCode;
-import org.hhplus.ticketing.domain.user.model.UserResult;
+import org.hhplus.ticketing.domain.user.model.UserInfo;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,8 +22,8 @@ public class UserInfoService {
      * @return userId에 해당하는 사용자를 포함하는 Optional 객체
      */
     @Transactional(readOnly = true)
-    public UserResult.GetUser validateUser (Long userId) {
-        return UserResult.GetUser.from(userInfoRepository.getUser(userId).orElseThrow(()
-                -> new CustomException(ErrorCode.USER_NOT_FOUND)));
+    public UserInfo validateUser (Long userId) {
+        return userInfoRepository.getUser(userId).orElseThrow(()
+                -> new CustomException(ErrorCode.USER_NOT_FOUND));
     }
 }

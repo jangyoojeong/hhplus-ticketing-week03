@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
@@ -15,7 +16,8 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ConcertOption {
+public class ConcertOption implements Serializable {
+    private static final long serialVersionUID = 1L;
 
     private Long concertOptionId;       // 콘서트옵션ID (키값)
     private Long concertId;             // 콘서트ID

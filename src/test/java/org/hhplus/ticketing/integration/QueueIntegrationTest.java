@@ -1,13 +1,13 @@
 package org.hhplus.ticketing.integration;
 
+import org.hhplus.ticketing.application.queue.QueueCriteria;
 import org.hhplus.ticketing.application.queue.QueueFacade;
 import org.hhplus.ticketing.domain.common.exception.CustomException;
 import org.hhplus.ticketing.domain.common.exception.ErrorCode;
 import org.hhplus.ticketing.domain.queue.QueueRepository;
 import org.hhplus.ticketing.domain.queue.QueueService;
 import org.hhplus.ticketing.domain.queue.model.Queue;
-import org.hhplus.ticketing.domain.queue.model.QueueCommand;
-import org.hhplus.ticketing.domain.queue.model.QueueResult;
+import org.hhplus.ticketing.application.queue.QueueResult;
 import org.hhplus.ticketing.domain.queue.model.constants.QueueConstants;
 import org.hhplus.ticketing.domain.user.model.UserInfo;
 import org.hhplus.ticketing.utils.TestDataInitializer;
@@ -66,10 +66,10 @@ public class QueueIntegrationTest {
     @DisplayName("🟢 토큰_발급_통합_테스트_발급된_발급된_토큰을_리턴한다")
     void issueTokenTest_토큰_발급_통합_테스트_발급된_발급된_토큰을_리턴한다() {
         // Given
-        QueueCommand.IssueToken command = new QueueCommand.IssueToken(userId);
+        QueueCriteria.IssueToken criteria = new QueueCriteria.IssueToken(userId);
 
         // When
-        QueueResult.IssueToken actualResult = queueFacade.issueToken(command);
+        QueueResult.IssueToken actualResult = queueFacade.issueToken(criteria);
 
         // Then
         assertNotNull(actualResult);
@@ -79,10 +79,10 @@ public class QueueIntegrationTest {
     @DisplayName("🔴 토큰_발급_통합_테스트_유저정보가_없을_시_USER_NOT_FOUND_예외반환")
     void issueTokenTest_토큰_발급_통합_테스트_유저정보가_없을_시_예외_발생() {
         // Given
-        QueueCommand.IssueToken command = new QueueCommand.IssueToken(nonExistentUserId);
+        QueueCriteria.IssueToken criteria = new QueueCriteria.IssueToken(nonExistentUserId);
 
         // When & Then
-        assertThatThrownBy(() -> queueFacade.issueToken(command))
+        assertThatThrownBy(() -> queueFacade.issueToken(criteria))
                 .isInstanceOf(CustomException.class)
                 .extracting("errorCode")
                 .isEqualTo(ErrorCode.USER_NOT_FOUND);
@@ -92,7 +92,7 @@ public class QueueIntegrationTest {
     @DisplayName("🟢 대기열_상태_조회_통합_테스트_첫번째_발급된_토큰_순서는_1L을_리턴한다.")
     void getQueueStatusTest_대기열_상태_조회_통합_테스트_첫번째_발급된_토큰_순서는_1L을_리턴한다() {
         // Given
-        QueueResult.IssueToken tokenResult = queueFacade.issueToken(new QueueCommand.IssueToken(userId));
+        QueueResult.IssueToken tokenResult = queueFacade.issueToken(new QueueCriteria.IssueToken(userId));
         String issuedToken = tokenResult.getToken();
 
         // When
@@ -178,7 +178,7 @@ public class QueueIntegrationTest {
     void activateTest_대기열_상태_업데이트_테스트_WAITING_토큰_중_MAX_ACTIVE_TOKENS_개수만_활성화된다() {
 
         // Given
-        for (int i = 0; i < QueueConstants.MAX_ACTIVE_TOKENS + 5; i++) {
+        for (int i = 0; i < QueueConstants.MAX_ACTIVE_USERS + 5; i++) {
             Queue queue = Queue.create();
             queueRepository.addWaiting(queue);
         }
@@ -188,7 +188,7 @@ public class QueueIntegrationTest {
 
         // Then
         Long count = queueRepository.countActiveTokens();
-        assertThat(count).isEqualTo(QueueConstants.MAX_ACTIVE_TOKENS);
+        assertThat(count).isEqualTo(QueueConstants.MAX_ACTIVE_USERS);
     }
 
     @Test

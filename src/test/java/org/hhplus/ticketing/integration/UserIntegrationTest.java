@@ -1,11 +1,11 @@
 package org.hhplus.ticketing.integration;
 
+import org.hhplus.ticketing.application.user.UserCriteria;
 import org.hhplus.ticketing.application.user.UserFacade;
 import org.hhplus.ticketing.domain.common.exception.CustomException;
 import org.hhplus.ticketing.domain.common.exception.ErrorCode;
-import org.hhplus.ticketing.domain.user.model.UserCommand;
 import org.hhplus.ticketing.domain.user.model.UserInfo;
-import org.hhplus.ticketing.domain.user.model.UserResult;
+import org.hhplus.ticketing.application.user.UserResult;
 import org.hhplus.ticketing.utils.TestDataInitializer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -58,7 +58,7 @@ class UserIntegrationTest {
         int addPoint = 5000;
 
         // 잔액 충전 요청 command 객체 생성
-        UserCommand.ChargePoint chargePoint = UserCommand.ChargePoint.builder()
+        UserCriteria.ChargePoint chargePoint = UserCriteria.ChargePoint.builder()
                 .userId(userId1)
                 .amount(addPoint)
                 .build();
@@ -81,7 +81,7 @@ class UserIntegrationTest {
         // Given
         int addPoint = 5000;
 
-        UserCommand.ChargePoint chargePoint99 = UserCommand.ChargePoint.builder()
+        UserCriteria.ChargePoint chargePoint99 = UserCriteria.ChargePoint.builder()
                 .userId(nonExistentUserId)        // 99L : 유효하지 않은 사용자 ID
                 .amount(addPoint)
                 .build();
@@ -101,7 +101,7 @@ class UserIntegrationTest {
         int chargeAmount = 0;
 
         // 잔액 충전 요청 command 객체 생성
-        UserCommand.ChargePoint chargePoint = UserCommand.ChargePoint.builder()
+        UserCriteria.ChargePoint chargePoint = UserCriteria.ChargePoint.builder()
                 .userId(userId1)
                 .amount(chargeAmount)
                 .build();
@@ -123,7 +123,7 @@ class UserIntegrationTest {
         int finalPoint = oldPoint + addPoint;
 
         // 잔액 충전 요청 command 객체 생성
-        UserCommand.ChargePoint chargePoint = UserCommand.ChargePoint.builder()
+        UserCriteria.ChargePoint chargePoint = UserCriteria.ChargePoint.builder()
                 .userId(userId2)
                 .amount(addPoint)
                 .build();
@@ -147,7 +147,7 @@ class UserIntegrationTest {
         int oldPoint = 1000;
 
         // 초기 포인트 충전
-        userFacade.chargePoint(new UserCommand.ChargePoint(userId1, oldPoint));
+        userFacade.chargePoint(new UserCriteria.ChargePoint(userId1, oldPoint));
 
         // 예상 반환 result 객체 생성
         UserResult.GetPoint expectedResult = new UserResult.GetPoint(userId1, oldPoint);

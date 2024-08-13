@@ -5,7 +5,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.hhplus.ticketing.application.queue.QueueFacade;
-import org.hhplus.ticketing.domain.queue.model.QueueResult;
+import org.hhplus.ticketing.application.queue.QueueResult;
 import org.hhplus.ticketing.interfaces.controller.queue.dto.request.QueueRequest;
 import org.hhplus.ticketing.interfaces.controller.queue.dto.response.QueueResponse;
 import org.springframework.http.HttpHeaders;
@@ -37,7 +37,7 @@ public class QueueController {
     @PostMapping("/token")
     @Operation(summary = "토큰 발급 API", description = "콘서트 대기열에 입장할 때 사용하는 토큰을 발급합니다.")
     public ResponseEntity<Void> issueToken (@Valid @RequestBody QueueRequest.IssueToken request) {
-        QueueResult.IssueToken queueResult = queueFacade.issueToken(request.toCommand());
+        QueueResult.IssueToken queueResult = queueFacade.issueToken(request.toCriteria());
 
         // 발급된 토큰 헤더에 리턴
         HttpHeaders headers = new HttpHeaders();

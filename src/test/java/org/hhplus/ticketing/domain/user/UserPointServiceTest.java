@@ -60,7 +60,7 @@ class UserPointServiceTest {
         });
 
         // When
-        UserResult.ChargePoint result = userPointService.chargePoint(command);
+        UserPoint result = userPointService.chargePoint(command);
 
         // Then
         assertNotNull(result);
@@ -84,7 +84,7 @@ class UserPointServiceTest {
         });
 
         // When
-        UserResult.UsePoint result = userPointService.usePoint(command);
+        UserPoint result = userPointService.usePoint(command);
 
         // Then
         assertNotNull(result);
@@ -116,7 +116,7 @@ class UserPointServiceTest {
         given(userPointRepository.getUserPoint(anyLong())).willReturn(Optional.ofNullable(userPoint));
 
         // When
-        UserResult.GetPoint result = userPointService.getPointResult(userId);
+        UserPoint result = userPointService.getPointResult(userId);
 
         // Then
         assertNotNull(result);

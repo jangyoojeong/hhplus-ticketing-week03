@@ -2,7 +2,7 @@ package org.hhplus.ticketing.domain.queue;
 
 import org.hhplus.ticketing.domain.common.exception.CustomException;
 import org.hhplus.ticketing.domain.common.exception.ErrorCode;
-import org.hhplus.ticketing.domain.queue.model.QueueResult;
+import org.hhplus.ticketing.domain.queue.model.Queue;
 import org.hhplus.ticketing.domain.queue.model.constants.QueueConstants;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -40,11 +40,11 @@ public class QueueServiceTest {
     @DisplayName("🟢 토큰_발급_테스트_토큰이_발급되고_토큰순위_0L_리턴시_1을_더한_1L이_리턴된다")
     void issueTokenTest_토큰_발급_테스트_토큰이_발급되고_토큰순위_0L_리턴시_1을_더한_1L이_리턴된다() {
         // Given
-        given(queueRepository.countActiveTokens()).willReturn(QueueConstants.MAX_ACTIVE_TOKENS);
+        given(queueRepository.countActiveTokens()).willReturn(QueueConstants.MAX_ACTIVE_USERS);
         given(queueRepository.getWaitingPosition(anyString())).willReturn(0L);
 
         // When
-        QueueResult.IssueToken result = queueService.issueToken();
+        Queue result = queueService.issueToken();
 
         // Then
         assertNotNull(result);

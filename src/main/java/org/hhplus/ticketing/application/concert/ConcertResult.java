@@ -1,11 +1,14 @@
-package org.hhplus.ticketing.domain.concert.model;
+package org.hhplus.ticketing.application.concert;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hhplus.ticketing.domain.concert.model.Concert;
+import org.hhplus.ticketing.domain.concert.model.ConcertOption;
+import org.hhplus.ticketing.domain.concert.model.ConcertSeat;
+import org.hhplus.ticketing.domain.concert.model.Reservation;
 
-import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -54,9 +57,7 @@ public class ConcertResult {
     @NoArgsConstructor
     @AllArgsConstructor
     @Builder
-    public static class GetConcertList implements Serializable {
-        private static final long serialVersionUID = 1L;
-
+    public static class GetConcertList {
         private Long concertId;             // 콘서트ID
         private String concertName;         // 콘서트명
 
@@ -73,9 +74,7 @@ public class ConcertResult {
     @NoArgsConstructor
     @AllArgsConstructor
     @Builder
-    public static class GetAvailableDates implements Serializable {
-        private static final long serialVersionUID = 1L;
-
+    public static class GetAvailableDates {
         private Long concertId;                    // 콘서트ID
         private List<DateInfo> availableDates;     // 예약 가능한 날짜 리스트
 
@@ -83,9 +82,7 @@ public class ConcertResult {
         @NoArgsConstructor
         @AllArgsConstructor
         @Builder
-        public static class DateInfo implements Serializable {
-            private static final long serialVersionUID = 1L;
-
+        public static class DateInfo {
             private Long concertOptionId;
             private LocalDate concertAt;
         }

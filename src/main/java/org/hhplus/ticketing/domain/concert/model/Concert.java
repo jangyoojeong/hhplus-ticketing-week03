@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
+
 /**
  * 도메인 객체: Concert
  * 콘서트에 대한 기본 정보를 관리합니다.
@@ -13,7 +15,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Concert {
+public class Concert implements Serializable {
+    private static final long serialVersionUID = 1L;
+
     private Long concertId;        // 콘서트ID (키값)
     private String concertName;    // 콘서트명
 

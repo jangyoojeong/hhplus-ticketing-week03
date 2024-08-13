@@ -1,6 +1,8 @@
 package org.hhplus.ticketing.interfaces.controller.concert;
 
+import org.hhplus.ticketing.application.concert.ConcertCriteria;
 import org.hhplus.ticketing.application.concert.ConcertFacade;
+import org.hhplus.ticketing.application.concert.ConcertResult;
 import org.hhplus.ticketing.domain.concert.model.*;
 import org.hhplus.ticketing.interfaces.controller.concert.dto.request.ConcertRequest;
 import org.hhplus.ticketing.interfaces.controller.concert.dto.response.ConcertResponse;
@@ -83,7 +85,7 @@ public class ConcertControllerUnitTest {
         ConcertResult.SaveConcert result = new ConcertResult.SaveConcert(1L, concertName);
         ConcertResponse.SaveConcert response = ConcertResponse.SaveConcert.from(result);
 
-        given(concertFacade.saveConcert(any(ConcertCommand.SaveConcert.class))).willReturn(result);
+        given(concertFacade.saveConcert(any(ConcertCriteria.SaveConcert.class))).willReturn(result);
 
         // When
         ResponseEntity<ConcertResponse.SaveConcert> responseEntity = concertController.saveConcert(request);
@@ -129,7 +131,7 @@ public class ConcertControllerUnitTest {
         ConcertResult.SaveConcertOption result = new ConcertResult.SaveConcertOption(concertId, concertAt, capacity);
         ConcertResponse.SaveConcertOption response = ConcertResponse.SaveConcertOption.from(result);
 
-        given(concertFacade.saveConcertOption(any(ConcertCommand.SaveConcertOption.class))).willReturn(result);
+        given(concertFacade.saveConcertOption(any(ConcertCriteria.SaveConcertOption.class))).willReturn(result);
 
         // When
         ResponseEntity<ConcertResponse.SaveConcertOption> responseEntity = concertController.saveConcertOption(request);
@@ -185,7 +187,7 @@ public class ConcertControllerUnitTest {
         ConcertResult.ReserveSeat result = new ConcertResult.ReserveSeat(1L, userId, concertSeatId);
         ConcertResponse.ReserveSeat response = ConcertResponse.ReserveSeat.from(result);
 
-        given(concertFacade.reserveSeat(any(ConcertCommand.ReserveSeat.class))).willReturn(result);
+        given(concertFacade.reserveSeat(any(ConcertCriteria.ReserveSeat.class))).willReturn(result);
 
         // When
         ResponseEntity<ConcertResponse.ReserveSeat> responseEntity = concertController.reserveSeat(request);

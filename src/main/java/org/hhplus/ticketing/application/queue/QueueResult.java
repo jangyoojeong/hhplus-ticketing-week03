@@ -1,9 +1,10 @@
-package org.hhplus.ticketing.domain.queue.model;
+package org.hhplus.ticketing.application.queue;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hhplus.ticketing.domain.queue.model.Queue;
 
 public class QueueResult {
 

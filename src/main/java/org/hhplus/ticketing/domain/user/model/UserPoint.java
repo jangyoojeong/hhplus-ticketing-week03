@@ -18,7 +18,7 @@ public class UserPoint {
     private Long userPointId;      // 포인트ID (키값)
     private Long userId;           // 유저ID
     private int point;             // 포인트
-    private Long version;          // 낙관적 락 버전 필드
+    private Long version = 0L;     // 낙관적 락 버전 필드
 
     public UserPoint chargePoint(int amount) {
         if (amount <= 0) {

@@ -1,8 +1,8 @@
 package org.hhplus.ticketing.interfaces.controller.user;
 
+import org.hhplus.ticketing.application.user.UserCriteria;
 import org.hhplus.ticketing.application.user.UserFacade;
-import org.hhplus.ticketing.domain.user.model.UserCommand;
-import org.hhplus.ticketing.domain.user.model.UserResult;
+import org.hhplus.ticketing.application.user.UserResult;
 import org.hhplus.ticketing.interfaces.controller.user.dto.UserRequest;
 import org.hhplus.ticketing.interfaces.controller.user.dto.UserResponse;
 import org.junit.jupiter.api.BeforeEach;
@@ -45,7 +45,7 @@ public class UserControllerUnitTest {
         UserResult.ChargePoint result = new UserResult.ChargePoint(userId, currentPoints + 50000);
         UserResponse.ChargePoint response = UserResponse.ChargePoint.from(result);
 
-        given(userFacade.chargePoint(any(UserCommand.ChargePoint.class))).willReturn(result);
+        given(userFacade.chargePoint(any(UserCriteria.ChargePoint.class))).willReturn(result);
 
         // When
         ResponseEntity<UserResponse.ChargePoint> responseEntity = userController.addUserPoint(request);

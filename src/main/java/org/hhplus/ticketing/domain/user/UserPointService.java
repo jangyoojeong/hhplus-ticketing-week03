@@ -7,7 +7,6 @@ import org.hhplus.ticketing.domain.common.exception.ErrorCode;
 import org.hhplus.ticketing.domain.user.model.UserCommand;
 import org.hhplus.ticketing.domain.user.model.UserPoint;
 import org.hhplus.ticketing.domain.user.model.UserPointHistory;
-import org.hhplus.ticketing.domain.user.model.UserResult;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -37,8 +36,8 @@ public class UserPointService {
      * @param userId 포인트 잔액을 조회할 사용자의 ID
      * @return 사용자의 포인트 잔액 결과 객체
      */
-    public UserResult.GetPoint getPointResult (Long userId) {
-        return UserResult.GetPoint.from(getPoint(userId));
+    public UserPoint getPointResult (Long userId) {
+        return getPoint(userId);
     }
 
     /**
@@ -48,10 +47,10 @@ public class UserPointService {
      * @return 충전된 잔액 정보를 포함한 응답 객체
      */
     @Transactional
-    public UserResult.ChargePoint chargePoint (UserCommand.ChargePoint command) {
+    public UserPoint chargePoint (UserCommand.ChargePoint command) {
         UserPoint userPoint = getPoint(command.getUserId());
         userPoint.chargePoint(command.getAmount());
-        UserResult.ChargePoint result = UserResult.ChargePoint.from(userPointRepository.save(userPoint));
+        UserPoint result = userPointRepository.save(userPoint);
         saveHistory(command.getUserId(), command.getAmount(), UserPointHistory.Type.CHARGE);
         return result;
     }
@@ -63,10 +62,10 @@ public class UserPointService {
      * @return 차감된 잔액 정보를 포함한 응답 객체
      */
     @Transactional
-    public UserResult.UsePoint usePoint (UserCommand.UsePoint command) {
+    public UserPoint usePoint (UserCommand.UsePoint command) {
         UserPoint userPoint = getPoint(command.getUserId());
         userPoint.usePoint(command.getAmount());
-        UserResult.UsePoint result = UserResult.UsePoint.from(userPointRepository.save(userPoint));
+        UserPoint result = userPointRepository.save(userPoint);
         saveHistory(command.getUserId(), command.getAmount(), UserPointHistory.Type.USE);
         return result;
     }
