@@ -151,11 +151,11 @@ public class ConcertService {
     public void releaseReservations() {
         LocalDateTime expirationTime = LocalDateTime.now().minusMinutes(ConcertConstants.RESERVATION_EXPIRATION_MINUTES);
         List<Reservation> expiredReservations = concertRepository.getExpiredReservations(expirationTime);
-        if (!expiredReservations.isEmpty()) {
-            expiredReservations.forEach(Reservation::setExpired);
-            concertRepository.saveAllReservation(expiredReservations);
-            log.info("총 {}개의 예약이 만료되었습니다.", expiredReservations.size());
-        }
+        if (expiredReservations.isEmpty()) return;
+
+        expiredReservations.forEach(Reservation::setExpired);
+        concertRepository.saveAllReservation(expiredReservations);
+        log.info("총 {}개의 예약이 만료되었습니다.", expiredReservations.size());
 
         releaseSeats(expiredReservations);
     }
