@@ -104,8 +104,8 @@ public class PaymentIntegrationTest {
     }
 
     @Test
-    @DisplayName("🟢 결제_요청_통합_테스트_결제가_성공하고_기존_50000포인트에서_30000포인트가_차감된_20000포인트가_조회된다")
-    void requestPaymentTest_결제_요청_통합_테스트_결제가_성공하고_기존_50000포인트에서_30000포인트가_차감된_20000포인트가_조회된다() {
+    @DisplayName("🟢 [결제_요청_통합_테스트]")
+    void requestPaymentTest_결제가_성공하고_기존_50000포인트에서_30000포인트가_차감된_20000포인트가_조회된다() {
 
         // Given
         PaymentCriteria.Pay creteria = new PaymentCriteria.Pay(userId, reservationId, price, token);
@@ -120,8 +120,8 @@ public class PaymentIntegrationTest {
     }
 
     @Test
-    @DisplayName("🟢 결제_요청_통합_테스트_결제가_성공하고_결제정보가_적재된다")
-    void requestPaymentTest_결제_요청_통합_테스트_결제가_성공하고_결제정보가_적재된다() {
+    @DisplayName("🟢 [결제_요청_통합_테스트]")
+    void requestPaymentTest_결제가_성공하고_결제정보가_적재된다() {
 
         // Given
         PaymentCriteria.Pay creteria = new PaymentCriteria.Pay(userId, reservationId, price, token);
@@ -136,8 +136,8 @@ public class PaymentIntegrationTest {
     }
 
     @Test
-    @DisplayName("🟢 결제_요청_통합_테스트_결제가_성공하고_좌석_소유권이_배정된다")
-    void requestPaymentTest_결제_요청_통합_테스트_결제가_성공하고_좌석_소유권이_배정된다() {
+    @DisplayName("🟢 [결제_요청_통합_테스트]")
+    void requestPaymentTest_결제가_성공하고_좌석_소유권이_배정된다() {
 
         // Given
         PaymentCriteria.Pay creteria = new PaymentCriteria.Pay(userId, reservationId, price, token);
@@ -154,8 +154,8 @@ public class PaymentIntegrationTest {
     }
 
     @Test
-    @DisplayName("🟢 결제_요청_통합_테스트_결제가_성공하고_대기열_토큰이_만료된다")
-    void requestPaymentTest_결제_요청_통합_테스트_결제가_성공하고_대기열_토큰이_만료된다() {
+    @DisplayName("🟢 [결제_요청_통합_테스트]")
+    void requestPaymentTest_결제가_성공하고_대기열_토큰이_만료된다() {
 
         // Given
         PaymentCriteria.Pay creteria = new PaymentCriteria.Pay(userId, reservationId, price, token);
@@ -169,8 +169,8 @@ public class PaymentIntegrationTest {
     }
 
     @Test
-    @DisplayName("🔴 결제_요청_통합_테스트_예약정보_없으면_RESERVATION_NOT_FOUND_예외반환")
-    void requestPaymentTest_결제_요청_통합_테스트_예약정보_없으면_RESERVATION_NOT_FOUND_예외반환() {
+    @DisplayName("🔴 [결제_요청_통합_테스트]")
+    void requestPaymentTest_예약정보_없으면_RESERVATION_NOT_FOUND_예외반환() {
 
         // Given
         Long nonExistentReservationId = 99L;    // 존재하지 않는 예약코드
@@ -184,8 +184,8 @@ public class PaymentIntegrationTest {
     }
 
     @Test
-    @DisplayName("🔴 결제_요청_통합_테스트_결제금액에_비해_포인트가_부족할경우_INSUFFICIENT_POINTS_예외반환")
-    void requestPaymentTest_결제_요청_통합_테스트_결제금액에_비해_포인트가_부족할경우_INSUFFICIENT_POINTS_예외반환() {
+    @DisplayName("🔴 [결제_요청_통합_테스트]")
+    void requestPaymentTest_결제금액에_비해_포인트가_부족할경우_INSUFFICIENT_POINTS_예외반환() {
 
         // Given
         int amount = 100000;
@@ -201,8 +201,8 @@ public class PaymentIntegrationTest {
     }
 
     @Test
-    @DisplayName("🔴 결제_요청_통합_테스트_대기열_토큰_정보가_없을_시_INVALID_TOKEN_예외반환")
-    public void requestPaymentTest_결제_요청_통합_테스트_대기열_토큰_정보가_없을_시_INVALID_TOKEN_예외반환() {
+    @DisplayName("🔴 [결제_요청_통합_테스트]")
+    public void requestPaymentTest_대기열_토큰_정보가_없을_시_INVALID_TOKEN_예외반환() {
 
         // Given
         String nonExistentToken = UUID.randomUUID().toString();

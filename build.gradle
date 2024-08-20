@@ -43,20 +43,20 @@ dependencies {
 	annotationProcessor 'org.projectlombok:lombok'
 	annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
 
-	// Spring Boot DevTools
-	//developmentOnly 'org.springframework.boot:spring-boot-devtools'
-
-	// H2 Database
-	// runtimeOnly 'com.h2database:h2'
+	// kafka
+	implementation 'org.springframework.kafka:spring-kafka'
 
 	// mysql Database
 	implementation 'mysql:mysql-connector-java:8.0.32'
 
 	// Spring Boot Test Starter
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testImplementation 'org.springframework.kafka:spring-kafka-test'
+	testImplementation 'org.testcontainers:kafka'
 	testImplementation 'org.mockito:mockito-core'
 	testImplementation 'org.testcontainers:junit-jupiter'
 	testImplementation 'org.testcontainers:mysql'
+	testImplementation 'org.awaitility:awaitility'
 	testCompileOnly 'org.projectlombok:lombok'
 	testAnnotationProcessor 'org.projectlombok:lombok'
 }

@@ -37,8 +37,8 @@ public class QueueServiceTest {
     }
 
     @Test
-    @DisplayName("🟢 토큰_발급_테스트_토큰이_발급되고_토큰순위_0L_리턴시_1을_더한_1L이_리턴된다")
-    void issueTokenTest_토큰_발급_테스트_토큰이_발급되고_토큰순위_0L_리턴시_1을_더한_1L이_리턴된다() {
+    @DisplayName("🟢 [토큰_발급_테스트]")
+    void issueTokenTest_토큰이_발급되고_토큰순위_0L_리턴시_1을_더한_1L이_리턴된다() {
         // Given
         given(queueRepository.countActiveTokens()).willReturn(QueueConstants.MAX_ACTIVE_USERS);
         given(queueRepository.getWaitingPosition(anyString())).willReturn(0L);
@@ -52,8 +52,8 @@ public class QueueServiceTest {
     }
 
     @Test
-    @DisplayName("🟢 대기순번_테스트_조회된_0L에서_1을_더한_1L이_리턴된다")
-    void getWaitingPositionTest_대기순번_테스트_조회된_0L에서_1을_더한_1L이_리턴된다() {
+    @DisplayName("🟢 [대기순번_테스트]")
+    void getWaitingPositionTest_조회된_0L에서_1을_더한_1L이_리턴된다() {
         // Given
         String token = UUID.randomUUID().toString();
         given(queueRepository.getWaitingPosition(anyString())).willReturn(0L);
@@ -66,8 +66,8 @@ public class QueueServiceTest {
     }
 
     @Test
-    @DisplayName("🟢 토큰_검증_테스트_유효한_토큰일경우")
-    void validateTokenTest_토큰_검증_테스트_유효한_토큰일경우() {
+    @DisplayName("🟢 [토큰_검증_테스트]")
+    void validateTokenTest_유효한_토큰일경우() {
         // Given
         String token = UUID.randomUUID().toString();
         given(queueRepository.isValid(anyString())).willReturn(true);
@@ -77,8 +77,8 @@ public class QueueServiceTest {
     }
 
     @Test
-    @DisplayName("🔴 토큰_검증_테스트_유효하지_않은_토큰일경우_INVALID_TOKEN_예외반환")
-    void validateTokenTest_토큰_검증_테스트_유효하지_않은_토큰일경우() {
+    @DisplayName("🔴 [토큰_검증_테스트]")
+    void validateTokenTest_유효하지_않은_토큰일경우() {
         // Given
         String token = UUID.randomUUID().toString();
         given(queueRepository.isValid(anyString())).willReturn(false);
@@ -91,8 +91,8 @@ public class QueueServiceTest {
     }
 
     @Test
-    @DisplayName("🟢 토큰_만료_테스트_삭제메소드가_정상적으로_실행된다")
-    void expireTokenTest_토큰_만료_테스트_삭제메소드가_정상적으로_실행된다() {
+    @DisplayName("🟢 [토큰_만료_테스트]")
+    void expireTokenTest_삭제메소드가_정상적으로_실행된다() {
         // Given
         String token = UUID.randomUUID().toString();
         given(queueRepository.isValid(anyString())).willReturn(true);
@@ -105,8 +105,8 @@ public class QueueServiceTest {
     }
 
     @Test
-    @DisplayName("🟢 토큰_활성화_테스트_활성화_대상토큰_있으면_활성화메소드가_정상적으로_실행된다")
-    void activateTest_토큰_활성화_테스트_활성화_대상토큰_있으면_활성화메소드가_정상적으로_실행된다() {
+    @DisplayName("🟢 [토큰_활성화_테스트]")
+    void activateTest_활성화_대상토큰_있으면_활성화메소드가_정상적으로_실행된다() {
         // Given
         Set<String> tokens = new HashSet<>();
         tokens.add(UUID.randomUUID().toString());
@@ -121,8 +121,8 @@ public class QueueServiceTest {
     }
 
     @Test
-    @DisplayName("🟢 토큰_활성화_테스트_활성화_대상토큰_없으면_활성화메소드가_실행되지_않는다")
-    void activateTest_토큰_활성화_테스트_활성화_대상토큰_없으면_활성화메소드가_실행되지_않는다() {
+    @DisplayName("🟢 [토큰_활성화_테스트]")
+    void activateTest_활성화_대상토큰_없으면_활성화메소드가_실행되지_않는다() {
         // Given
         Set<String> tokens = new HashSet<>();
         given(queueRepository.getActivatableTokens(anyLong(), anyLong())).willReturn(tokens);

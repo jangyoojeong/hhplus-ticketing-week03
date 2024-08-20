@@ -39,7 +39,7 @@ class UserInfoServiceTest {
     }
 
     @Test
-    @DisplayName("🟢 1L_유저_정보를_성공적으로_조회")
+    @DisplayName("🟢 [유저_조회_테스트]")
     void validateUserTest_1L_유저_정보를_성공적으로_조회() {
 
         // Given
@@ -54,8 +54,8 @@ class UserInfoServiceTest {
     }
 
     @Test
-    @DisplayName("🔴 1L_유저_정보가_없으면_USER_NOT_FOUND_예외반환")
-    void validateUserTest_1L_유저_정보가_없을_때_예외_발생() {
+    @DisplayName("🔴 [유저_조회_테스트]")
+    void validateUserTest_1L_유저_정보가_없으면_USER_NOT_FOUND_예외반환() {
 
         // Given
         given(userInfoRepository.getUser(anyLong())).willReturn(Optional.empty());

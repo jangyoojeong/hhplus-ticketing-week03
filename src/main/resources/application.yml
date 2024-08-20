@@ -39,27 +39,17 @@ spring:
   cache:
     type: redis
 
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      group-ids:
+        success: PAYMENT_GROUP
+    topic:
+      payment-success: PAYMENT_SUCCESS
+
 logging:
   level:
     org:
-      hibernate:
-        SQL: DEBUG # Hibernate SQL 로그를 디버그 레벨로 설정
-        type:
-          descriptor:
-            sql:
-              BasicBinder: TRACE # SQL 바인딩 정보 로깅
-    springframework:
-      jdbc:
-        core:
-          JdbcTemplate: DEBUG # JdbcTemplate 로그를 디버그 레벨로 설정
-          StatementCreatorUtils: DEBUG # StatementCreatorUtils 로그를 디버그 레벨로 설정
-      orm:
-        jpa: DEBUG # JPA 로그를 디버그 레벨로 설정
-      transaction: DEBUG # 트랜잭션 로그를 디버그 레벨로 설정
-      data:
-        jpa:
-          repository:
-            query: DEBUG # JPA 쿼리 로그를 디버그 레벨로 설정
-          support:
-            SimpleJpaRepository: DEBUG # SimpleJpaRepository 로그를 디버그 레벨로 설정
-      orm.jpa.vendor.HibernateJpaDialect: DEBUG # HibernateJpaDialect 로그를 디버그 레벨로 설정
+      apache:
+        kafka: INFO
+      springframework: INFO

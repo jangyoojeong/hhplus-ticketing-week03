@@ -117,8 +117,8 @@ public class PaymentConcurrentTest {
     }
 
     @Test
-    @DisplayName("🔴 결제_요청_동시성_테스트_결제_요청을_따닥_클릭시_하나를_제외하고_실패해야한다")
-    void concurrentRequestPaymentTest_결제_요청_동시성_테스트_결제_요청을_따닥_클릭시_하나를_제외하고_실패해야한다()  {
+    @DisplayName("🔴 [결제_요청_동시성_테스트]")
+    void concurrentRequestPaymentTest_결제_요청을_따닥_클릭시_하나를_제외하고_실패해야한다()  {
         // Given
         // 결제 요청 command 객체 생성
         PaymentCriteria.Pay creteria = new PaymentCriteria.Pay(userId, reservationId, price, token);

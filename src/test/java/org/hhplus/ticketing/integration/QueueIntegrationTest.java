@@ -63,8 +63,8 @@ public class QueueIntegrationTest {
     }
 
     @Test
-    @DisplayName("🟢 토큰_발급_통합_테스트_발급된_발급된_토큰을_리턴한다")
-    void issueTokenTest_토큰_발급_통합_테스트_발급된_발급된_토큰을_리턴한다() {
+    @DisplayName("🟢 [토큰_발급_통합_테스트]")
+    void issueTokenTest_발급된_발급된_토큰을_리턴한다() {
         // Given
         QueueCriteria.IssueToken criteria = new QueueCriteria.IssueToken(userId);
 
@@ -76,8 +76,8 @@ public class QueueIntegrationTest {
     }
 
     @Test
-    @DisplayName("🔴 토큰_발급_통합_테스트_유저정보가_없을_시_USER_NOT_FOUND_예외반환")
-    void issueTokenTest_토큰_발급_통합_테스트_유저정보가_없을_시_예외_발생() {
+    @DisplayName("🔴 [토큰_발급_통합_테스트]")
+    void issueTokenTest_유저정보가_없을_시_USER_NOT_FOUND_예외반환() {
         // Given
         QueueCriteria.IssueToken criteria = new QueueCriteria.IssueToken(nonExistentUserId);
 
@@ -89,8 +89,8 @@ public class QueueIntegrationTest {
     }
 
     @Test
-    @DisplayName("🟢 대기열_상태_조회_통합_테스트_첫번째_발급된_토큰_순서는_1L을_리턴한다.")
-    void getQueueStatusTest_대기열_상태_조회_통합_테스트_첫번째_발급된_토큰_순서는_1L을_리턴한다() {
+    @DisplayName("🟢 [대기열_상태_조회_통합_테스트]")
+    void getQueueStatusTest_첫번째_발급된_토큰_순서는_1L을_리턴한다() {
         // Given
         QueueResult.IssueToken tokenResult = queueFacade.issueToken(new QueueCriteria.IssueToken(userId));
         String issuedToken = tokenResult.getToken();
@@ -103,8 +103,8 @@ public class QueueIntegrationTest {
     }
 
     @Test
-    @DisplayName("🟢 대기열_상태_조회_통합_테스트_20번째_발급된_대기열_토큰의_대기순서는_20을_리턴한다")
-    void getQueueStatusTest_대기열_상태_조회_통합_테스트_20번째_발급된_대기열_토큰의_대기순서는_20을_리턴한다() {
+    @DisplayName("🟢 [대기열_상태_조회_통합_테스트]")
+    void getQueueStatusTest_20번째_발급된_대기열_토큰의_대기순서는_20을_리턴한다() {
         // Given
         // 모든 대기열 슬롯 채우기
         for (int i = 0; i < 19; i++) {
@@ -126,8 +126,8 @@ public class QueueIntegrationTest {
     }
 
     @Test
-    @DisplayName("🔴 토큰_검증_테스트_유효하지_않은_토큰일경우_INVALID_TOKEN_예외반환")
-    void validateTokenTest_토큰_검증_테스트_유효하지_않은_토큰일경우_INVALID_TOKEN_예외반환() {
+    @DisplayName("🔴 [토큰_검증_테스트]")
+    void validateTokenTest_유효하지_않은_토큰일경우_INVALID_TOKEN_예외반환() {
         // Given
         Queue queue = Queue.create();
         String token = queue.getToken();
@@ -141,8 +141,8 @@ public class QueueIntegrationTest {
     }
 
     @Test
-    @DisplayName("🔴 토큰_만료_테스트_토큰이_정상적으로_만료되어_토큰검증시_INVALID_TOKEN_예외반환")
-    void expireTokenTest_토큰_만료_테스트_토큰이_정상적으로_만료되어_토큰검증시_INVALID_TOKEN_예외반환() {
+    @DisplayName("🔴 [토큰_만료_테스트]")
+    void expireTokenTest_토큰이_정상적으로_만료되어_토큰검증시_INVALID_TOKEN_예외반환() {
         // Given
         Queue queue = Queue.create();
         String token = queue.getToken();
@@ -159,8 +159,8 @@ public class QueueIntegrationTest {
     }
 
     @Test
-    @DisplayName("🔴 토큰_만료_테스트_유효하지_않은_토큰일경우_INVALID_TOKEN_예외반환")
-    void expireTokenTest_토큰_만료_테스트_유효하지_않은_토큰일경우_INVALID_TOKEN_예외반환() {
+    @DisplayName("🔴 [토큰_만료_테스트]")
+    void expireTokenTest_유효하지_않은_토큰일경우_INVALID_TOKEN_예외반환() {
         // Given
         Queue queue = Queue.create();
         String token = queue.getToken();
@@ -174,8 +174,8 @@ public class QueueIntegrationTest {
     }
 
     @Test
-    @DisplayName("🟢 대기열_상태_업데이트_테스트_WAITING_토큰_중_MAX_ACTIVE_TOKENS_개수만_활성화된다")
-    void activateTest_대기열_상태_업데이트_테스트_WAITING_토큰_중_MAX_ACTIVE_TOKENS_개수만_활성화된다() {
+    @DisplayName("🟢 [대기열_상태_업데이트_테스트]")
+    void activateTest_WAITING_토큰_중_MAX_ACTIVE_TOKENS_개수만_활성화된다() {
 
         // Given
         for (int i = 0; i < QueueConstants.MAX_ACTIVE_USERS + 5; i++) {
@@ -192,8 +192,8 @@ public class QueueIntegrationTest {
     }
 
     @Test
-    @DisplayName("🟢 대기열_상태_업데이트_테스트_WAITING_토큰이_없으면_활성화되지_않는다")
-    void activateTest_대기열_상태_업데이트_테스트_WAITING_토큰이_없으면_활성화되지_않는다() {
+    @DisplayName("🟢 [대기열_상태_업데이트_테스트]")
+    void activateTest_WAITING_토큰이_없으면_활성화되지_않는다() {
 
         // When
         queueFacade.activate();

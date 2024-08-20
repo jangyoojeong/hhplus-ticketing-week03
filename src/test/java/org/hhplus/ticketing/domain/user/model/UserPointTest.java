@@ -11,8 +11,8 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 class UserPointTest {
 
     @Test
-    @DisplayName("🟢 포인트_충전_테스트_100포인트에_50포인트_충전시_150포인트가_리턴된다")
-    void chargePointTest_포인트_충전_테스트_100포인트에_50포인트_충전시_150포인트가_리턴된다() {
+    @DisplayName("🟢 [포인트_충전_테스트]")
+    void chargePointTest_100포인트에_50포인트_충전시_150포인트가_리턴된다() {
         Long userId = 1L;
         int initialPoint = 100;
         int chargeAmount = 50;
@@ -27,8 +27,8 @@ class UserPointTest {
     }
 
     @Test
-    @DisplayName("🔴 포인트_충전_테스트_포인트가_유효하지_않으면_INVALID_AMOUNT_VALUE_예외반환")
-    void chargePointTest_포인트_충전_테스트_포인트가_유효하지_않으면_INVALID_AMOUNT_VALUE_예외반환() {
+    @DisplayName("🔴 [포인트_충전_테스트]")
+    void chargePointTest_포인트가_유효하지_않으면_INVALID_AMOUNT_VALUE_예외반환() {
         Long userId = 1L;
         int initialPoint = 50;
         int chargeAmount = 0;
@@ -44,8 +44,8 @@ class UserPointTest {
     }
 
     @Test
-    @DisplayName("🟢 포인트_사용_테스트_100포인트에_50포인트_사용시_50포인트가_리턴된다")
-    void usePointTest_포인트_사용_테스트_100포인트에_50포인트_사용시_50포인트가_리턴된다() {
+    @DisplayName("🟢 [포인트_사용_테스트]")
+    void usePointTest_100포인트에_50포인트_사용시_50포인트가_리턴된다() {
         Long userId = 1L;
         int initialPoint = 100;
         int useAmount = 50;
@@ -60,8 +60,8 @@ class UserPointTest {
     }
 
     @Test
-    @DisplayName("🔴 포인트_사용_테스트_포인트가_부족하면_INSUFFICIENT_POINTS_예외반환")
-    void usePointTest_포인트_사용_테스트_포인트가_부족하면_INSUFFICIENT_POINTS_예외반환() {
+    @DisplayName("🔴 [포인트_사용_테스트]")
+    void usePointTest_포인트가_부족하면_INSUFFICIENT_POINTS_예외반환() {
         Long userId = 1L;
         int initialPoint = 50;
         int useAmount = 100;
@@ -77,8 +77,8 @@ class UserPointTest {
     }
 
     @Test
-    @DisplayName("🔴 포인트_사용_테스트_포인트가_유효하지_않으면_INVALID_AMOUNT_VALUE_예외반환")
-    void usePointTest_포인트_충전_테스트_포인트가_유효하지_않으면_INVALID_AMOUNT_VALUE_예외반환() {
+    @DisplayName("🔴 [포인트_사용_테스트]")
+    void usePointTest_포인트가_유효하지_않으면_INVALID_AMOUNT_VALUE_예외반환() {
         Long userId = 1L;
         int initialPoint = 50;
         int useAmount = 0;

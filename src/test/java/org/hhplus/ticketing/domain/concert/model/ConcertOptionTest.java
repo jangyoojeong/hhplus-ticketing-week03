@@ -9,8 +9,8 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 class ConcertOptionTest {
     @Test
-    @DisplayName("🟢 콘서트옵션_객체_생성_테스트_콘서트옵션정보로_객체가_생성된다")
-    void createConcertOptionTest_콘서트옵션_객체_생성_테스트_콘서트옵션정보로_객체가_생성된다() {
+    @DisplayName("🟢 [콘서트옵션_객체_생성_테스트]")
+    void createConcertOptionTest_콘서트옵션_정보로_객체가_생성된다() {
         // Given
         Long concertId = 1L;
         LocalDateTime concertAt = LocalDateTime.now();
