@@ -33,8 +33,8 @@ public class MessageSenderTest {
     }
 
     @Test
-    @DisplayName("🟢 메시지_전송_테스트_메시지_전송에_성공한다")
-    void sendMessage_메시지_전송_테스트_메시지_전송에_성공한다() {
+    @DisplayName("🟢 [메시지_전송_테스트]")
+    void sendMessage_메시지_전송에_성공한다() {
         // Given
         SettableListenableFuture<SendResult<String, String>> future = new SettableListenableFuture<>();
         future.set(mock(SendResult.class));
@@ -49,8 +49,8 @@ public class MessageSenderTest {
     }
 
     @Test
-    @DisplayName("🔴 메시지_전송_테스트_메시지_전송에_실패한다")
-    void sendMessage_메시지_전송_테스트_메시지_전송에_실패한다다() {
+    @DisplayName("🔴 [메시지_전송_테스트]")
+    void sendMessage_메시지_전송에_실패한다() {
         // Given
         SettableListenableFuture<SendResult<String, String>> future = new SettableListenableFuture<>();
         future.setException(new RuntimeException("Kafka send failure"));

@@ -18,7 +18,6 @@ import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 
 public class PaymentControllerUnitTest {
@@ -40,8 +39,8 @@ public class PaymentControllerUnitTest {
     }
 
     @Test
-    @DisplayName("🟢 결제_컨트롤러_테스트_예상_리턴_확인")
-    void payTest_결제_컨트롤러_테스트_예상_리턴_확인() throws Exception {
+    @DisplayName("🟢 [결제_컨트롤러_테스트]")
+    void payTest_결제_예상_리턴_확인() throws Exception {
         // Given
         Long reservationId = 1L;
         int point = 2000;

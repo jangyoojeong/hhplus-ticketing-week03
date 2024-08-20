@@ -109,8 +109,8 @@ public class ConcertIntegrationTest {
     }
 
     @Test
-    @DisplayName("🟢 콘서트_목록_조회_테스트_적재된_1건의_데이터가_리턴된다")
-    void getConcertListTest_콘서트_목록_조회_테스트_적재된_1건의_데이터가_리턴된다() {
+    @DisplayName("🟢 [콘서트_목록_조회_테스트]")
+    void getConcertListTest_적재된_1건의_데이터가_리턴된다() {
 
         // Given
         List<Concert> concertList = Arrays.asList(
@@ -135,8 +135,8 @@ public class ConcertIntegrationTest {
     }
 
     @Test
-    @DisplayName("🟢 콘서트_등록_테스트_저장후_저장된_콘서트_정보가_리턴된다")
-    void saveConcertTest_콘서트_등록_테스트_저장후_저장된_콘서트_정보가_리턴된다() {
+    @DisplayName("🟢 [콘서트_등록_테스트]")
+    void saveConcertTest_저장후_저장된_콘서트_정보가_리턴된다() {
 
         // Given
         String concertName = "콘서트1";
@@ -148,8 +148,8 @@ public class ConcertIntegrationTest {
     }
 
     @Test
-    @DisplayName("🟢 콘서트_목록_조회_테스트_두번째_조회시에는_캐시에_있는_데이터를_참조한다")
-    public void getConcertListTest_콘서트_목록_조회_테스트_두번째_조회시에는_캐시에_있는_데이터를_참조한다() {
+    @DisplayName("🟢 [콘서트_목록_조회_테스트]")
+    public void getConcertListTest_두번째_조회시에는_캐시에_있는_데이터를_참조한다() {
 
         // Given
         Pageable pageable = PageRequest.of(0, 20);
@@ -173,8 +173,8 @@ public class ConcertIntegrationTest {
     }
 
     @Test
-    @DisplayName("🟢 콘서트_옵션_등록_테스트_저장후_저장된_콘서트_옵션_정보가_리턴된다")
-    void saveConcertOptionTest_콘서트_옵션_등록_테스트_저장후_저장된_콘서트_옵션_정보가_리턴된다() {
+    @DisplayName("🟢 [콘서트_옵션_등록_테스트]")
+    void saveConcertOptionTest_저장후_저장된_콘서트_옵션_정보가_리턴된다() {
 
         // Given
         Long concertId = 1L;
@@ -192,8 +192,8 @@ public class ConcertIntegrationTest {
     }
 
     @Test
-    @DisplayName("🟢 예약_가능한_날짜_조회_테스트_두번째_조회시에는_캐시에_있는_데이터를_참조한다")
-    public void getDatesForReservationTest_예약_가능한_날짜_조회_테스트_두번째_조회시에는_캐시에_있는_데이터를_참조한다() {
+    @DisplayName("🟢 [예약_가능한_날짜_조회_테스트]")
+    public void getDatesForReservationTest_두번째_조회시에는_캐시에_있는_데이터를_참조한다() {
 
         // When
         // 첫 번째 호출
@@ -214,8 +214,8 @@ public class ConcertIntegrationTest {
     }
 
     @Test
-    @DisplayName("🟢 예약_가능한_날짜_조회_테스트_적재된_2건의_데이터에서_필터링된_리스트와_리턴된_리스트가_일치한다")
-    void getDatesForReservationTest_예약_가능한_날짜_조회_테스트_적재된_2건의_데이터에서_필터링된_리스트와_리턴된_리스트가_일치한다() {
+    @DisplayName("🟢 [예약_가능한_날짜_조회_테스트]")
+    void getDatesForReservationTest_적재된_2건의_데이터에서_필터링된_리스트와_리턴된_리스트가_일치한다() {
 
         // Given
         // 초기 적재 데이터에서 조회할 concertId 의 예약가능한상태(콘서트일자가 현재일 이후) 콘서트옵션리스트 세팅
@@ -235,8 +235,8 @@ public class ConcertIntegrationTest {
     }
 
     @Test
-    @DisplayName("🟢 예약_가능한_좌석_조회_테스트_적재된_좌석_데이터에서_필터링된_리스트와_리턴된_리스트가_일치한다")
-    void getSeatsForReservationTest_예약_가능한_좌석_조회_테스트_적재된_좌석_데이터에서_필터링된_리스트와_리턴된_리스트가_일치한다() {
+    @DisplayName("🟢 [예약_가능한_좌석_조회_테스트]")
+    void getSeatsForReservationTest_적재된_좌석_데이터에서_필터링된_리스트와_리턴된_리스트가_일치한다() {
 
         // Given
         // 초기 적재 데이터에서 조회할 concertOptionId 의 AVAILABLE 상태의 좌석리스트 세팅
@@ -256,8 +256,8 @@ public class ConcertIntegrationTest {
     }
 
     @Test
-    @DisplayName("🟢 좌석_예약_테스트_좌석_예약_성공시_예약된_정보가_반환된다")
-    void reserveSeatTest_좌석_예약_테스트_좌석_예약_성공시_예약된_정보가_반환된다() {
+    @DisplayName("🟢 [좌석_예약_테스트]")
+    void reserveSeatTest_좌석_예약_성공시_예약된_정보가_반환된다() {
         // Given
         ConcertCriteria.ReserveSeat command = new ConcertCriteria.ReserveSeat(userId, concertSeatId1);
 
@@ -273,8 +273,8 @@ public class ConcertIntegrationTest {
     }
 
     @Test
-    @DisplayName("🔴 좌석_예약_테스트_해당_좌석이_예약가능한_상태가_아닐_경우_SEAT_NOT_FOUND_예외반환")
-    void reserveSeatTest_좌석_예약_테스트_해당_좌석이_예약가능한_상태가_아닐_경우_SEAT_NOT_FOUND_예외반환() {
+    @DisplayName("🔴 [좌석_예약_테스트]")
+    void reserveSeatTest_해당_좌석이_예약가능한_상태가_아닐_경우_SEAT_NOT_FOUND_예외반환() {
         // Given
         ConcertCriteria.ReserveSeat command = new ConcertCriteria.ReserveSeat(userId, concertSeatId1);
 
@@ -289,8 +289,8 @@ public class ConcertIntegrationTest {
     }
 
     @Test
-    @DisplayName("🟢 임시_예약_만료_처리_테스트_총_2건_중_만료대상_1건이_만료된다")
-    void releaseTemporaryReservationsTest_임시_예약_만료_처리_테스트_총_2건_중_만료대상_1건이_만료된다() {
+    @DisplayName("🟢 [임시_예약_만료_처리_테스트]")
+    void releaseTemporaryReservationsTest_총_2건_중_만료대상_1건이_만료된다() {
 
         // Given
         // When
@@ -301,8 +301,8 @@ public class ConcertIntegrationTest {
     }
 
     @Test
-    @DisplayName("🟢 만료_예약_좌석_상태_갱신_테스트_만료된_1건의_좌석상태가_사용가능으로_갱신된다")
-    void releaseTemporaryReservationsTest_만료_예약_좌석_상태_갱신_테스트_만료된_1건의_좌석상태가_사용가능으로_갱신된다() {
+    @DisplayName("🟢 [만료_예약_좌석_상태_갱신_테스트]")
+    void releaseTemporaryReservationsTest_만료된_1건의_좌석상태가_사용가능으로_갱신된다() {
 
         // Given
         // When

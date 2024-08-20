@@ -45,8 +45,8 @@ public class ConcertControllerUnitTest {
     }
 
     @Test
-    @DisplayName("🟢 콘서트_목록_조회_컨트롤러_테스트_예상_리턴_확인")
-    void getConcertListTest_콘서트_목록_조회_컨트롤러_테스트_예상_리턴_확인() {
+    @DisplayName("🟢 [콘서트_목록_조회_컨트롤러_테스트]")
+    void getConcertListTest_콘서트_목록_예상_리턴_확인() {
 
         // Given
         List<Concert> concertList = Arrays.asList(
@@ -77,8 +77,8 @@ public class ConcertControllerUnitTest {
     }
 
     @Test
-    @DisplayName("🟢 콘서트_등록_컨트롤러_테스트_예상_리턴_확인")
-    void saveConcertTest_콘서트_등록_컨트롤러_테스트_예상_리턴_확인 () throws Exception {
+    @DisplayName("🟢 [콘서트_등록_컨트롤러_테스트]")
+    void saveConcertTest_콘서트_등록_예상_리턴_확인 () throws Exception {
         // Given
         String concertName = "콘서트1";
         ConcertRequest.SaveConcert request = new ConcertRequest.SaveConcert(concertName);
@@ -96,8 +96,8 @@ public class ConcertControllerUnitTest {
     }
 
     @Test
-    @DisplayName("🟢 예약_가능한_날짜_조회_컨트롤러_테스트_예상_리턴_확인")
-    void getAvailableDatesTest_예약_가능한_날짜_조회_컨트롤러_테스트_예상_리턴_확인() throws Exception {
+    @DisplayName("🟢 [예약_가능한_날짜_조회_컨트롤러_테스트]")
+    void getAvailableDatesTest_예약_가능한_날짜_예상_리턴_확인() throws Exception {
 
         // Given
         Long concertId = 1L;
@@ -120,8 +120,8 @@ public class ConcertControllerUnitTest {
     }
 
     @Test
-    @DisplayName("🟢 콘서트_옵션_등록_컨트롤러_테스트_예상_리턴_확인")
-    void saveConcertOptionTest_콘서트_옵션_등록_컨트롤러_테스트_예상_리턴_확인 () throws Exception {
+    @DisplayName("🟢 [콘서트_옵션_등록_컨트롤러_테스트]")
+    void saveConcertOptionTest_콘서트_옵션_등록_예상_리턴_확인 () throws Exception {
         // Given
         Long concertId = 1L;
         LocalDateTime concertAt = LocalDateTime.now().plusDays(1);
@@ -142,8 +142,8 @@ public class ConcertControllerUnitTest {
     }
 
     @Test
-    @DisplayName("🟢 좌석_예약_컨트롤러_테스트_예상_리턴_확인")
-    void getAvailableSeatsTest_좌석_예약_컨트롤러_테스트_예상_리턴_확인() throws Exception {
+    @DisplayName("🟢 [좌석_예약_컨트롤러_테스트]")
+    void getAvailableSeatsTest_좌석_예약_예상_리턴_확인() throws Exception {
         // Given
         Long concertOptionId = 1L;
         List<ConcertSeat> seats = Arrays.asList(
@@ -179,8 +179,8 @@ public class ConcertControllerUnitTest {
     }
 
     @Test
-    @DisplayName("🟢 좌석_예약_컨트롤러_테스트_예상_리턴_확인")
-    void reserveSeatTest_좌석_예약_컨트롤러_테스트_예상_리턴_확인 () throws Exception {
+    @DisplayName("🟢 [좌석_예약_컨트롤러_테스트]")
+    void reserveSeatTest_좌석_예약_예상_리턴_확인 () throws Exception {
         // Given
         Long concertSeatId = 1L;
         ConcertRequest.ReserveSeat request = new ConcertRequest.ReserveSeat(userId, concertSeatId);

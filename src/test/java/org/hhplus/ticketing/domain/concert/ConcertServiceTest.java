@@ -59,8 +59,8 @@ public class ConcertServiceTest {
     }
 
     @Test
-    @DisplayName("🟢 예약_가능한_날짜_조회_테스트")
-    void getAvailableDatesTest_예약_가능한_날짜_조회_테스트() {
+    @DisplayName("🟢 [예약_가능한_날짜_조회_테스트]")
+    void getAvailableDatesTest_예약_가능한_날짜_2건이_조회된다() {
 
         // Given
         List<ConcertOption> options = Arrays.asList(
@@ -80,8 +80,8 @@ public class ConcertServiceTest {
     }
 
     @Test
-    @DisplayName("🟢 예약_가능한_좌석_조회_테스트")
-    void getAvailableSeatsTest_예약_가능한_좌석_조회_테스트() {
+    @DisplayName("🟢 [예약_가능한_좌석_조회_테스트]")
+    void getAvailableSeatsTest_예약_가능한_좌석이_조회된다() {
 
         // Given
         List<ConcertSeat> seats = Collections.singletonList(seat);
@@ -98,8 +98,8 @@ public class ConcertServiceTest {
     }
 
     @Test
-    @DisplayName("🟢 좌석_예약_테스트_정상적으로_예약_성공")
-    void reserveSeatTest_좌석_예약_테스트_정상적으로_예약_성공() {
+    @DisplayName("🟢 [좌석_예약_테스트]")
+    void reserveSeatTest_정상적으로_예약_성공() {
 
         // Given
         ConcertCommand.ReserveSeat command = new ConcertCommand.ReserveSeat(1L, 1L);
@@ -117,8 +117,8 @@ public class ConcertServiceTest {
     }
 
     @Test
-    @DisplayName("🔴 좌석_예약_테스트_해당_좌석이_예약가능한_상태가_아닐_경우_SEAT_NOT_FOUND_OR_ALREADY_RESERVED_예외반환")
-    void reserveSeatTest_좌석_예약_테스트_해당_좌석이_예약가능한_상태가_아닐_경우_SEAT_NOT_FOUND_OR_ALREADY_RESERVED_예외반환() {
+    @DisplayName("🔴 [좌석_예약_테스트]")
+    void reserveSeatTest_해당_좌석이_예약가능한_상태가_아닐_경우_SEAT_NOT_FOUND_OR_ALREADY_RESERVED_예외반환() {
 
         // Given
         ConcertCommand.ReserveSeat command = new ConcertCommand.ReserveSeat(1L, 1L);
@@ -132,8 +132,8 @@ public class ConcertServiceTest {
     }
 
     @Test
-    @DisplayName("🟢 예약_정보_조회_테스트_예약_정보를_성공적으로_조회")
-    void getReservationTest_예약_정보_조회_테스트_예약_정보를_성공적으로_조회() {
+    @DisplayName("🟢 [예약_정보_조회_테스트]")
+    void getReservationTest_예약_정보를_성공적으로_조회() {
 
         // Given
         Long reservationId = 1L;
@@ -148,8 +148,8 @@ public class ConcertServiceTest {
     }
 
     @Test
-    @DisplayName("🔴 예약_정보_조회_테스트_예약_정보_찾을_수_없거나_예약_만료시_RESERVATION_NOT_FOUND_예외반환")
-    void getReservationInfoTest_예약_정보_조회_테스트_예약_정보_찾을_수_없거나_예약_만료시_RESERVATION_NOT_FOUND_예외반환() {
+    @DisplayName("🔴 [예약_정보_조회_테스트]")
+    void getReservationInfoTest_예약_정보_찾을_수_없거나_예약_만료시_RESERVATION_NOT_FOUND_예외반환() {
 
         // Given
         Long reservationId = 1L;
@@ -165,8 +165,8 @@ public class ConcertServiceTest {
 
 
     @Test
-    @DisplayName("🟢 좌석_소유권_배정_테스트")
-    void assignSeatTest_좌석_소유권_배정_테스트() {
+    @DisplayName("🟢 [좌석_소유권_배정_테스트]")
+    void assignSeatTest_좌석_소유권이_정상적으로_배정된다() {
 
         // Given
         Long reservationId = 1L;
@@ -187,8 +187,8 @@ public class ConcertServiceTest {
     }
 
     @Test
-    @DisplayName("🔴 좌석_소유권_배정_테스트_좌석_정보를_찾을_수_없을_때_INVALID_SEAT_SELECTION_예외반환")
-    void assignSeatOwnershipTest_좌석_소유권_배정_테스트_좌석_정보를_찾을_수_없을_때_INVALID_SEAT_SELECTION_예외반환() {
+    @DisplayName("🔴 [좌석_소유권_배정_테스트]")
+    void assignSeatOwnershipTest_좌석_정보를_찾을_수_없을_때_INVALID_SEAT_SELECTION_예외반환() {
 
         // Given
         Long reservationId = 1L;
@@ -204,8 +204,8 @@ public class ConcertServiceTest {
                 .isEqualTo(ErrorCode.INVALID_SEAT_SELECTION);
     }
     @Test
-    @DisplayName("🟢 임시예약_만료된_좌석정보_되돌림_테스트_만료_대상_임시예약_정보가_없으면_바로_종료된다")
-    void releaseReservationsTest_임시예약_만료된_좌석정보_되돌림_테스트_만료_대상_임시예약_정보가_없으면_바로_종료된다() {
+    @DisplayName("🟢 [임시예약_만료된_좌석정보_되돌림_테스트]")
+    void releaseReservationsTest_만료_대상_임시예약_정보가_없으면_바로_종료된다() {
 
         // Given
         given(concertRepository.getExpiredReservations(any(LocalDateTime.class))).willReturn(Collections.emptyList());
@@ -219,8 +219,8 @@ public class ConcertServiceTest {
     }
 
     @Test
-    @DisplayName("🟢 임시예약_만료된_좌석정보_되돌림_테스트_만료_대상_임시예약_정보가_있으면_저장로직이_정상적으로_실행된다")
-    void releaseReservationsTest_임시예약_만료된_좌석정보_되돌림_테스트_만료_대상_임시예약_정보가_있으면_저장로직이_정상적으로_실행된다() {
+    @DisplayName("🟢 [임시예약_만료된_좌석정보_되돌림_테스트]")
+    void releaseReservationsTest_만료_대상_임시예약_정보가_있으면_저장로직이_정상적으로_실행된다() {
 
         // Given
         Reservation reservation = mock(Reservation.class);
@@ -238,8 +238,8 @@ public class ConcertServiceTest {
     }
 
     @Test
-    @DisplayName("🟢 임시예약_만료된_좌석정보_되돌림_테스트_만료_대상_임시예약_정보를_통해_좌석상태도_갱신한다")
-    void releaseReservationsTest_임시예약_만료된_좌석정보_되돌림_테스트_만료_대상_임시예약_정보를_통해_좌석상태도_갱신한다() {
+    @DisplayName("🟢 [임시예약_만료된_좌석정보_되돌림_테스트]")
+    void releaseReservationsTest_만료_대상_임시예약_정보를_통해_좌석상태도_갱신한다() {
 
         // Given
         Reservation reservation = mock(Reservation.class);

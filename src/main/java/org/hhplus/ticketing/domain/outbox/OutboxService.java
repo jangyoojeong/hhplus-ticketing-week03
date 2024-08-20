@@ -24,12 +24,12 @@ public class OutboxService {
     private final MessageSender messageSender;
 
     @Transactional
-    public Outbox save(OutboxCommand.save command) {
+    public Outbox save(OutboxCommand.Save command) {
         return outboxRepository.save(Outbox.from(command));
     }
 
     @Transactional
-    public Outbox updateSent(OutboxCommand.updateSent command) {
+    public Outbox updateSent(OutboxCommand.UpdateSent command) {
         Outbox outbox = outboxRepository.getOutbox(command.getMessageKey(), command.getDomainType(), command.getEventType()).orElseThrow(()
                 -> new CustomException(ErrorCode.OUTBOX_NOT_FOUND));
         return outboxRepository.save(outbox.setSent());
@@ -38,7 +38,7 @@ public class OutboxService {
     @Transactional
     public void retryFailedMessages() {
         LocalDateTime retryTargetTime = LocalDateTime.now().minusMinutes(OutboxConstants.OUTBOX_RETRY_THRESHOLD_MINUTES);
-        List<Outbox> retryTargetList = outboxRepository.getRetryTargetList(retryTargetTime);
+        List<Outbox> retryTargetList = outboxRepository.findAllNotPublishedOutBoxByTime(retryTargetTime);
 
         retryTargetList.forEach(outbox -> {
             CompletableFuture<Boolean> future = messageSender.sendMessage(outbox.getEventType(), outbox.getMessageKey(), outbox.getMessage());

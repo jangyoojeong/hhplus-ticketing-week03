@@ -63,8 +63,8 @@ class MessageSenderIntegrationTest {
     }
 
     @Test
-    @DisplayName("🟢 메시지_발행_테스트_메시지가_정상적으로_발행_및_수신된다")
-    public void sendMessageTest_메시지_발행_테스트_메시지가_정상적으로_발행_및_수신된다() throws InterruptedException {
+    @DisplayName("🟢 [메시지_발행_테스트]")
+    public void sendMessageTest_메시지가_정상적으로_발행_및_수신된다() throws InterruptedException {
         // Given
         String messageKey = "1";
         String eventType = "PAYMENT_SUCCESS";

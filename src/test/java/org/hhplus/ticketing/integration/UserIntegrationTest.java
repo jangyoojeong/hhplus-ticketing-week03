@@ -51,8 +51,8 @@ class UserIntegrationTest {
     }
 
     @Test
-    @DisplayName("🟢 잔액_충전_통합_테스트_유저1_5000포인트_충전시_5000포인트가_리턴된다")
-    void chargePointTest_잔액_충전_통합_테스트_유저1_5000포인트_충전시_5000포인트가_리턴된다() {
+    @DisplayName("🟢 [잔액_충전_통합_테스트]")
+    void chargePointTest_유저1_5000포인트_충전시_5000포인트가_리턴된다() {
 
         // Given
         int addPoint = 5000;
@@ -75,8 +75,8 @@ class UserIntegrationTest {
     }
 
     @Test
-    @DisplayName("🔴 잔액_충전_통합_테스트_유저정보가_없을_시_USER_NOT_FOUND_예외반환")
-    void chargePointTest_잔액_충전_통합_테스트_유저정보가_없을_시_USER_NOT_FOUND_예외반환() {
+    @DisplayName("🔴 [잔액_충전_통합_테스트]")
+    void chargePointTest_유저정보가_없을_시_USER_NOT_FOUND_예외반환() {
 
         // Given
         int addPoint = 5000;
@@ -94,8 +94,8 @@ class UserIntegrationTest {
     }
 
     @Test
-    @DisplayName("🔴 잔액_충전_통합_테스트_포인트가_유효하지_않으면_INVALID_AMOUNT_VALUE_예외반환")
-    void chargePointTest_잔액_충전_통합_테스트_포인트가_유효하지_않으면_INVALID_AMOUNT_VALUE_예외반환() {
+    @DisplayName("🔴 [잔액_충전_통합_테스트]")
+    void chargePointTest_포인트가_유효하지_않으면_INVALID_AMOUNT_VALUE_예외반환() {
 
         // Given
         int chargeAmount = 0;
@@ -114,8 +114,8 @@ class UserIntegrationTest {
     }
 
     @Test
-    @DisplayName("🟢 잔액_충전_통합_테스트_기존에_포인트가_없는_유저2_3000포인트_충전시_3000포인트가_리턴된다")
-    void chargePointTest_잔액_충전_통합_테스트_기존에_포인트가_없는_유저2_3000포인트_충전시_3000포인트가_리턴된다() {
+    @DisplayName("🟢 [잔액_충전_통합_테스트]")
+    void chargePointTest_기존에_포인트가_없는_유저2_3000포인트_충전시_3000포인트가_리턴된다() {
 
         // Given
         int addPoint = 3000;
@@ -140,8 +140,8 @@ class UserIntegrationTest {
     }
 
     @Test
-    @DisplayName("🟢 잔액_조회_통합_테스트_유저1_포인트_조회시_1000포인트가_리턴된다")
-    void getPointTest_잔액_조회_통합_테스트_유저1_포인트_조회시_1000포인트가_리턴된다() {
+    @DisplayName("🟢 [잔액_조회_통합_테스트]")
+    void getPointTest_유저1_포인트_조회시_1000포인트가_리턴된다() {
 
         // Given
         int oldPoint = 1000;

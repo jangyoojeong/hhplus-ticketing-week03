@@ -11,7 +11,7 @@ public class OutboxCommand {
     @NoArgsConstructor
     @AllArgsConstructor
     @Builder
-    public static class save {
+    public static class Save {
         private String messageKey; // 도메인 식별 키
         private String domainType; // 도메인 타입 (예: Payment, Concert 등)
         private String eventType;  // 이벤트 타입 (예: PaymentSuccess 등)
@@ -22,7 +22,7 @@ public class OutboxCommand {
     @NoArgsConstructor
     @AllArgsConstructor
     @Builder
-    public static class updateSent {
+    public static class UpdateSent {
         private String messageKey; // 도메인 식별 키
         private String domainType; // 도메인 타입 (예: Payment, Concert 등)
         private String eventType;  // 이벤트 타입 (예: PaymentSuccess 등)

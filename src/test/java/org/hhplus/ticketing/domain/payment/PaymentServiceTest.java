@@ -13,12 +13,10 @@ import org.springframework.context.ApplicationEventPublisher;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThatNoException;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 
 // 결제 서비스 단위테스트입니다.
@@ -30,10 +28,6 @@ class PaymentServiceTest {
     private PaymentRepository paymentRepository;
     @Mock
     private PaymentEventPublisher eventPublisher;
-    @Mock
-    private ApplicationEventPublisher applicationEventPublisher;
-    @Captor
-    private ArgumentCaptor<PaymentEvent.Success> eventCaptor;
 
     private Payment payment;
     private int price;
@@ -54,8 +48,8 @@ class PaymentServiceTest {
     }
 
     @Test
-    @DisplayName("🟢 결제요청_테스트_결제를_생성하고_관련_이벤트를_성공적으로_발행한다")
-    void payTest_결제요청_테스트_결제를_생성하고_관련_이벤트를_성공적으로_발행한다() {
+    @DisplayName("🟢 [결제요청_테스트]")
+    void payTest_결제를_생성하고_관련_이벤트를_성공적으로_발행한다() {
 
         // Given
         String token = UUID.randomUUID().toString();

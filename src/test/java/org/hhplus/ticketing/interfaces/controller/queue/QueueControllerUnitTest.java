@@ -40,8 +40,8 @@ public class QueueControllerUnitTest {
     }
 
     @Test
-    @DisplayName("🟢 대기열_토큰_발급_컨트롤러_테스트_헤더_토큰정보_리턴_확인")
-    void issueTokenTest_대기열_토큰_발급_컨트롤러_테스트_헤더_토큰정보_리턴_확인 () throws Exception {
+    @DisplayName("🟢 [대기열_토큰_발급_컨트롤러_테스트]")
+    void issueTokenTest_헤더_토큰정보_리턴_확인 () throws Exception {
         // Given
         QueueRequest.IssueToken request = new QueueRequest.IssueToken(userId);
         QueueResult.IssueToken result = new QueueResult.IssueToken(token);
@@ -57,8 +57,8 @@ public class QueueControllerUnitTest {
     }
 
     @Test
-    @DisplayName("🟢 대기열_확인_컨트롤러_테스트_예상_리턴_데이터_확인")
-    void getQueueStatusTest_대기열_확인_컨트롤러_테스트_예상_리턴_데이터_확인 () throws Exception {
+    @DisplayName("🟢 [대기열_확인_컨트롤러_테스트]")
+    void getQueueStatusTest_대기열_정보_예상_리턴_데이터_확인 () throws Exception {
         // Given
         QueueResult.QueueStatus result = new QueueResult.QueueStatus(0L, null);
         QueueResponse.QueueStatus response = QueueResponse.QueueStatus.from(result);

@@ -7,8 +7,8 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 class ConcertTest {
     @Test
-    @DisplayName("🟢 콘서트_객체_생성_테스트_콘서트명으로_객체가_생성된다")
-    void createConcertDomainTest_콘서트_객체_생성_테스트_콘서트명으로_객체가_생성된다() {
+    @DisplayName("🟢 [콘서트_객체_생성_테스트]")
+    void createConcertDomainTest_콘서트명으로_객체가_생성된다() {
         // Given
         String concertName = "콘서트1";
 

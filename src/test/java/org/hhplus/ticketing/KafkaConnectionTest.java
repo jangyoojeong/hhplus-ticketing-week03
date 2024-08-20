@@ -49,8 +49,8 @@ public class KafkaConnectionTest {
     }
 
     @Test
-    @DisplayName("🟢 카프카_연동_테스트_메시지_발행_및_구독이_성공한다")
-    void sendAndReceiveMessage_카프카_연동_테스트_메시지_발행_및_구독이_성공한다() {
+    @DisplayName("🟢 [카프카_연동_테스트]")
+    void sendAndReceiveMessage_메시지_발행_및_구독이_성공한다() {
         String topic = "test-topic";
         String message = "test-message";
 

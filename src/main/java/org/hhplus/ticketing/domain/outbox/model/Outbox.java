@@ -24,7 +24,7 @@ public class Outbox {
     private LocalDateTime sentAt;      // 메시지 전송시점
     private LocalDateTime createdAt;   // 생성시간
 
-    public static Outbox from(OutboxCommand.save command) {
+    public static Outbox from(OutboxCommand.Save command) {
         return Outbox.builder()
                 .messageKey(command.getMessageKey())
                 .domainType(command.getDomainType())

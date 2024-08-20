@@ -28,7 +28,7 @@ public class OutboxRepositoryImpl implements OutboxRepository {
     }
 
     @Override
-    public List<Outbox> getRetryTargetList(LocalDateTime retryTargetTime) {
+    public List<Outbox> findAllNotPublishedOutBoxByTime(LocalDateTime retryTargetTime) {
         return outboxJpaRepository.findAllByIsSentFalseAndCreatedAtBefore(retryTargetTime).stream()
                 .map(OutboxEntity::toDomain)
                 .collect(Collectors.toList());

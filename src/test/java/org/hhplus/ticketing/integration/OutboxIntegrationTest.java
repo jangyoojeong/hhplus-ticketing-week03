@@ -14,13 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.DynamicPropertyRegistry;
-import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.testcontainers.containers.KafkaContainer;
-import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
-import org.testcontainers.utility.DockerImageName;
 
 import java.time.LocalDateTime;
 
@@ -34,14 +29,6 @@ import static org.junit.jupiter.api.Assertions.*;
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 public class OutboxIntegrationTest {
 
-    @Container
-    static final KafkaContainer kafka = new KafkaContainer(DockerImageName.parse("confluentinc/cp-kafka:7.4.1"));
-
-    @DynamicPropertySource
-    static void overrideProperties(DynamicPropertyRegistry registry) {
-        registry.add("spring.kafka.bootstrap-servers", kafka::getBootstrapServers);
-    }
-
     @Autowired
     private OutboxService outboxService;
 
@@ -49,8 +36,8 @@ public class OutboxIntegrationTest {
     private OutboxRepository outboxRepository;
 
     @Test
-    @DisplayName("🟢 아웃박스_저장_테스트_데이터_저장_후_저장된_정보가_리턴된다")
-    public void saveTest_아웃박스_저장_통합_테스트_데이터_저장_후_저장된_정보가_리턴된다() {
+    @DisplayName("🟢 [아웃박스_저장_테스트]")
+    public void saveTest_데이터_저장_후_저장된_정보가_리턴된다() {
         // Given
         String messageKey = "1";
         String domainType = "PAYMENT";
@@ -68,7 +55,7 @@ public class OutboxIntegrationTest {
                 .sentAt(null)
                 .build();
 
-        OutboxCommand.save command = new OutboxCommand.save(messageKey, domainType, eventType, message);
+        OutboxCommand.Save command = new OutboxCommand.Save(messageKey, domainType, eventType, message);
 
         // When
         Outbox result = outboxService.save(command);
@@ -84,18 +71,18 @@ public class OutboxIntegrationTest {
     }
     
     @Test
-    @DisplayName("🟢 아웃박스_상태변경_테스트_아웃박스_상태가_발송상태로_변경된다")
-    public void updateSentTest_아웃박스_상태변경_통합_테스트_아웃박스_상태가_발송상태로_변경된다() {
+    @DisplayName("🟢 [아웃박스_상태변경_테스트]")
+    public void updateSentTest_아웃박스_상태가_발송상태로_변경된다() {
         // Given
         String messageKey = "1";
         String domainType = "PAYMENT";
         String eventType = "PAYMENT_SUCCESS";
         String message = "MESSAGE";
 
-        OutboxCommand.save command = new OutboxCommand.save(messageKey, domainType, eventType, message);
+        OutboxCommand.Save command = new OutboxCommand.Save(messageKey, domainType, eventType, message);
         outboxService.save(command);
 
-        OutboxCommand.updateSent updateCommand = new OutboxCommand.updateSent(messageKey, domainType, eventType);
+        OutboxCommand.UpdateSent updateCommand = new OutboxCommand.UpdateSent(messageKey, domainType, eventType);
 
         // When
         Outbox updatedOutbox = outboxService.updateSent(updateCommand);
@@ -106,18 +93,18 @@ public class OutboxIntegrationTest {
     }
 
     @Test
-    @DisplayName("🔴 updateSentTest_아웃박스_상태변경_통합_테스트_이미_발행된_상태일_경우_INVALID_STATE_예외반환")
-    public void updateSentTest_아웃박스_상태변경_통합_테스트_이미_발행된_상태일_경우_INVALID_STATE_예외반환() {
+    @DisplayName("🔴 [아웃박스_상태변경_통합_테스트]")
+    public void updateSentTest_이미_발행된_상태일_경우_INVALID_STATE_예외반환() {
         // Given
         String messageKey = "1";
         String domainType = "PAYMENT";
         String eventType = "PAYMENT_SUCCESS";
         String message = "MESSAGE";
 
-        OutboxCommand.save command = new OutboxCommand.save(messageKey, domainType, eventType, message);
+        OutboxCommand.Save command = new OutboxCommand.Save(messageKey, domainType, eventType, message);
         outboxService.save(command);
 
-        OutboxCommand.updateSent updateCommand = new OutboxCommand.updateSent(messageKey, domainType, eventType);
+        OutboxCommand.UpdateSent updateCommand = new OutboxCommand.UpdateSent(messageKey, domainType, eventType);
 
         // When
         outboxService.updateSent(updateCommand);
@@ -130,14 +117,14 @@ public class OutboxIntegrationTest {
     }
 
     @Test
-    @DisplayName("🔴 updateSentTest_아웃박스_상태변경_테스트_조회된_아웃박스_데이터가_없을경우_OUTBOX_NOT_FOUND_예외반환")
-    public void updateSentTest_아웃박스_상태변경_테스트_조회된_아웃박스_데이터가_없을경우_OUTBOX_NOT_FOUND_예외반환() {
+    @DisplayName("🔴 [아웃박스_상태변경_테스트]")
+    public void updateSentTest_조회된_아웃박스_데이터가_없을경우_OUTBOX_NOT_FOUND_예외반환() {
         // Given
         String messageKey = "1";
         String domainType = "PAYMENT";
         String eventType = "PAYMENT_SUCCESS";
 
-        OutboxCommand.updateSent updateCommand = new OutboxCommand.updateSent(messageKey, domainType, eventType);
+        OutboxCommand.UpdateSent updateCommand = new OutboxCommand.UpdateSent(messageKey, domainType, eventType);
 
         // Then
         assertThatThrownBy(() -> outboxService.updateSent(updateCommand))
@@ -147,8 +134,8 @@ public class OutboxIntegrationTest {
     }
 
     @Test
-    @DisplayName("🟢 메시지_재발행_스케줄러_테스트_대상_리스트_2건_중_1건만_상태가_발송상태로_변경된다")
-    public void retryFailedMessagesTest_메시지_재발행_스케줄러_테스트_대상_리스트_2건_중_1건만_상태가_발송상태로_변경된다() {
+    @DisplayName("🟢 [메시지_재발행_스케줄러_테스트]")
+    public void retryFailedMessagesTest_대상_리스트_2건_중_1건만_상태가_발송상태로_변경된다() {
         // Given
         LocalDateTime retryTargetTime = LocalDateTime.now().minusMinutes(OutboxConstants.OUTBOX_RETRY_THRESHOLD_MINUTES + 1);
 

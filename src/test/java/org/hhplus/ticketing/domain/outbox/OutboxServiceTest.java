@@ -42,10 +42,10 @@ public class OutboxServiceTest {
     }
 
     @Test
-    @DisplayName("🟢 아웃박스_저장_테스트_저장_후_저장된_정보가_리턴된다")
-    void saveTest_아웃박스_저장_테스트_저장_후_저장된_정보가_리턴된다() {
+    @DisplayName("🟢 [아웃박스_저장_테스트]")
+    void saveTest_저장_후_저장된_정보가_리턴된다() {
         // Given
-        OutboxCommand.save command = new OutboxCommand.save("1", "PAYMENT", "PAYMENT_SUCCESS", "MESSAGE");
+        OutboxCommand.Save command = new OutboxCommand.Save("1", "PAYMENT", "PAYMENT_SUCCESS", "MESSAGE");
         Outbox expectedOutbox = Outbox.from(command);
 
         given(outboxRepository.save(any(Outbox.class))).willReturn(expectedOutbox);
@@ -60,10 +60,10 @@ public class OutboxServiceTest {
     }
 
     @Test
-    @DisplayName("🟢 아웃박스_상태변경_테스트_발행상태로_변경된다")
-    void updateSentTest_아웃박스_상태변경_테스트_발행상태로_변경된다() {
+    @DisplayName("🟢 [아웃박스_상태변경_테스트]")
+    void updateSentTest_발행상태로_변경된다() {
         // Given
-        OutboxCommand.updateSent command = new OutboxCommand.updateSent("1", "PAYMENT", "PAYMENT_SUCCESS");
+        OutboxCommand.UpdateSent command = new OutboxCommand.UpdateSent("1", "PAYMENT", "PAYMENT_SUCCESS");
         Outbox outbox = Outbox.builder()
                 .outboxId(1L)
                 .messageKey("1")
@@ -89,10 +89,10 @@ public class OutboxServiceTest {
     }
 
     @Test
-    @DisplayName("🔴 아웃박스_상태변경_통합_테스트_이미_발행된_상태일_경우_INVALID_STATE_예외반환")
-    public void updateSentTest_아웃박스_상태변경_통합_테스트_이미_발행된_상태일_경우_INVALID_STATE_예외반환() {
+    @DisplayName("🔴 [아웃박스_상태변경_테스트]")
+    public void updateSentTest_이미_발행된_상태일_경우_INVALID_STATE_예외반환() {
         // Given
-        OutboxCommand.updateSent command = new OutboxCommand.updateSent("1", "PAYMENT", "PAYMENT_SUCCESS");
+        OutboxCommand.UpdateSent command = new OutboxCommand.UpdateSent("1", "PAYMENT", "PAYMENT_SUCCESS");
         Outbox outbox = Outbox.builder()
                 .outboxId(1L)
                 .messageKey("1")
@@ -114,10 +114,10 @@ public class OutboxServiceTest {
     }
 
     @Test
-    @DisplayName("🔴 아웃박스_상태변경_테스트_조회된_아웃박스_데이터가_없을경우_OUTBOX_NOT_FOUND_예외반환")
-    public void updateSentTest_아웃박스_상태변경_테스트_조회된_아웃박스_데이터가_없을경우_OUTBOX_NOT_FOUND_예외반환() {
+    @DisplayName("🔴 [아웃박스_상태변경_테스트]")
+    public void updateSentTest_조회된_아웃박스_데이터가_없을경우_OUTBOX_NOT_FOUND_예외반환() {
         // Given
-        OutboxCommand.updateSent command = new OutboxCommand.updateSent("1", "PAYMENT", "PAYMENT_SUCCESS");
+        OutboxCommand.UpdateSent command = new OutboxCommand.UpdateSent("1", "PAYMENT", "PAYMENT_SUCCESS");
 
         given(outboxRepository.getOutbox(anyString(), anyString(), anyString())).willReturn(Optional.empty());
 
@@ -129,8 +129,8 @@ public class OutboxServiceTest {
     }
 
     @Test
-    @DisplayName("🟢 메시지_재발송_테스트_실패한_메시지를_재발송하고_발송상태로_변경된다")
-    void retryFailedMessages_메시지_재발송_테스트_실패한_메시지를_재발송하고_발송상태로_변경된다() {
+    @DisplayName("🟢 [메시지_재발송_테스트]")
+    void retryFailedMessages_실패한_메시지를_재발송하고_발송상태로_변경된다() {
         // Given
         Outbox outbox = Outbox.builder()
                 .outboxId(1L)
@@ -142,7 +142,7 @@ public class OutboxServiceTest {
                 .createdAt(LocalDateTime.now().minusMinutes(OutboxConstants.OUTBOX_RETRY_THRESHOLD_MINUTES + 1))
                 .build();
 
-        given(outboxRepository.getRetryTargetList(any(LocalDateTime.class))).willReturn(Collections.singletonList(outbox));
+        given(outboxRepository.findAllNotPublishedOutBoxByTime(any(LocalDateTime.class))).willReturn(Collections.singletonList(outbox));
         given(messageSender.sendMessage(anyString(), anyString(), anyString())).willReturn(CompletableFuture.completedFuture(true));
         given(outboxRepository.save(any(Outbox.class))).willReturn(outbox);
 
@@ -150,7 +150,7 @@ public class OutboxServiceTest {
         outboxService.retryFailedMessages();
 
         // Then
-        verify(outboxRepository, times(1)).getRetryTargetList(any(LocalDateTime.class));
+        verify(outboxRepository, times(1)).findAllNotPublishedOutBoxByTime(any(LocalDateTime.class));
         verify(messageSender, times(1)).sendMessage(anyString(), anyString(), anyString());
         verify(outboxRepository, times(1)).save(any(Outbox.class));
         assertTrue(outbox.isSent());
@@ -158,8 +158,8 @@ public class OutboxServiceTest {
     }
 
     @Test
-    @DisplayName("🔴 메시지_재발송_테스트_메시지_발송에_실패한_경우_발송상태로_변경되지_않는다")
-    void retryFailedMessages_메시지_재발송_테스트_메시지_발송에_실패한_경우_발송상태로_변경되지_않는다() {
+    @DisplayName("🔴 [메시지_재발송_테스트]")
+    void retryFailedMessages_메시지_발송에_실패한_경우_발송상태로_변경되지_않는다() {
         // Given
         Outbox existingOutbox = Outbox.builder()
                 .outboxId(1L)
@@ -171,14 +171,14 @@ public class OutboxServiceTest {
                 .createdAt(LocalDateTime.now().minusMinutes(OutboxConstants.OUTBOX_RETRY_THRESHOLD_MINUTES + 1))
                 .build();
 
-        given(outboxRepository.getRetryTargetList(any(LocalDateTime.class))).willReturn(Collections.singletonList(existingOutbox));
+        given(outboxRepository.findAllNotPublishedOutBoxByTime(any(LocalDateTime.class))).willReturn(Collections.singletonList(existingOutbox));
         given(messageSender.sendMessage(anyString(), anyString(), anyString())).willReturn(CompletableFuture.completedFuture(false));
 
         // When
         outboxService.retryFailedMessages();
 
         // Then
-        verify(outboxRepository, times(1)).getRetryTargetList(any(LocalDateTime.class));
+        verify(outboxRepository, times(1)).findAllNotPublishedOutBoxByTime(any(LocalDateTime.class));
         verify(messageSender, times(1)).sendMessage(anyString(), anyString(), anyString());
         verify(outboxRepository, never()).save(existingOutbox); // 메시지 전송이 실패했으므로 save 메서드 호출 x
         assertFalse(existingOutbox.isSent());

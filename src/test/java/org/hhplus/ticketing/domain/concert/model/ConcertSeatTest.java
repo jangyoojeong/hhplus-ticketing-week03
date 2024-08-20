@@ -6,8 +6,8 @@ import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 class ConcertSeatTest {
     @Test
-    @DisplayName("🟢 콘서트좌석_객체_생성_테스트_콘서트좌석정보로_객체가_생성된다")
-    void createTest_콘서트좌석_객체_생성_테스트_콘서트좌석정보로_객체가_생성된다() {
+    @DisplayName("🟢 [콘서트좌석_객체_생성_테스트]")
+    void createTest_콘서트좌석정보로_객체가_생성된다() {
         // Given
         Long concertOptionId = 1L;
         int seatNumber = 1;
@@ -24,8 +24,8 @@ class ConcertSeatTest {
         assertThat(seat.getStatus()).isEqualTo(ConcertSeat.Status.AVAILABLE);
     }
     @Test
-    @DisplayName("🟢 좌석_사용가능_상태변경_테스트_좌석상태가_사용가능으로_변경된다")
-    void setAvailableTest_좌석_사용가능_상태변경_테스트_좌석상태가_사용가능으로_변경된다() {
+    @DisplayName("🟢 [좌석_사용가능_상태변경_테스트]")
+    void setAvailableTest_좌석상태가_사용가능으로_변경된다() {
         // Given
         Long concertSeatId = 1L;
         Long concertOptionId = 1L;
@@ -50,8 +50,8 @@ class ConcertSeatTest {
     }
 
     @Test
-    @DisplayName("🟢 좌석_예약됨_상태변경_테스트_좌석상태가_예약됨으로_변경된다")
-    void setReservedTest_좌석_예약됨_상태변경_테스트_좌석상태가_예약됨으로_변경된다() {
+    @DisplayName("🟢 [좌석_예약됨_상태변경_테스트]")
+    void setReservedTest_좌석상태가_예약됨으로_변경된다() {
         // Given
         Long concertSeatId = 1L;
         Long concertOptionId = 1L;
@@ -76,8 +76,8 @@ class ConcertSeatTest {
     }
 
     @Test
-    @DisplayName("🟢 좌석_점유_상태변경_테스트_좌석상태가_점유로_변경된다")
-    void setOccupiedTest_좌석_점유_상태변경_테스트_좌석상태가_점유로_변경된다() {
+    @DisplayName("🟢 [좌석_점유_상태변경_테스트]")
+    void setOccupiedTest_좌석상태가_점유로_변경된다() {
         // Given
         Long concertSeatId = 1L;
         Long concertOptionId = 1L;

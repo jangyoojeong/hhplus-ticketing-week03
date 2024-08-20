@@ -36,8 +36,8 @@ public class UserControllerUnitTest {
     }
 
     @Test
-    @DisplayName("🟢 잔액_충전_컨트롤러_테스트_기존_0포인트_충전_후_50000_포인트_리턴_확인")
-    void addUserPointTest_잔액_충전_컨트롤러_테스트_기존_0포인트_충전_후_50000_포인트_리턴_확인 () throws Exception {
+    @DisplayName("🟢 [잔액_충전_컨트롤러_테스트]")
+    void addUserPointTest_기존_0포인트_충전_후_50000_포인트_리턴_확인 () throws Exception {
         // Given
         int currentPoints = 0;
 
@@ -56,8 +56,8 @@ public class UserControllerUnitTest {
     }
     
     @Test
-    @DisplayName("🟢 잔액_충전_컨트롤러_테스트_조회_후_50000_포인트_리턴_확인")
-    void getUserPointTest_잔액_충전_컨트롤러_테스트_조회_후_50000_포인트_리턴_확인 () throws Exception {
+    @DisplayName("🟢 [잔액_충전_컨트롤러_테스트]")
+    void getUserPointTest_조회_후_50000_포인트_리턴_확인 () throws Exception {
         // Given
         UserResult.GetPoint result = new UserResult.GetPoint(userId, 50000);
         UserResponse.UserPoint response = UserResponse.UserPoint.from(result);

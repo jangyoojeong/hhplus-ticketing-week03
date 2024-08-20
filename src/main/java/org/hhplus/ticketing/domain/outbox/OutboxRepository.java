@@ -9,5 +9,5 @@ import java.util.Optional;
 public interface OutboxRepository {
     Outbox save(Outbox domain);
     Optional<Outbox> getOutbox(String messageKey, String domainType, String eventType);
-    List<Outbox> getRetryTargetList(LocalDateTime retryTargetTime);
+    List<Outbox> findAllNotPublishedOutBoxByTime(LocalDateTime retryTargetTime);
 }

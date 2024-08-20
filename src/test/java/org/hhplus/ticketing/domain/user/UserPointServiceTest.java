@@ -46,8 +46,8 @@ class UserPointServiceTest {
     }
 
     @Test
-    @DisplayName("🟢 잔액_충전_테스트_기존_50000포인트에_20000포인트_충전_시_70000포인트를_반환한다")
-    void addUserPointTest_잔액_충전_테스트_기존_50000포인트에_20000포인트_충전_시_70000포인트를_반환한다() {
+    @DisplayName("🟢 [잔액_충전_테스트]")
+    void addUserPointTest_기존_50000포인트에_20000포인트_충전_시_70000포인트를_반환한다() {
         // Given
         int addAmount = 20000;
         UserCommand.ChargePoint command = new UserCommand.ChargePoint(userId, addAmount);
@@ -70,8 +70,8 @@ class UserPointServiceTest {
     }
 
     @Test
-    @DisplayName("🟢 잔액_충전_테스트_기존_50000포인트에_20000포인트_차감_시_30000포인트를_반환한다")
-    void useUserPointTest_잔액_충전_테스트_기존_50000포인트에_20000포인트_차감_시_30000포인트를_반환한다() {
+    @DisplayName("🟢 [잔액_충전_테스트]")
+    void useUserPointTest_기존_50000포인트에_20000포인트_차감_시_30000포인트를_반환한다() {
         // Given
         int useAmount = 20000;
         UserCommand.UsePoint command = new UserCommand.UsePoint(userId, useAmount);
@@ -94,8 +94,8 @@ class UserPointServiceTest {
     }
 
     @Test
-    @DisplayName("🔴 잔액_부족_테스트_기존_50000포인트에_200000포인트_차감_시_INSUFFICIENT_POINTS_예외반환")
-    void useUserPointTest_잔액_부족_테스트_기존_50000포인트에_200000포인트_차감_시_INSUFFICIENT_POINTS_예외반환() {
+    @DisplayName("🔴 [잔액_부족_테스트]")
+    void useUserPointTest_기존_50000포인트에_200000포인트_차감_시_INSUFFICIENT_POINTS_예외반환() {
         // Given
         int useAmount = 200000;
         UserCommand.UsePoint command = new UserCommand.UsePoint(userId, useAmount);
@@ -110,8 +110,8 @@ class UserPointServiceTest {
     }
 
     @Test
-    @DisplayName("🟢 잔액_조회_테스트_1L유저_잔액_조회_시_50000포인트를_반환한다")
-    void getUserPointTest_잔액_조회_테스트_1L유저_잔액_조회_시_50000포인트를_반환한다() {
+    @DisplayName("🟢 [잔액_조회_테스트]")
+    void getUserPointTest_1L유저_잔액_조회_시_50000포인트를_반환한다() {
         // Given
         given(userPointRepository.getUserPoint(anyLong())).willReturn(Optional.ofNullable(userPoint));
 
