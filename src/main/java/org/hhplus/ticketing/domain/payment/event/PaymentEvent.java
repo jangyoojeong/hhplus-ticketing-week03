@@ -20,8 +20,8 @@ public class PaymentEvent {
         private Long reservationId;
         private int price;
 
-        public OutboxCommand.save toOutboxSaveCommand() {
-            return OutboxCommand.save
+        public OutboxCommand.Save toOutboxSaveCommand() {
+            return OutboxCommand.Save
                     .builder()
                     .messageKey(reservationId.toString())
                     .domainType(PaymentConstants.DOMAIN)
@@ -30,8 +30,8 @@ public class PaymentEvent {
                     .build();
         }
 
-        public OutboxCommand.updateSent toOutboxUpdateCommand() {
-            return OutboxCommand.updateSent
+        public OutboxCommand.UpdateSent toOutboxUpdateCommand() {
+            return OutboxCommand.UpdateSent
                     .builder()
                     .messageKey(reservationId.toString())
                     .domainType(PaymentConstants.DOMAIN)
