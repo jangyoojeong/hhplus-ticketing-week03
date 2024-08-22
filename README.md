@@ -25,6 +25,9 @@
 
 - [MSA 서비스 분리 제안서](https://tide-stoplight-55c.notion.site/MSA-74c107b5832d40aab57609e7fb136a03?pvs=4)
 
+- [부하 테스트 보고서](https://tide-stoplight-55c.notion.site/c0cd59f627fe4c4880d6ed49f43c5ea3?pvs=4)
+
+- [장애 대응 보고서](https://tide-stoplight-55c.notion.site/f60325708d034c9b9d4468b9fd74c6f0?pvs=4)
 ---
 
 ### :black_nib: 과제
